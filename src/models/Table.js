@@ -3,8 +3,7 @@ import {
   computed
 } from "mobx";
 import {
-  assignId,
-  createView
+  assignId
 } from './util';
 
 export class Column {
@@ -102,7 +101,7 @@ export class Column {
   }
 
   static create(store, object = {}, options = {}) {
-    return new Column(store, createView(store, object), object.visible || options.visible, object.disabled || options.visible, object.align,
+    return new Column(store, store.parse(object), object.visible || options.visible, object.disabled || options.visible, object.align,
       object.colSpan, object.dataIndex || object.value, object.fixed, object.title || object.text, object.width || object.columnWidth, (object.columns || []).map(it => Column.create(store, it)));
   }
 }

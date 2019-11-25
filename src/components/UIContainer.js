@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const none = () => {}
 
 // 组件容器，渲染子组件提供统一的上下文环境
-export default class ComponentContainer extends React.Component {
+export default class UIContainer extends React.Component {
   static propTypes = {
     t: PropTypes.func,
     context: PropTypes.object,
@@ -16,6 +16,7 @@ export default class ComponentContainer extends React.Component {
   static defaultProps = {
     onAction: none,
     onEvent: none,
+    t: txt => txt
   }
 
   static childContextTypes = {

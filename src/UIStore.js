@@ -6,20 +6,18 @@ import {
 import Expression from 'saas-plat-expression';
 import _get from 'lodash/get';
 
-export default class ViewStore {
-  @observable _data;
+export default class UIStore {
+  // 数据级别的模型，前端的业务实体模型，包含状态和数据
   @observable viewModel;
+  // UI级别的模型，观察viewModel
+  @observable uiModel;
 
-  @computed get data() {
-    return this._data || {};
+  constructor(viewModel) {
+    this.viewModel = viewModel;
   }
 
-  constructor(data) {
-    this._data = data;
-  }
-
-  @action setData(data) {
-    this._data = data;
+  @action setViewModel(viewModel) {
+    this.viewModel = viewModel;
   }
 
   parseExpr(txt) {
@@ -27,7 +25,7 @@ export default class ViewStore {
   }
 
   execExpr(expr) {
-    return expr.exec(this.data);
+    return expr.exec(this.viewModel);
   }
 
   map(obj, mapping) {
@@ -47,29 +45,34 @@ export default class ViewStore {
   static models = new Map();
   static components = new Map();
 
-  static registerTemplates(...items){
-
-  }
-
   static register(...items) {
-    const registerOne = (type, ViewItem) => {
+    const registerOne = (type, Component, Model) => {
       if (!type) {
-        console.error('view type not be null!', type);
+        console.error('ui type not be null!', type);
         return false;
       }
-      if (!ViewItem) {
-        console.error('view class not be null!', type);
+      if (!Model) {
+        console.error('model type not be null!', type);
         return false;
       }
-      if (typeof ViewItem.create !== 'function') {
-        console.error('view class can not be create!');
+      if (!Component) {
+        console.error('component type not be null!', type);
         return false;
       }
-      if (ViewStore.models.has(type.toLowerCase())) {
-        console.error('view type has registerd!', type.toLowerCase());
+      if (typeof Model.create !== 'function') {
+        console.error('model class can not be create!');
         return false;
       }
-      ViewStore.models.set(type.toLowerCase(), ViewItem);
+      if (UIStore.models.has(type.toLowerCase())) {
+        console.error('model type has registerd!', type.toLowerCase());
+        return false;
+      }
+      if (UIStore.components.has(type.toLowerCase())) {
+        console.error('component type has registerd!', type.toLowerCase());
+        return false;
+      }
+      UIStore.models.set(type.toLowerCase(), Model);
+      UIStore.components.set(type.toLowerCase(), Component);
       return true;
     }
     if (typeof items[0] === 'string') {
@@ -78,7 +81,8 @@ export default class ViewStore {
       const keys = Object.keys(items[0]);
       let hasFaield = false;
       for (const key of keys) {
-        if (!registerOne(key, items[0][key])) {
+        const {component,model} = items[0][key];
+        if (!registerOne(key, component,model)) {
           hasFaield = true;
         }
       }
@@ -86,7 +90,7 @@ export default class ViewStore {
     } else {
       let hasFaield = false;
       for (const it of items) {
-        if (!registerOne(it.type || it.name, it.viewModel || it.view || it.model)) {
+        if (!registerOne(it.type || it.name, it.component, it.model)) {
           hasFaield = true;
         }
       }
@@ -96,17 +100,17 @@ export default class ViewStore {
 
   parse(obj) {
     const type = (obj.type || '').toLowerCase();
-    const ViewItem = ViewStore.models.get(type);
-    if (!ViewItem) {
-      console.error('view class not be found!', type);
+    const Model = UIStore.models.get(type);
+    if (!Model) {
+      console.error('ui model not be found!', type);
       return null;
     }
-    const viewItem = ViewItem.create(this, obj);
-    if (!viewItem) {
-      console.error('view item create failed!', type);
+    const uiModel = Model.create(this, obj);
+    if (!uiModel) {
+      console.error('ui model create failed!', type);
       return null;
     }
-    return viewItem;
+    return uiModel;
   }
 
   build(node) {
@@ -121,16 +125,16 @@ export default class ViewStore {
     // 把配置信息解析成一棵构造树
     const schema = this.parse(obj);
     if (!schema) {
-      console.error('not support view type', obj.type);
+      console.error('not support ui model type', obj.type);
     }
     return schema;
   }
 
   static create(schema, data) {
-    const store = new ViewStore(data);
-    const viewModel = store.build(schema);
+    const store = new UIStore(data);
+    const uiModel = store.build(schema);
     runInAction(() => {
-      store.viewModel = viewModel;
+      store.uiModel = uiModel;
     });
     return store;
   }

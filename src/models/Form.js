@@ -260,7 +260,7 @@ export class FormItem {
     }
     return new FormItem(store, labelSpan, labelText, obj.labelIcon || obj.icon,
       obj.tipText || obj.tip, obj.width || options.itemWidth, obj.extra,
-      store.createViewModel(obj),
+      store.parse(obj),
       // 默认有一条规则obj中尝试查找
       rules.map(it => Rule.create(store, it, {
         ...obj,
@@ -431,6 +431,45 @@ export class Container {
   }
 }
 
+
+export class Form {
+  store;
+  key;
+
+  @observable name;
+  @observable layout; // horizontal vertical inline
+
+  @observable labelSpanExpr;
+
+  @observable items;
+
+  @computed get state() {
+    return this.store.state;
+  }
+
+  @computed get labelSpan() {
+    const span = parseInt(this.store.execExpr(this.labelSpanExpr));
+    return span !== 0 ? ((span || 4) % 24) : span;
+  }
+
+  constructor(store, name, layout = 'horizontal', labelSpanExpr, items = []) {
+    this.key = assignId('Form');
+    this.store = store;
+    this.name = name || this.key;
+    this.layout = layout;
+    this.labelSpanExpr = store.parseExpr(labelSpanExpr);
+    this.items = items;
+  }
+
+  static create(store, obj) {
+    return new Form(store, obj.name, obj.layout, obj.labelSpan || 6,
+      (obj.items || []).map(it => FormItem.create(store, it, {
+        labelSpan: obj.labelSpan
+      })));
+  }
+}
+
+// 表单卡片模型，比普通的Form复杂，支持分组和页签等功能
 export class Voucher {
   store;
   key;
@@ -496,42 +535,5 @@ export class Voucher {
         labelSpan
       })),
       Action.create(store, onChanging), Action.create(store, onChange), Action.create(store, onChanged));
-  }
-}
-
-export class Form {
-  store;
-  key;
-
-  @observable name;
-  @observable layout; // horizontal vertical inline
-
-  @observable labelSpanExpr;
-
-  @observable items;
-
-  @computed get state() {
-    return this.store.state;
-  }
-
-  @computed get labelSpan() {
-    const span = parseInt(this.store.execExpr(this.labelSpanExpr));
-    return span !== 0 ? ((span || 4) % 24) : span;
-  }
-
-  constructor(store, name, layout = 'horizontal', labelSpanExpr, items = []) {
-    this.key = assignId('Form');
-    this.store = store;
-    this.name = name || this.key;
-    this.layout = layout;
-    this.labelSpanExpr = store.parseExpr(labelSpanExpr);
-    this.items = items;
-  }
-
-  static create(store, obj) {
-    return new Form(store, obj.name, obj.layout, obj.labelSpan || 6,
-      (obj.items || []).map(it => FormItem.create(store, it, {
-        labelSpan: obj.labelSpan
-      })));
   }
 }

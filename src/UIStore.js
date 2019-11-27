@@ -1,19 +1,29 @@
 import {
+  action,
   observable,
-  computed,
   runInAction
 } from "mobx";
 import Expression from 'saas-plat-expression';
-import _get from 'lodash/get';
+import jxon from 'jxon';
+
+let tProvider = txt => txt;
 
 export default class UIStore {
   // 数据级别的模型，前端的业务实体模型，包含状态和数据
   @observable viewModel;
   // UI级别的模型，观察viewModel
-  @observable uiModel;
+  @observable ui;
 
   constructor(viewModel) {
     this.viewModel = viewModel;
+  }
+
+  static registerT(provider) {
+    tProvider = provider;
+  }
+
+  t(txt) {
+    return tProvider(txt);
   }
 
   @action setViewModel(viewModel) {
@@ -59,8 +69,8 @@ export default class UIStore {
         console.error('component type not be null!', type);
         return false;
       }
-      if (typeof Model.create !== 'function') {
-        console.error('model class can not be create!');
+      if (typeof Model.createSchema !== 'function') {
+        console.error('model schema can not be create!');
         return false;
       }
       if (UIStore.models.has(type.toLowerCase())) {
@@ -81,8 +91,11 @@ export default class UIStore {
       const keys = Object.keys(items[0]);
       let hasFaield = false;
       for (const key of keys) {
-        const {component,model} = items[0][key];
-        if (!registerOne(key, component,model)) {
+        const {
+          component,
+          model
+        } = items[0][key];
+        if (!registerOne(key, component, model)) {
           hasFaield = true;
         }
       }
@@ -98,34 +111,29 @@ export default class UIStore {
     }
   }
 
-  parse(obj) {
-    const type = (obj.type || '').toLowerCase();
-    const Model = UIStore.models.get(type);
-    if (!Model) {
-      console.error('ui model not be found!', type);
-      return null;
-    }
-    const uiModel = Model.create(this, obj);
-    if (!uiModel) {
-      console.error('ui model create failed!', type);
-      return null;
-    }
-    return uiModel;
-  }
-
   build(node) {
-    if ('type' in node && 'args' in node) {
-      return new node.type(this, ...node.args.map(it => this.build(store, it)));
+    //console.log(node)
+    if (node && typeof node === 'object' && 'type' in node && 'args' in node) {
+      console.log('construct %s...', node.type.name);
+      return new node.type(this, ...node.args.map(it => this.build(it)));
+    } else if (Array.isArray(node)) {
+      return node.map(it => this.build(it));
     } else {
       return node;
     }
   }
 
-  static createSchema(obj = {}) {
+  static createSchema(obj = {}, options = {}) {
     // 把配置信息解析成一棵构造树
-    const schema = this.parse(obj);
+    const type = (obj.type || '').toLowerCase();
+    const Model = UIStore.models.get(type);
+    if (!Model) {
+      console.error('ui model not found!', obj);
+      return null;
+    }
+    const schema = Model.createSchema(obj, options);
     if (!schema) {
-      console.error('not support ui model type', obj.type);
+      console.error('not support ui model type', type);
     }
     return schema;
   }
@@ -134,8 +142,41 @@ export default class UIStore {
     const store = new UIStore(data);
     const uiModel = store.build(schema);
     runInAction(() => {
-      store.uiModel = uiModel;
+      store.ui = uiModel;
     });
     return store;
+  }
+
+  static loadJxon(strxml) {
+    jxon.config({
+      valueKey: 'text',
+      // attrKey: '$',
+      attrPrefix: '',
+      // lowerCaseTags: false,
+      // trueIsEmpty: false,
+      // autoDate: false,
+      // ignorePrefixedNodes: false,
+      // parseValues: false
+    })
+    const formatNode = (node) => {
+      if (node.parentNode && node.nodeType === 1) {
+        // 节点名称是type类型
+        const attr = node.ownerDocument.createAttribute('type');
+        attr.value = node.nodeName;
+        node.setAttributeNode(attr);
+        // 所有子节点都是items数组
+        node.nodeName = 'items';
+      }
+      if (node.hasChildNodes()) {
+        for (let i = 0; i < node.childNodes.length; i++) {
+          formatNode(node.childNodes.item(i));
+        }
+      }
+      return node;
+    }
+
+    var xml = jxon.stringToXml(strxml);
+    formatNode(xml.documentElement);
+    return jxon.xmlToJs(xml).items;
   }
 }

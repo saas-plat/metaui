@@ -10,7 +10,7 @@ class Style {
   store;
   key;
 
-  @observable name;
+  name;
   @observable heightExpr;
   @observable widthExpr;
 
@@ -32,17 +32,19 @@ class Style {
 
   constructor(store, name, heightExpr = '300', widthExpr = '100%') {
 
-
-    this.key = assignId();
+    this.key = assignId('Style');
     this.store = store;
-    this.name = name || 'Style' + this.key;
+    this.name = name || this.key;
 
     this.heightExpr = this.store.parseExpr(heightExpr);
     this.widthExpr = this.store.parseExpr(widthExpr);
   }
 
-  static create(store, object = {}) {
-    return new Style(store, object.name, object.height, object.width);
+  static createSchema(object = {}) {
+    return {
+      type: Style,
+      args: [object.name, object.height, object.width]
+    };
   }
 }
 
@@ -50,16 +52,12 @@ export class Chart {
   store;
   key;
 
-  @observable name;
+  name;
   @observable typeExpr;
   @observable style;
 
-  get type(){
+  get type() {
     return 'chart';
-  }
-
-  @computed get state() {
-    return this.store.state;
   }
 
   @computed get type() {
@@ -73,15 +71,19 @@ export class Chart {
   constructor(store, name, typeExpr, style) {
     assert(store);
 
-    this.key = assignId();
+    this.key = assignId('Chart');
     this.store = store;
-    this.name = name || 'Chart' + this.key;
+    this.name = name || this.key;
 
     this.typeExpr = store.parseExpr(typeExpr);
     this.style = style;
   }
 
-  static create(store, object) {
-    return new Chart(store, object.name, object.type, Style.create(store, object.style));
+  static createSchema(object) {
+    console.log('create chart...')
+    return {
+      type: Chart,
+      args: [object.name, object.type, Style.createSchema(object.style)]
+    };
   }
 }

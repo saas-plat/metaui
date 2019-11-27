@@ -1,9 +1,6 @@
 import {
   Input
-} from './Input';
-import {
-  Table
-} from './Table';
+} from './Input'; 
 
 let gid = 0;
 

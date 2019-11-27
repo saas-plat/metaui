@@ -12,8 +12,8 @@ import {
   Action
 } from './Action';
 import {
-  Table
-} from './Table';
+  EditTable
+} from './EditTable';
 import moment from 'moment';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
@@ -22,13 +22,13 @@ export class Input {
   store;
   key;
 
-  @observable name;
+  name;
   @observable typeExpr;
   @observable textExpr;
   @observable placeholderExpr;
   @observable clearExpr;
   @observable visibleExpr;
-  @observable disabledExpr;
+  @observable disableExpr;
   @observable maxLengthExpr;
   @observable sizeExpr;
   @observable widthExpr;
@@ -60,9 +60,6 @@ export class Input {
   @observable onExtraClick;
   @observable onAfterExtraClick;
 
-  @computed get state() {
-    return this.store.state;
-  }
 
   @computed get type() {
     return this.store.execExpr(this.typeExpr);
@@ -95,11 +92,11 @@ export class Input {
   set visible(visibleExpr) {
     this.visibleExpr = this.store.parseExpr(visibleExpr);
   }
-  @computed get disabled() {
-    return this.store.execExpr(this.disabledExpr);
+  @computed get disable() {
+    return this.store.execExpr(this.disableExpr);
   }
-  set disabled(disabledExpr) {
-    this.disabledExpr = this.store.parseExpr(disabledExpr);
+  set disable(disableExpr) {
+    this.disableExpr = this.store.parseExpr(disableExpr);
   }
   @computed get size() {
     return this.store.execExpr(this.sizeExpr);
@@ -135,8 +132,8 @@ export class Input {
   @computed get value() {
     return _get(this.store.model, this.getValue);
   }
-  set value(value){
-    if (!this.setValue){
+  set value(value) {
+    if (!this.setValue) {
       console.warn('can not set value', value);
     }
     return _set(this.store.model, this.setValue, value);
@@ -183,7 +180,7 @@ export class Input {
     return this.type + ':' + this.name;
   }
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disabledExpr = false, sizeExpr = 'default',
+  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
     maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
     onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
     onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick) {
@@ -196,7 +193,7 @@ export class Input {
     this.textExpr = store.parseExpr(textExpr);
     this.placeholderExpr = store.parseExpr(placeholderExpr);
     this.clearExpr = store.parseExpr(clearExpr);
-    this.disabledExpr = store.parseExpr(disabledExpr);
+    this.disableExpr = store.parseExpr(disableExpr);
     this.visibleExpr = store.parseExpr(visibleExpr);
     this.sizeExpr = store.parseExpr(sizeExpr);
     this.maxLengthExpr = store.parseExpr(maxLengthExpr);
@@ -211,7 +208,7 @@ export class Input {
 
     this.onBeforeChange = onBeforeChange;
     // 默认赋值功能
-    this.onChange = onChange; //  || Action.create(store, 'setValue')
+    this.onChange = onChange; //  || Action.createSchema( 'setValue')
     this.onAfterChange = onAfterChange;
     this.onBeforeBlur = onBeforeBlur;
     this.onBlur = onBlur;
@@ -227,80 +224,100 @@ export class Input {
     this.onAfterExtraClick = onAfterExtraClick;
   }
 
-  static create(store, object) {
-    if (object.type === 'money') {
+  static createSchema(object) {
+    console.log('create %s input...',object.name|| object.type)
+    if (object.type === 'money' || object.type === 'decimal') {
       object.type = 'number';
       object.format = object.format || 'thousandth';
     }
     if (object.type === 'refselect') {
-      return new RefInput(store, object.name, object.type, object.text, object.placeholder, object.clear,
-        object.visible, object.disabled, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
-        object.format, object.error, object.extra, Action.create(store, object.onChanging),
-        Action.create(store, object.onChange), Action.create(store, object.onChanged), Action.create(store, object.onBluring),
-        Action.create(store, object.onBlur), Action.create(store, object.onBlured), Action.create(store, object.onFocusing),
-        Action.create(store, object.onFocus), Action.create(store, object.onFocused), Action.create(store, object.onErrorClicking),
-        Action.create(store, object.onErrorClick), Action.create(store, object.onErrorClicked),
-        Action.create(store, object.onExtraClicking), Action.create(store, object.onExtraClick),
-        Action.create(store, object.onExtraClicked),
-        object.dropdownStyle,
-        object.multiple,
-        object.showSearch,
-        object.query, object.variables,
-        object.displayField,
-        object.sortField,
-        object.mapping,
-        object.columns,
-        object.setValue,
-        object.pageSize,
-        object.idField, object.pidField, object.rootIdValue, object.defaultExpandAll, object.defaultExpandKeys
-      );
+      return {
+        type: RefInput,
+        args: [object.name, object.type, object.text, object.placeholder, object.clear,
+          object.visible, object.disable, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
+          object.format, object.error, object.extra, Action.createSchema(object.onChanging),
+          Action.createSchema(object.onChange), Action.createSchema(object.onChanged), Action.createSchema(object.onBluring),
+          Action.createSchema(object.onBlur), Action.createSchema(object.onBlured), Action.createSchema(object.onFocusing),
+          Action.createSchema(object.onFocus), Action.createSchema(object.onFocused), Action.createSchema(object.onErrorClicking),
+          Action.createSchema(object.onErrorClick), Action.createSchema(object.onErrorClicked),
+          Action.createSchema(object.onExtraClicking), Action.createSchema(object.onExtraClick),
+          Action.createSchema(object.onExtraClicked),
+          object.dropdownStyle,
+          object.multiple,
+          object.showSearch,
+          object.query, object.variables,
+          object.displayField,
+          object.sortField,
+          object.mapping,
+          object.columns,
+          object.setValue,
+          object.pageSize,
+          object.idField, object.pidField, object.rootIdValue, object.defaultExpandAll, object.defaultExpandKeys
+        ]
+      };
     } else if (object.type === 'inputtable' || object.type === 'table') {
-      return new InputTable(store, object.name, object.type, object.text, object.placeholder, object.clear,
-        object.visible, object.disabled, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
-        object.format, object.error, object.extra, Action.create(store, object.onChanging),
-        Action.create(store, object.onChange), Action.create(store, object.onChanged), Action.create(store, object.onBluring),
-        Action.create(store, object.onBlur), Action.create(store, object.onBlured), Action.create(store, object.onFocusing),
-        Action.create(store, object.onFocus), Action.create(store, object.onFocused), Action.create(store, object.onErrorClicking),
-        Action.create(store, object.onErrorClick), Action.create(store, object.onErrorClicked),
-        Action.create(store, object.onExtraClicking), Action.create(store, object.onExtraClick),
-        Action.create(store, object.onExtraClicked),
-        Table.create(store, object.table));
+      return {
+        type: InputTable,
+        args: [object.name, object.type, object.text, object.placeholder, object.clear,
+          object.visible, object.disable, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
+          object.format, object.error, object.extra, Action.createSchema(object.onChanging),
+          Action.createSchema(object.onChange), Action.createSchema(object.onChanged), Action.createSchema(object.onBluring),
+          Action.createSchema(object.onBlur), Action.createSchema(object.onBlured), Action.createSchema(object.onFocusing),
+          Action.createSchema(object.onFocus), Action.createSchema(object.onFocused), Action.createSchema(object.onErrorClicking),
+          Action.createSchema(object.onErrorClick), Action.createSchema(object.onErrorClicked),
+          Action.createSchema(object.onExtraClicking), Action.createSchema(object.onExtraClick),
+          Action.createSchema(object.onExtraClicked),
+          EditTable.createSchema(object.table)
+        ]
+      };
     } else if (object.type === 'select') {
-      return new Select(store, object.name, object.type, object.text, object.placeholder, object.clear,
-        object.visible, object.disabled, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
-        object.format, object.error, object.extra, Action.create(store, object.onChanging),
-        Action.create(store, object.onChange), Action.create(store, object.onChanged), Action.create(store, object.onBluring),
-        Action.create(store, object.onBlur), Action.create(store, object.onBlured), Action.create(store, object.onFocusing),
-        Action.create(store, object.onFocus), Action.create(store, object.onFocused), Action.create(store, object.onErrorClicking),
-        Action.create(store, object.onErrorClick), Action.create(store, object.onErrorClicked),
-        Action.create(store, object.onExtraClicking), Action.create(store, object.onExtraClick),
-        Action.create(store, object.onExtraClicked),
-        object.dataSource, object.mode,
-        object.displayField, object.valueField, object.sortField);
+      return {
+        type: Select,
+        args: [object.name, object.type, object.text, object.placeholder, object.clear,
+          object.visible, object.disable, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
+          object.format, object.error, object.extra, Action.createSchema(object.onChanging),
+          Action.createSchema(object.onChange), Action.createSchema(object.onChanged), Action.createSchema(object.onBluring),
+          Action.createSchema(object.onBlur), Action.createSchema(object.onBlured), Action.createSchema(object.onFocusing),
+          Action.createSchema(object.onFocus), Action.createSchema(object.onFocused), Action.createSchema(object.onErrorClicking),
+          Action.createSchema(object.onErrorClick), Action.createSchema(object.onErrorClicked),
+          Action.createSchema(object.onExtraClicking), Action.createSchema(object.onExtraClick),
+          Action.createSchema(object.onExtraClicked),
+          object.dataSource, object.mode,
+          object.displayField, object.valueField, object.sortField
+        ]
+      };
     } else if (object.type === 'treeselect') {
-      return new TreeSelect(store, object.name, object.type, object.text, object.placeholder, object.clear,
-        object.visible, object.disabled, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
-        object.format, object.error, object.extra, Action.create(store, object.onChanging),
-        Action.create(store, object.onChange), Action.create(store, object.onChanged), Action.create(store, object.onBluring),
-        Action.create(store, object.onBlur), Action.create(store, object.onBlured), Action.create(store, object.onFocusing),
-        Action.create(store, object.onFocus), Action.create(store, object.onFocused), Action.create(store, object.onErrorClicking),
-        Action.create(store, object.onErrorClick), Action.create(store, object.onErrorClicked),
-        Action.create(store, object.onExtraClicking), Action.create(store, object.onExtraClick),
-        Action.create(store, object.onExtraClicked),
-        object.dataSource, object.mode,
-        object.displayField, object.valueField, object.sortField,
-        object.showSearch, object.allowClear, object.treeDefaultExpandAll, object.maxHeight, object.treeCheckable,
-        object.idField, object.pidField, object.rootIdValue);
+      return {
+        type: TreeSelect,
+        args: [object.name, object.type, object.text, object.placeholder, object.clear,
+          object.visible, object.disable, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
+          object.format, object.error, object.extra, Action.createSchema(object.onChanging),
+          Action.createSchema(object.onChange), Action.createSchema(object.onChanged), Action.createSchema(object.onBluring),
+          Action.createSchema(object.onBlur), Action.createSchema(object.onBlured), Action.createSchema(object.onFocusing),
+          Action.createSchema(object.onFocus), Action.createSchema(object.onFocused), Action.createSchema(object.onErrorClicking),
+          Action.createSchema(object.onErrorClick), Action.createSchema(object.onErrorClicked),
+          Action.createSchema(object.onExtraClicking), Action.createSchema(object.onExtraClick),
+          Action.createSchema(object.onExtraClicked),
+          object.dataSource, object.mode,
+          object.displayField, object.valueField, object.sortField,
+          object.showSearch, object.allowClear, object.treeDefaultExpandAll, object.maxHeight, object.treeCheckable,
+          object.idField, object.pidField, object.rootIdValue
+        ]
+      };
     } else if (object.type === 'number') {
-      return new NumberInput(store, object.name, object.type, object.text, object.placeholder, object.clear,
-        object.visible, object.disabled, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
-        object.format, object.error, object.extra, object.min, object.max, Action.create(store, object.onChanging),
-        Action.create(store, object.onChange), Action.create(store, object.onChanged), Action.create(store, object.onBluring),
-        Action.create(store, object.onBlur), Action.create(store, object.onBlured), Action.create(store, object.onFocusing),
-        Action.create(store, object.onFocus), Action.create(store, object.onFocused), Action.create(store, object.onErrorClicking),
-        Action.create(store, object.onErrorClick), Action.create(store, object.onErrorClicked),
-        Action.create(store, object.onExtraClicking), Action.create(store, object.onExtraClick),
-        Action.create(store, object.onExtraClicked));
+      return {
+        type: NumberInput,
+        args: [object.name, object.type, object.text, object.placeholder, object.clear,
+          object.visible, object.disable, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
+          object.format, object.error, object.extra, object.min, object.max, Action.createSchema(object.onChanging),
+          Action.createSchema(object.onChange), Action.createSchema(object.onChanged), Action.createSchema(object.onBluring),
+          Action.createSchema(object.onBlur), Action.createSchema(object.onBlured), Action.createSchema(object.onFocusing),
+          Action.createSchema(object.onFocus), Action.createSchema(object.onFocused), Action.createSchema(object.onErrorClicking),
+          Action.createSchema(object.onErrorClick), Action.createSchema(object.onErrorClicked),
+          Action.createSchema(object.onExtraClicking), Action.createSchema(object.onExtraClick),
+          Action.createSchema(object.onExtraClicked)
+        ]
+      };
     } else {
       if (!object.format) {
         switch (object.type) {
@@ -322,15 +339,19 @@ export class Input {
           break;
         }
       }
-      return new Input(store, object.name, object.type, object.text, object.placeholder, object.clear,
-        object.visible, object.disabled, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
-        object.format, object.error, object.extra, Action.create(store, object.onChanging),
-        Action.create(store, object.onChange), Action.create(store, object.onChanged), Action.create(store, object.onBluring),
-        Action.create(store, object.onBlur), Action.create(store, object.onBlured), Action.create(store, object.onFocusing),
-        Action.create(store, object.onFocus), Action.create(store, object.onFocused), Action.create(store, object.onErrorClicking),
-        Action.create(store, object.onErrorClick), Action.create(store, object.onErrorClicked),
-        Action.create(store, object.onExtraClicking), Action.create(store, object.onExtraClick),
-        Action.create(store, object.onExtraClicked));
+      return {
+        type: Input,
+        args: [object.name, object.type, object.text, object.placeholder, object.clear,
+          object.visible, object.disable, object.size, object.maxLength, object.width, object.defaultValue, object.value, object.setValue || object.value, object.mapping,
+          object.format, object.error, object.extra, Action.createSchema(object.onChanging),
+          Action.createSchema(object.onChange), Action.createSchema(object.onChanged), Action.createSchema(object.onBluring),
+          Action.createSchema(object.onBlur), Action.createSchema(object.onBlured), Action.createSchema(object.onFocusing),
+          Action.createSchema(object.onFocus), Action.createSchema(object.onFocused), Action.createSchema(object.onErrorClicking),
+          Action.createSchema(object.onErrorClick), Action.createSchema(object.onErrorClicked),
+          Action.createSchema(object.onExtraClicking), Action.createSchema(object.onExtraClick),
+          Action.createSchema(object.onExtraClicked)
+        ]
+      };
     }
   }
 }
@@ -347,11 +368,11 @@ export class NumberInput extends Input {
     this.minExpr = this.store.parseExpr(minExpr);
   }
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disabledExpr = false, sizeExpr = 'default',
+  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
     maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr, minExpr = -Infinity, maxExpr = Infinity,
     onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
     onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disabledExpr, sizeExpr,
+    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
       maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
       onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
       onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick);
@@ -437,12 +458,12 @@ export class Select extends Input {
     });
   }
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disabledExpr = false, sizeExpr = 'default',
+  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
     maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
     onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
     onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
     dataSourceExpr, modeExpr, dataMappingExpr, displayFieldExpr, valueFieldExpr, sortFieldExpr) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disabledExpr, sizeExpr,
+    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
       maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
       onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
       onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick);
@@ -627,7 +648,7 @@ export class TreeSelect extends Select {
     });
   }
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disabledExpr = false, sizeExpr = 'default',
+  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
     maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
     onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
     onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
@@ -635,7 +656,7 @@ export class TreeSelect extends Select {
     displayFieldExpr, valueFieldExpr, sortFieldExpr,
     showSearchExpr, allowClearExpr, treeDefaultExpandAllExpr, maxHeightExpr, treeCheckableExpr,
     idFieldExpr, pidFieldExpr, rootIdValueExpr) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disabledExpr, sizeExpr,
+    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
       maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
       onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
       onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
@@ -657,12 +678,12 @@ export class TreeSelect extends Select {
 export class InputTable extends Input {
   @observable table;
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disabledExpr = false, sizeExpr = 'default',
+  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
     maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
     onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
     onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
     table) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disabledExpr, sizeExpr,
+    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
       maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
       onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
       onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick);
@@ -819,7 +840,7 @@ export class RefInput extends Input {
     }
   }
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disabledExpr = false, sizeExpr = 'default',
+  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
     maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
     onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
     onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
@@ -834,7 +855,7 @@ export class RefInput extends Input {
     columns,
     pageSizeExpr,
     idFieldExpr, pidFieldExpr, rootIdValueExpr, defaultExpandAllExpr, defaultExpandKeysExpr) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disabledExpr, sizeExpr,
+    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
       maxLengthExpr, widthExpr, defaultValueExpr, getValueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
       onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
       onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick)

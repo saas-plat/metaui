@@ -3,31 +3,38 @@ import {
   computed
 } from "mobx";
 import {
+  assignId
+} from './util';
+import {
   Action
 } from './Action';
-import {assignId} from './util';
 
+// 行为按钮模型，可以表示按钮或者菜单等能触发action的对象
 export class Button {
   store;
   key;
+  name;
 
-  @observable name;
   @observable textExpr;
   @observable iconExpr;
   @observable disableExpr;
   @observable visibleExpr;
-  @observable onClick ;
+  @observable onClick;
+  @observable typeExpr;
+  // 按钮也支持子按钮集合
+  @observable allitems;
 
-  get type(){
-    return 'button';
+  @computed get items() {
+    return this.allitems.filter(it => it.visible);
   }
 
-  @computed get text() {
-    return this.store.execExpr(this.textExpr);
+  @computed get type() {
+    return this.store.execExpr(this.typeExpr);
   }
-  @computed get icon() {
-    return this.store.execExpr(this.iconExpr);
+  set type(typeExpr) {
+    this.typeExpr = this.store.parseExpr(typeExpr);
   }
+
   @computed get disable() {
     return this.store.execExpr(this.disableExpr);
   }
@@ -35,19 +42,39 @@ export class Button {
     return this.store.execExpr(this.visibleExpr);
   }
 
+  @computed get text() {
+    return this.store.execExpr(this.textExpr);
+  }
+  set text(textExpr) {
+    this.textExpr = this.store.parseExpr(textExpr);
+  }
+  @computed get icon() {
+    return this.store.execExpr(this.iconExpr);
+  }
+  set icon(iconExpr) {
+    this.iconExpr = this.store.parseExpr(iconExpr);
+  }
 
-  constructor(store, name, textExpr, iconExpr, disableExpr = false, visibleExpr = true, onClick) {
-     this.key = assignId();
+  constructor(store, name, type, text, icon, disableExpr = false, visibleExpr = true, onClick, items = []) {
+    this.key = assignId('Button');
     this.store = store;
-    this.name = name || 'Button' + this.key;
-    this.text = store.parseExpr(textExpr);
-    this.iconExpr = store.parseExpr(iconExpr);
+    this.name = name || this.key;
+    this.typeExpr = this.store.parseExpr(type);
+    this.textExpr = this.store.parseExpr(text);
+    this.iconExpr = this.store.parseExpr(icon);
     this.disableExpr = store.parseExpr(disableExpr);
     this.visibleExpr = store.parseExpr(visibleExpr);
     this.onClick = onClick;
+    this.allitems = items;
   }
 
-  static create(store, object) {
-    return new Button(store, object.name, object.text, object.disable, object.visible, Action.create(store,object.onClick));
+  static createSchema(obj) {
+    console.log('create %s button item...', obj.name)
+    return {
+      type: Button,
+      args: [obj.name, obj.type || 'button', obj.text, obj.icon, obj.disable, obj.visible,
+        Action.createSchema(obj.onClick), obj.items && obj.items.map(it => Button.createSchema(it))
+      ]
+    };
   }
 }

@@ -5,15 +5,17 @@ import {
 import {
   assignId
 } from './util';
+import {
+  Action
+} from './Action';
 
 export class Column {
   store;
   key;
+  name;
 
-  @observable children;
-
-  // 单元格编辑器
-  @observable inputItem;
+  // 子列
+  @observable allcolumns;
 
   @observable visibleExpr;
   @observable disabledExpr;
@@ -27,10 +29,6 @@ export class Column {
 
   get type() {
     return 'column';
-  }
-
-  @computed get state() {
-    return this.store.state;
   }
 
   @computed get visible() {
@@ -83,12 +81,12 @@ export class Column {
     this.widthExpr = this.store.parseExpr(widthExpr);
   }
 
-  constructor(store, inputItem, visibleExpr = true, disabledExpr = false, alignExpr,
-    colSpanExpr, dataIndexExpr, fixedExpr, titleExpr, widthExpr, children = null) {
-    this.key = assignId();
+  constructor(store, name, visibleExpr = true, disabledExpr = false, alignExpr,
+    colSpanExpr, dataIndexExpr, fixedExpr, titleExpr, widthExpr, columns = null) {
+    this.key = assignId('Column');
     this.store = store;
+    this.name = name || this.key;
 
-    this.inputItem = inputItem;
     this.alignExpr = store.parseExpr(alignExpr);
     this.colSpanExpr = store.parseExpr(colSpanExpr);
     this.dataIndexExpr = store.parseExpr(dataIndexExpr);
@@ -97,104 +95,79 @@ export class Column {
     this.widthExpr = store.parseExpr(widthExpr);
     this.disabledExpr = store.parseExpr(disabledExpr);
     this.visibleExpr = store.parseExpr(visibleExpr);
-    this.children = children;
+    this.allcolumns = columns;
   }
 
-  static create(store, object = {}, options = {}) {
-    return new Column(store, store.parse(object), object.visible || options.visible, object.disabled || options.visible, object.align,
-      object.colSpan, object.dataIndex || object.value, object.fixed, object.title || object.text, object.width || object.columnWidth, (object.columns || []).map(it => Column.create(store, it)));
+  static createSchema(object = {}, options = {}) {
+    console.log('create table column...')
+    return {
+      type: Column,
+      args: [object.name,
+        object.visible || options.visible, object.disabled || options.visible, object.align,
+        object.colSpan, object.dataIndex || object.value, object.fixed, object.title || object.text,
+        object.width || object.columnWidth, (object.columns || []).map(it => Column.createSchema(it))
+      ]
+    };
   }
 }
 
-export class Cell{
+export class Cell {
+  store;
+  key;
+  name;
 
+  constructor(store, name) {
+    this.key = assignId('Cell');
+    this.store = store;
+    this.name = name || this.key;
+  }
 }
 
+// 数据表格模型
 export class Table {
   store;
   key;
 
-  @observable borderedExpr;
-  @observable showHeaderExpr;
-  @observable sizeExpr;
-  @observable titleExpr;
-  @observable dataSourceExpr;
-  @observable allcolumns;
-  @observable allrows = [];
+  @observable onLoading;
+  @observable onLoad;
+  @observable onLoaded;
 
-  get type() {
-    return 'table';
+  @observable typeExpr; // table tree
+
+  @computed get type() {
+    return this.store.execExpr(this.typeExpr);
   }
-
-  @computed get columns() {
-    return this.allcolumns.filter(it => it.visible);
+  set type(typeExpr) {
+    this.typeExpr = this.store.parseExpr(typeExpr);
   }
 
-  @computed get state() {
-    return this.store.state;
-  }
+  constructor(store, name, type, onLoading, onLoad, onLoaded) {
+    //assert(store);
 
-  @computed get visible() {
-    return this.columns.length > 0;
-  }
-  @computed get bordered() {
-    return this.store.execExpr(this.borderedExpr);
-  }
-  set bordered(borderedExpr) {
-    this.borderedExpr = this.store.parseExpr(borderedExpr);
-  }
-  @computed get showHeader() {
-    return this.store.execExpr(this.showHeaderExpr);
-  }
-  set showHeader(showHeaderExpr) {
-    this.showHeaderExpr = this.store.parseExpr(showHeaderExpr);
-  }
-  @computed get size() {
-    return this.store.execExpr(this.sizeExpr);
-  }
-  set size(sizeExpr) {
-    this.sizeExpr = this.store.parseExpr(sizeExpr);
-  }
-  @computed get title() {
-    return this.store.execExpr(this.titleExpr);
-  }
-  set title(titleExpr) {
-    this.titleExpr = this.store.parseExpr(titleExpr);
-  }
-
-  @computed get dataSource() {
-    return this.store.execExpr(this.dataSourceExpr);
-  }
-  set dataSource(dataSourceExpr) {
-    this.dataSourceExpr = this.store.parseExpr(dataSourceExpr);
-  }
-  @computed get rows() {
-    return (this.store.model.get(this.dataSource) || []).map(rdata => {
-      if (!Array.isArray(rdata)) {
-        rdata = [rdata];
-      }
-      // TODO 不用每次创建cell，状态要保持
-      return rdata.map(cdata => Cell.create(this.store, {
-        value: cdata
-      }))
-    })
-  }
-
-  constructor(store, columns = [], dataSourceExpr, borderedExpr = true,
-    showHeaderExpr = true, sizeExpr = 'default', titleExpr = null) {
-    this.key = assignId();
+    this.key = assignId('Table');
     this.store = store;
+    this.name = name || this.key;
+    this.typeExpr = this.store.parseExpr(type);
 
-    this.borderedExpr = store.parseExpr(borderedExpr);
-    this.showHeaderExpr = store.parseExpr(showHeaderExpr);
-    this.sizeExpr = store.parseExpr(sizeExpr);
-    this.titleExpr = store.parseExpr(titleExpr);
-    this.dataSourceExpr = store.parseExpr(dataSourceExpr);
-    this.allcolumns = columns;
+    this.onLoading = onLoading;
+    this.onLoad = onLoad;
+    this.onLoaded = onLoaded;
   }
 
-  static create(store, object = {}) {
-    return new Table(store, (object.columns || []).map(it => Column.create(store, it, object)), object.dataSource || object.value, object.bordered,
-      object.showHeader, object.size, object.title);
+  static createSchema(object = []) {
+    let name, onLoading, onLoad, onLoaded;
+    console.log('create table...')
+    name = object.name;
+    onLoading = object.onLoading;
+    onLoad = object.onLoad;
+    onLoaded = object.onLoaded;
+
+    return {
+      type: Table,
+      args: [name, object.type || 'table',
+        (object.columns || []).map(it => Column.createSchema(it, object)),
+        Action.createSchema(onLoading), Action.createSchema(onLoad), Action.createSchema(onLoaded)
+      ]
+    };
   }
 }

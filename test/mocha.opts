@@ -1,0 +1,5 @@
+--recursive
+--bail
+--timeout 5000
+--require babel-core/register
+test/**/*.test.js

@@ -19,6 +19,8 @@
       "__VERSION__": true,
       "expect": true,
       "describe": true,
+      "before": true,
+      "after": true,
       "it": true,
       "Symbol": true,
       "test": true

@@ -18,21 +18,28 @@ export class Container {
   name;
 
   @observable typeExpr;
+  @observable setTypeExpr;
   // 一般显示标题等信息
   @observable textExpr;
+  @observable setTextExpr;
   @observable descriptionExpr;
+  @observable setDescriptionExpr;
   @observable iconExpr;
+  @observable setIconExpr;
   @observable disableExpr;
+  @observable setDisableExpr;
   @observable visibleExpr;
+  @observable setVisibleExpr;
 
   // 子容器或者items的布局方式
-  @observable layoutExpr; // grid flow list
-  @observable spanExpr; // gridlayout时列数
-  @observable itemWidthExpr; // flowlayout每项宽度
+  @observable layoutExpr;
+  @observable setLayoutExpr; // grid flow list
+  @observable spanExpr;
+  @observable setSpanExpr; // gridlayout时列数
+  @observable itemWidthExpr;
+  @observable setItemWidthExpr; // flowlayout每项宽度
 
-  // 子容器集合
-  @observable allcontainers;
-  // 容器包含的输入项集合
+  // 容器包含的输入项集合或子容器集合
   @observable allitems;
   // 每个容器可以包含一组按钮行为
   @observable allbtns;
@@ -40,14 +47,32 @@ export class Container {
   @computed get layout() {
     return this.store.execExpr(this.layoutExpr);
   }
-  set layout(layoutExpr) {
-    this.layoutExpr = this.store.parseExpr(layoutExpr);
+  set layout(value) {
+    if (this.setLayout) {
+      return this.store.setViewModel(this.setLayout, value);
+    }
+    this.layoutExpr = UIStore.parseExpr(value);
+  }
+  @computed get setLayout() {
+    return this.store.execExpr(this.setLayoutExpr);
+  }
+  set setLayout(setValue) {
+      this.setLayoutExpr = UIStore.parseExpr(setValue);
   }
   @computed get itemWidth() {
     return parseFloat(this.store.execExpr(this.itemWidthExpr)) || 360;
   }
-  set itemWidth(itemWidthExpr) {
-    this.itemWidthExpr = this.store.parseExpr(itemWidthExpr);
+  set itemWidth(value) {
+    if (this.setItemWidth) {
+      return this.store.setViewModel(this.setItemWidth, value);
+    }
+    this.itemWidthExpr = UIStore.parseExpr(value);
+  }
+  @computed get setItemWidth() {
+    return this.store.execExpr(this.setItemWidthExpr);
+  }
+  set setItemWidth(setValue) {
+      this.setItemWidthExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get span() {
@@ -57,15 +82,22 @@ export class Container {
     const count = parseInt(this.store.execExpr(this.spanExpr));
     return count !== 0 ? (count || 4) : count;
   }
-  set span(spanExpr) {
-    this.spanExpr = this.store.parseExpr(spanExpr);
+  set span(value) {
+    if (this.setSpan) {
+      return this.store.setViewModel(this.setSpan, value);
+    }
+    this.spanExpr = UIStore.parseExpr(value);
+  }
+  @computed get setSpan() {
+    return this.store.execExpr(this.setSpanExpr);
+  }
+  set setSpan(setValue) {
+      this.setSpanExpr = UIStore.parseExpr(setValue);
   }
   @computed get items() {
     return this.allitems.filter(it => it.visible);
   }
-  @computed get containers() {
-    return this.allcontainers.filter(it => it.visible);
-  }
+
   @computed get btns() {
     return this.allbtns.filter(it => it.visible);
   }
@@ -73,59 +105,112 @@ export class Container {
   @computed get type() {
     return this.store.execExpr(this.typeExpr);
   }
-  set type(typeExpr) {
-    this.typeExpr = this.store.parseExpr(typeExpr);
+  set type(value) {
+    if (this.setType) {
+      return this.store.setViewModel(this.setType, value);
+    }
+    this.typeExpr = UIStore.parseExpr(value);
+  }
+  @computed get setType() {
+    return this.store.execExpr(this.setTypeExpr);
+  }
+  set setType(setValue) {
+      this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get text() {
     return this.store.execExpr(this.textExpr);
   }
-  set text(textExpr) {
-    this.textExpr = this.store.parseExpr(textExpr);
+  set text(value) {
+    if (this.setText) {
+      return this.store.setViewModel(this.setText, value);
+    }
+    this.textExpr = UIStore.parseExpr(value);
+  }
+  @computed get setText() {
+    return this.store.execExpr(this.setTextExpr);
+  }
+  set setText(setValue) {
+      this.setTextExpr = UIStore.parseExpr(setValue);
   }
   @computed get description() {
     return this.store.execExpr(this.descriptionExpr);
   }
-  set description(descriptionExpr) {
-    this.descriptionExpr = this.store.parseExpr(descriptionExpr);
+  set description(value) {
+    if (this.setDescription) {
+      return this.store.setViewModel(this.setDescription, value);
+    }
+    this.descriptionExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDescription() {
+    return this.store.execExpr(this.setDescriptionExpr);
+  }
+  set setDescription(setValue) {
+      this.setDescriptionExpr = UIStore.parseExpr(setValue);
   }
   @computed get icon() {
     return this.store.execExpr(this.iconExpr);
   }
-  set icon(iconExpr) {
-    this.iconExpr = this.store.parseExpr(iconExpr);
+  set icon(value) {
+    if (this.setIcon) {
+      return this.store.setViewModel(this.setIcon, value);
+    }
+    this.iconExpr = UIStore.parseExpr(value);
+  }
+  @computed get setIcon() {
+    return this.store.execExpr(this.setIconExpr);
+  }
+  set setIcon(setValue) {
+      this.setIconExpr = UIStore.parseExpr(setValue);
   }
   @computed get disable() {
     return this.store.execExpr(this.disableExpr);
   }
-  set disable(disableExpr) {
-    this.disableExpr = this.store.parseExpr(disableExpr);
+  set disable(value) {
+    if (this.setDisable) {
+      return this.store.setViewModel(this.setDisable, value);
+    }
+    this.disableExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDisable() {
+    return this.store.execExpr(this.setDisableExpr);
+  }
+  set setDisable(setValue) {
+      this.setDisableExpr = UIStore.parseExpr(setValue);
   }
   @computed get visible() {
     return this.store.execExpr(this.visibleExpr);
   }
-  set visible(visibleExpr) {
-    this.visibleExpr = this.store.parseExpr(visibleExpr);
+  set visible(value) {
+    if (this.setVisible) {
+      return this.store.setViewModel(this.setVisible, value);
+    }
+    this.visibleExpr = UIStore.parseExpr(value);
+  }
+  @computed get setVisible() {
+    return this.store.execExpr(this.setVisibleExpr);
+  }
+  set setVisible(setValue) {
+      this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
 
   constructor(store, name, type, text, description, icon, disableExpr, visibleExpr = true,
-    layout, spanExpr, itemWidthExpr, containers = [], items = [], btns = []) {
+    layout, spanExpr, itemWidthExpr, items = [], btns = []) {
     this.key = assignId('Container');
     this.store = store;
     this.name = name || this.key;
-    this.typeExpr = this.store.parseExpr(type);
-    this.textExpr = this.store.parseExpr(text);
-    this.descriptionExpr = this.store.parseExpr(description);
-    this.iconExpr = this.store.parseExpr(icon);
-    this.disableExpr = store.parseExpr(disableExpr);
-    this.visibleExpr = store.parseExpr(visibleExpr);
-    this.allcontainers = containers;
+    this.typeExpr = type;
+    this.textExpr = text;
+    this.descriptionExpr = description;
+    this.iconExpr = icon;
+    this.disableExpr = disableExpr;
+    this.visibleExpr = visibleExpr;
     this.allitems = items;
     this.allbtns = btns;
 
-    this.layoutExpr = store.parseExpr(layout);
-    this.spanExpr = store.parseExpr(spanExpr);
-    this.itemWidthExpr = store.parseExpr(itemWidthExpr);
+    this.layoutExpr = layout;
+    this.spanExpr = spanExpr;
+    this.itemWidthExpr = itemWidthExpr;
   }
 
   @action addItem(...items) {
@@ -147,25 +232,6 @@ export class Container {
     this.allitems.clear();
   }
 
-  @action addContainer(...items) {
-    this.allcontainers.push(...items);
-  }
-
-  @action removeContainer(...names) {
-    for (const name of names) {
-      const reit = this.allcontainers.find(it => it.name === name);
-      if (reit) {
-        this.allcontainers.splice(this.allcontainers.indexOf(reit), 1);
-      } else {
-        console.warn('sub container not exists!', name);
-      }
-    }
-  }
-
-  @action clearContainers() {
-    this.allcontainers.clear();
-  }
-
   @action addButton(...items) {
     this.allbtns.push(...items);
   }
@@ -185,24 +251,22 @@ export class Container {
     this.allbtns.clear();
   }
 
-  static createSchema(obj, options = {}) {
-    console.log('create %s container...', obj.name || obj.type)
-    let containers = obj.containers || [];
+  static createSchema(config, options = {}) {
+    console.log('parse %s container...', config.name || config.type)
     let items = [];
-    if (obj.items) {
-      items.push(...obj.items);
-    } else if (!obj.containers) {
-      // 注意这里会死循环，要是有子容器就不算items
-      items.push(obj)
+    if (config.items) {
+      items.push(...config.items);
+    } else {
+      items.push(config)
     }
     return {
       type: Container,
       args: [
-        obj.name, obj.type, obj.title || obj.text, obj.description, obj.icon, obj.disable || false, obj.visible || true,
-        obj.layout || 'flow', obj.span, obj.itemWidth,
-        containers.map(it => Container.createSchema(it, options)),
+        config.name || config.type, UIStore.parseExpr(config.type), UIStore.parseExpr(config.title || config.text),
+        UIStore.parseExpr(config.description), UIStore.parseExpr(config.icon), UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.visible || true),
+        UIStore.parseExpr(config.layout || 'flow'), UIStore.parseExpr(config.span), UIStore.parseExpr(config.itemWidth),
         items.map(it => UIStore.createSchema(it, options)),
-        (obj.btns || []).map(it => Button.createSchema(it, options))
+        (config.btns || []).map(it => Button.createSchema(it, options))
       ]
     };
   }

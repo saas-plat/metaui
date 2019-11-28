@@ -5,6 +5,7 @@ import {
 import {
   assignId
 } from './util';
+import UIStore from '../UIStore';
 
 class Style {
   store;
@@ -12,22 +13,42 @@ class Style {
 
   name;
   @observable heightExpr;
+  @observable setHeightExpr;
   @observable widthExpr;
+  @observable setWidthExpr;
 
   @computed get height() {
     return this.store.execExpr(this.heightExpr);
   }
 
-  set height(heightExpr) {
-    this.heightExpr = this.store.parseExpr(heightExpr);
+  set height(value) {
+    if (this.setHeight) {
+      return this.store.setViewModel(this.setHeight, value);
+    }
+    this.heightExpr = UIStore.parseExpr(value);
+  }
+  @computed get setHeight() {
+    return this.store.execExpr(this.setHeightExpr);
+  }
+  set setHeight(setValue) {
+      this.setHeightExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get width() {
     return this.store.execExpr(this.widthExpr);
   }
 
-  set width(widthExpr) {
-    this.widthExpr = this.store.parseExpr(widthExpr);
+  set width(value) {
+    if (this.setWidth) {
+      return this.store.setViewModel(this.setWidth, value);
+    }
+    this.widthExpr = UIStore.parseExpr(value);
+  }
+  @computed get setWidth() {
+    return this.store.execExpr(this.setWidthExpr);
+  }
+  set setWidth(setValue) {
+      this.setWidthExpr = UIStore.parseExpr(setValue);
   }
 
   constructor(store, name, heightExpr = '300', widthExpr = '100%') {
@@ -36,14 +57,14 @@ class Style {
     this.store = store;
     this.name = name || this.key;
 
-    this.heightExpr = this.store.parseExpr(heightExpr);
-    this.widthExpr = this.store.parseExpr(widthExpr);
+    this.heightExpr = heightExpr;
+    this.widthExpr = widthExpr;
   }
 
-  static createSchema(object = {}) {
+  static createSchema(config = {}) {
     return {
       type: Style,
-      args: [object.name, object.height, object.width]
+      args: [config.name || config.type, UIStore.parseExpr(config.height), UIStore.parseExpr(config.width)]
     };
   }
 }
@@ -54,36 +75,42 @@ export class Chart {
 
   name;
   @observable typeExpr;
+  @observable setTypeExpr;
   @observable style;
 
-  get type() {
-    return 'chart';
-  }
 
   @computed get type() {
     return this.store.execExpr(this.typeExpr);
   }
 
-  set type(typeExpr) {
-    this.typeExpr = this.store.parseExpr(typeExpr);
+  set type(value) {
+    if (this.setType) {
+      return this.store.setViewModel(this.setType, value);
+    }
+    this.typeExpr = UIStore.parseExpr(value);
+  }
+  @computed get setType() {
+    return this.store.execExpr(this.setTypeExpr);
+  }
+  set setType(setValue) {
+      this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
   constructor(store, name, typeExpr, style) {
-    assert(store);
 
     this.key = assignId('Chart');
     this.store = store;
     this.name = name || this.key;
 
-    this.typeExpr = store.parseExpr(typeExpr);
+    this.typeExpr = typeExpr;
     this.style = style;
   }
 
-  static createSchema(object) {
-    console.log('create chart...')
+  static createSchema(config) {
+    console.log('parse chart...')
     return {
       type: Chart,
-      args: [object.name, object.type, Style.createSchema(object.style)]
+      args: [config.name || config.type, UIStore.parseExpr(config.type), Style.createSchema(config.style)]
     };
   }
 }

@@ -5,6 +5,7 @@ import {
 } from "mobx";
 import Expression from 'saas-plat-expression';
 import jxon from 'jxon';
+import _set from 'lodash/set';
 
 let tProvider = txt => txt;
 
@@ -16,6 +17,7 @@ export default class UIStore {
 
   constructor(viewModel) {
     this.viewModel = viewModel;
+    this.setValuable = typeof this.viewModel.setValue === 'function';
   }
 
   static registerT(provider) {
@@ -26,11 +28,14 @@ export default class UIStore {
     return tProvider(txt);
   }
 
-  @action setViewModel(viewModel) {
-    this.viewModel = viewModel;
+  @action setViewModel(path, value) {
+    if (this.setValuable) {
+      return this.viewModel.setValue(path, value);
+    }
+    _set(this.viewModel, path, value);
   }
 
-  parseExpr(txt) {
+  static parseExpr(txt) {
     return new Expression(txt);
   }
 
@@ -112,9 +117,8 @@ export default class UIStore {
   }
 
   build(node) {
-    //console.log(node)
     if (node && typeof node === 'object' && 'type' in node && 'args' in node) {
-      console.log('construct %s...', node.type.name);
+      console.log('create %s...', node.type.name);
       return new node.type(this, ...node.args.map(it => this.build(it)));
     } else if (Array.isArray(node)) {
       return node.map(it => this.build(it));

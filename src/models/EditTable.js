@@ -18,14 +18,22 @@ export class EditColumn {
   @observable inputItem;
 
   @observable visibleExpr;
+  @observable setVisibleExpr;
   @observable disabledExpr;
+  @observable setDisabledExpr;
 
   @observable alignExpr;
+  @observable setAlignExpr;
   @observable colSpanExpr;
+  @observable setColSpanExpr;
   @observable dataIndexExpr;
+  @observable setDataIndexExpr;
   @observable fixedExpr;
+  @observable setFixedExpr;
   @observable titleExpr;
+  @observable setTitleExpr;
   @observable widthExpr;
+  @observable setWidthExpr;
 
   get type() {
     return 'column';
@@ -34,51 +42,123 @@ export class EditColumn {
   @computed get visible() {
     return this.store.execExpr(this.visibleExpr);
   }
-  set visible(visibleExpr) {
-    this.visibleExpr = this.store.parseExpr(visibleExpr);
+  set visible(value) {
+    if (this.setVisible) {
+      return this.store.setViewModel(this.setVisible, value);
+    }
+    this.visibleExpr = UIStore.parseExpr(value);
+  }
+  @computed get setVisible() {
+    return this.store.execExpr(this.setVisibleExpr);
+  }
+  set setVisible(setValue) {
+      this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
   @computed get disabled() {
     return this.store.execExpr(this.disabledExpr);
   }
-  set disabled(disabledExpr) {
-    this.disabledExpr = this.store.parseExpr(disabledExpr);
+  set disabled(value) {
+    if (this.setDisabled) {
+      return this.store.setViewModel(this.setDisabled, value);
+    }
+    this.disabledExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDisabled() {
+    return this.store.execExpr(this.setDisabledExpr);
+  }
+  set setDisabled(setValue) {
+      this.setDisabledExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get align() {
     return this.store.execExpr(this.alignExpr);
   }
-  set align(alignExpr) {
-    this.alignExpr = this.store.parseExpr(alignExpr);
+  set align(value) {
+    if (this.setAlign) {
+      return this.store.setViewModel(this.setAlign, value);
+    }
+    this.alignExpr = UIStore.parseExpr(value);
+  }
+  @computed get setAlign() {
+    return this.store.execExpr(this.setAlignExpr);
+  }
+  set setAlign(setValue) {
+      this.setAlignExpr = UIStore.parseExpr(setValue);
   }
   @computed get colSpan() {
     return this.store.execExpr(this.colSpanExpr);
   }
-  set colSpan(colSpanExpr) {
-    this.colSpanExpr = this.store.parseExpr(colSpanExpr);
+  set colSpan(value) {
+    if (this.setColSpan) {
+      return this.store.setViewModel(this.setColSpan, value);
+    }
+    this.colSpanExpr = UIStore.parseExpr(value);
+  }
+  @computed get setColSpan() {
+    return this.store.execExpr(this.setColSpanExpr);
+  }
+  set setColSpan(setValue) {
+      this.setColSpanExpr = UIStore.parseExpr(setValue);
   }
   @computed get dataIndex() {
     return this.store.execExpr(this.dataIndexExpr);
   }
-  set dataIndex(dataIndexExpr) {
-    this.dataIndexExpr = this.store.parseExpr(dataIndexExpr);
+  set dataIndex(value) {
+    if (this.setDataIndex) {
+      return this.store.setViewModel(this.setDataIndex, value);
+    }
+    this.dataIndexExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDataIndex() {
+    return this.store.execExpr(this.setDataIndexExpr);
+  }
+  set setDataIndex(setValue) {
+      this.setDataIndexExpr = UIStore.parseExpr(setValue);
   }
   @computed get fixed() {
     return this.store.execExpr(this.fixedExpr);
   }
-  set fixed(fixedExpr) {
-    this.fixedExpr = this.store.parseExpr(fixedExpr);
+  set fixed(value) {
+    if (this.setFixed) {
+      return this.store.setViewModel(this.setFixed, value);
+    }
+    this.fixedExpr = UIStore.parseExpr(value);
+  }
+  @computed get setFixed() {
+    return this.store.execExpr(this.setFixedExpr);
+  }
+  set setFixed(setValue) {
+      this.setFixedExpr = UIStore.parseExpr(setValue);
   }
   @computed get title() {
     return this.store.execExpr(this.titleExpr);
   }
-  set title(titleExpr) {
-    this.titleExpr = this.store.parseExpr(titleExpr);
+  set title(value) {
+    if (this.setTitle) {
+      return this.store.setViewModel(this.setTitle, value);
+    }
+    this.titleExpr = UIStore.parseExpr(value);
+  }
+  @computed get setTitle() {
+    return this.store.execExpr(this.setTitleExpr);
+  }
+  set setTitle(setValue) {
+      this.setTitleExpr = UIStore.parseExpr(setValue);
   }
   @computed get width() {
     return this.store.execExpr(this.widthExpr);
   }
-  set width(widthExpr) {
-    this.widthExpr = this.store.parseExpr(widthExpr);
+  set width(value) {
+    if (this.setWidth) {
+      return this.store.setViewModel(this.setWidth, value);
+    }
+    this.widthExpr = UIStore.parseExpr(value);
+  }
+  @computed get setWidth() {
+    return this.store.execExpr(this.setWidthExpr);
+  }
+  set setWidth(setValue) {
+      this.setWidthExpr = UIStore.parseExpr(setValue);
   }
 
   constructor(store, name, inputItem, visibleExpr = true, disabledExpr = false, alignExpr,
@@ -88,25 +168,25 @@ export class EditColumn {
     this.name = name || this.key;
 
     this.inputItem = inputItem;
-    this.alignExpr = store.parseExpr(alignExpr);
-    this.colSpanExpr = store.parseExpr(colSpanExpr);
-    this.dataIndexExpr = store.parseExpr(dataIndexExpr);
-    this.fixedExpr = store.parseExpr(fixedExpr);
-    this.titleExpr = store.parseExpr(titleExpr);
-    this.widthExpr = store.parseExpr(widthExpr);
-    this.disabledExpr = store.parseExpr(disabledExpr);
-    this.visibleExpr = store.parseExpr(visibleExpr);
+    this.alignExpr = alignExpr;
+    this.colSpanExpr = colSpanExpr;
+    this.dataIndexExpr = dataIndexExpr;
+    this.fixedExpr = fixedExpr;
+    this.titleExpr = titleExpr;
+    this.widthExpr = widthExpr;
+    this.disabledExpr = disabledExpr;
+    this.visibleExpr = visibleExpr;
     this.children = children;
   }
 
-  static createSchema(object = {}, options = {}) {
-    console.log('create edit table column...')
+  static createSchema(config = {}, options = {}) {
+    console.log('parse edit table column...')
     return {
-      type: Column,
-      args: [object.name, UIStore.createSchema(object),
-        object.visible || options.visible, object.disabled || options.visible, object.align,
-        object.colSpan, object.dataIndex || object.value, object.fixed, object.title || object.text,
-        object.width || object.columnWidth, (object.columns || []).map(it => Column.createSchema(it))
+      type: EditColumn,
+      args: [config.name || config.type, UIStore.createSchema(config),
+        UIStore.parseExpr(config.visible || options.visible), UIStore.parseExpr(config.disabled || options.visible), UIStore.parseExpr(config.align),
+        UIStore.parseExpr(config.colSpan), UIStore.parseExpr(config.dataIndex || config.value), UIStore.parseExpr(config.fixed), UIStore.parseExpr(config.title || config.text),
+        UIStore.parseExpr(config.width || config.columnWidth), (config.columns || []).map(it => EditColumn.createSchema(it))
       ]
     };
   }
@@ -131,12 +211,22 @@ export class EditTable {
   name;
 
   @observable borderedExpr;
+  @observable setBorderedExpr;
   @observable showHeaderExpr;
+  @observable setShowHeaderExpr;
   @observable sizeExpr;
+  @observable setSizeExpr;
   @observable titleExpr;
+  @observable setTitleExpr;
   @observable dataSourceExpr;
+  @observable setDataSourceExpr;
   @observable allcolumns;
   @observable allrows = [];
+
+  @observable visibleExpr;
+  @observable setVisibleExpr;
+  @observable disableExpr;
+  @observable setDisableExpr;
 
   get type() {
     return 'edittable';
@@ -147,38 +237,110 @@ export class EditTable {
   }
 
   @computed get visible() {
-    return this.columns.length > 0;
+    return this.store.execExpr(this.visibleExpr);
+  }
+  set visible(value) {
+    if (this.setVisible) {
+      return this.store.setViewModel(this.setVisible, value);
+    }
+    this.visibleExpr = UIStore.parseExpr(value);
+  }
+  @computed get setVisible() {
+    return this.store.execExpr(this.setVisibleExpr);
+  }
+  set setVisible(setValue) {
+      this.setVisibleExpr = UIStore.parseExpr(setValue);
+  }
+  @computed get disable() {
+    return this.store.execExpr(this.disableExpr);
+  }
+  set disable(value) {
+    if (this.setDisable) {
+      return this.store.setViewModel(this.setDisable, value);
+    }
+    this.disableExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDisable() {
+    return this.store.execExpr(this.setDisableExpr);
+  }
+  set setDisable(setValue) {
+      this.setDisableExpr = UIStore.parseExpr(setValue);
   }
   @computed get bordered() {
     return this.store.execExpr(this.borderedExpr);
   }
-  set bordered(borderedExpr) {
-    this.borderedExpr = this.store.parseExpr(borderedExpr);
+  set bordered(value) {
+    if (this.setBordered) {
+      return this.store.setViewModel(this.setBordered, value);
+    }
+    this.borderedExpr = UIStore.parseExpr(value);
+  }
+  @computed get setBordered() {
+    return this.store.execExpr(this.setBorderedExpr);
+  }
+  set setBordered(setValue) {
+      this.setBorderedExpr = UIStore.parseExpr(setValue);
   }
   @computed get showHeader() {
     return this.store.execExpr(this.showHeaderExpr);
   }
-  set showHeader(showHeaderExpr) {
-    this.showHeaderExpr = this.store.parseExpr(showHeaderExpr);
+  set showHeader(value) {
+    if (this.setShowHeader) {
+      return this.store.setViewModel(this.setShowHeader, value);
+    }
+    this.showHeaderExpr = UIStore.parseExpr(value);
+  }
+  @computed get setShowHeader() {
+    return this.store.execExpr(this.setShowHeaderExpr);
+  }
+  set setShowHeader(setValue) {
+      this.setShowHeaderExpr = UIStore.parseExpr(setValue);
   }
   @computed get size() {
     return this.store.execExpr(this.sizeExpr);
   }
-  set size(sizeExpr) {
-    this.sizeExpr = this.store.parseExpr(sizeExpr);
+  set size(value) {
+    if (this.setSize) {
+      return this.store.setViewModel(this.setSize, value);
+    }
+    this.sizeExpr = UIStore.parseExpr(value);
+  }
+  @computed get setSize() {
+    return this.store.execExpr(this.setSizeExpr);
+  }
+  set setSize(setValue) {
+      this.setSizeExpr = UIStore.parseExpr(setValue);
   }
   @computed get title() {
     return this.store.execExpr(this.titleExpr);
   }
-  set title(titleExpr) {
-    this.titleExpr = this.store.parseExpr(titleExpr);
+  set title(value) {
+    if (this.setTitle) {
+      return this.store.setViewModel(this.setTitle, value);
+    }
+    this.titleExpr = UIStore.parseExpr(value);
+  }
+  @computed get setTitle() {
+    return this.store.execExpr(this.setTitleExpr);
+  }
+  set setTitle(setValue) {
+      this.setTitleExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get dataSource() {
     return this.store.execExpr(this.dataSourceExpr);
   }
-  set dataSource(dataSourceExpr) {
-    this.dataSourceExpr = this.store.parseExpr(dataSourceExpr);
+  set dataSource(value) {
+    if (this.setDataSource) {
+      return this.store.setViewModel(this.setDataSource, value);
+    }
+    this.dataSourceExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDataSource() {
+    return this.store.execExpr(this.setDataSourceExpr);
+  }
+  set setDataSource(setValue) {
+      this.setDataSourceExpr = UIStore.parseExpr(setValue);
   }
   @computed get rows() {
     return (this.store.model.get(this.dataSource) || []).map(rdata => {
@@ -186,32 +348,37 @@ export class EditTable {
         rdata = [rdata];
       }
       // TODO 不用每次创建cell，状态要保持
-      return rdata.map(cdata => Cell.createSchema({
+      return rdata.map(cdata => EditCell.createSchema({
         value: cdata
       }))
     })
   }
 
-  constructor(store, name, columns = [], dataSourceExpr, borderedExpr = true,
-    showHeaderExpr = true, sizeExpr = 'default', titleExpr = null) {
+  constructor(store, name, columns = [], dataSourceExpr, borderedExpr,
+    visibleExpr, disableExpr,
+    showHeaderExpr, sizeExpr, titleExpr) {
     this.key = assignId('EditTable');
     this.store = store;
     this.name = name || this.key;
 
-    this.borderedExpr = store.parseExpr(borderedExpr);
-    this.showHeaderExpr = store.parseExpr(showHeaderExpr);
-    this.sizeExpr = store.parseExpr(sizeExpr);
-    this.titleExpr = store.parseExpr(titleExpr);
-    this.dataSourceExpr = store.parseExpr(dataSourceExpr);
+    this.borderedExpr = borderedExpr;
+    this.showHeaderExpr = showHeaderExpr;
+    this.visibleExpr = visibleExpr;
+    this.disableExpr = disableExpr;
+    this.sizeExpr = sizeExpr;
+    this.titleExpr = titleExpr;
+    this.dataSourceExpr = dataSourceExpr;
     this.allcolumns = columns;
   }
 
-  static createSchema(object = {}) {
-    console.log('create edit table...')
+  static createSchema(config = {}) {
+    console.log('parse edit table...')
     return {
       type: EditTable,
-      args: [object.name, (object.columns || []).map(it => Column.createSchema(it, object)),
-        object.dataSource || object.value, object.bordered, object.showHeader, object.size, object.title
+      args: [config.name || config.type, (config.columns || []).map(it => EditColumn.createSchema(it, config)),
+        UIStore.parseExpr(config.dataSource || config.value), UIStore.parseExpr(config.bordered || true),
+         UIStore.parseExpr(config.visible || true),   UIStore.parseExpr(config.disable  || false),
+        UIStore.parseExpr(config.showHeader || true), UIStore.parseExpr(config.size || 'default'), UIStore.parseExpr(config.title)
       ]
     };
   }

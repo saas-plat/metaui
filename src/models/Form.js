@@ -37,77 +37,177 @@ export class Rule {
   // hex: Must be of type hex.
   // email: Must be of type email.
   @observable typeExpr;
+  @observable setTypeExpr;
   @observable requiredExpr;
+  @observable setRequiredExpr;
   @observable messageExpr;
+  @observable setMessageExpr;
   @observable enumExpr;
+  @observable setEnumExpr;
   @observable lenExpr;
+  @observable setLenExpr;
   @observable patternExpr;
+  @observable setPatternExpr;
   @observable whitespaceExpr;
+  @observable setWhitespaceExpr;
   @observable minExpr;
+  @observable setMinExpr;
   @observable maxExpr;
+  @observable setMaxExpr;
 
   @observable disableExpr;
+  @observable setDisableExpr;
 
   @computed get type() {
     return this.store.execExpr(this.typeExpr);
   }
-  set type(typeExpr) {
-    this.typeExpr = this.store.parseExpr(typeExpr);
+  set type(value) {
+    if (this.setType) {
+      return this.store.setViewModel(this.setType, value);
+    }
+    this.typeExpr = UIStore.parseExpr(value);
+  }
+  @computed get setType() {
+    return this.store.execExpr(this.setTypeExpr);
+  }
+  set setType(setValue) {
+      this.setTypeExpr = UIStore.parseExpr(setValue);
   }
   @computed get required() {
     return this.store.execExpr(this.requiredExpr);
   }
-  set required(requiredExpr) {
-    this.requiredExpr = this.store.parseExpr(requiredExpr);
+  set required(value) {
+    if (this.setRequired) {
+      return this.store.setViewModel(this.setRequired, value);
+    }
+    this.requiredExpr = UIStore.parseExpr(value);
+  }
+  @computed get setRequired() {
+    return this.store.execExpr(this.setRequiredExpr);
+  }
+  set setRequired(setValue) {
+      this.setRequiredExpr = UIStore.parseExpr(setValue);
   }
   @computed get message() {
     return this.store.execExpr(this.messageExpr) || this.labelText + this.store.t('输入无效');
   }
-  set message(messageExpr) {
-    this.messageExpr = this.store.parseExpr(messageExpr);
+  set message(value) {
+    if (this.setMessage) {
+      return this.store.setViewModel(this.setMessage, value);
+    }
+    this.messageExpr = UIStore.parseExpr(value);
+  }
+  @computed get setMessage() {
+    return this.store.execExpr(this.setMessageExpr);
+  }
+  set setMessage(setValue) {
+      this.setMessageExpr = UIStore.parseExpr(setValue);
   }
   @computed get enum() {
     return this.store.execExpr(this.enumExpr);
   }
-  set enum(enumExpr) {
-    this.enumExpr = this.store.parseExpr(enumExpr);
+  set enum(value) {
+    if (this.setEnum) {
+      return this.store.setViewModel(this.setEnum, value);
+    }
+    this.enumExpr = UIStore.parseExpr(value);
+  }
+  @computed get setEnum() {
+    return this.store.execExpr(this.setEnumExpr);
+  }
+  set setEnum(setValue) {
+      this.setEnumExpr = UIStore.parseExpr(setValue);
   }
   @computed get len() {
     return this.store.execExpr(this.lenExpr);
   }
-  set len(lenExpr) {
-    this.lenExpr = this.store.parseExpr(lenExpr);
+  set len(value) {
+    if (this.setLen) {
+      return this.store.setViewModel(this.setLen, value);
+    }
+    this.lenExpr = UIStore.parseExpr(value);
+  }
+  @computed get setLen() {
+    return this.store.execExpr(this.setLenExpr);
+  }
+  set setLen(setValue) {
+      this.setLenExpr = UIStore.parseExpr(setValue);
   }
   @computed get pattern() {
     return this.store.execExpr(this.patternExpr);
   }
-  set pattern(patternExpr) {
-    this.patternExpr = this.store.parseExpr(patternExpr);
+  set pattern(value) {
+    if (this.setPattern) {
+      return this.store.setViewModel(this.setPattern, value);
+    }
+    this.patternExpr = UIStore.parseExpr(value);
+  }
+  @computed get setPattern() {
+    return this.store.execExpr(this.setPatternExpr);
+  }
+  set setPattern(setValue) {
+      this.setPatternExpr = UIStore.parseExpr(setValue);
   }
   @computed get whitespace() {
     return this.store.execExpr(this.whitespaceExpr);
   }
-  set whitespace(whitespaceExpr) {
-    this.whitespaceExpr = this.store.parseExpr(whitespaceExpr);
+  set whitespace(value) {
+    if (this.setWhitespace) {
+      return this.store.setViewModel(this.setWhitespace, value);
+    }
+    this.whitespaceExpr = UIStore.parseExpr(value);
+  }
+  @computed get setWhitespace() {
+    return this.store.execExpr(this.setWhitespaceExpr);
+  }
+  set setWhitespace(setValue) {
+      this.setWhitespaceExpr = UIStore.parseExpr(setValue);
   }
   @computed get min() {
     return this.store.execExpr(this.minExpr);
   }
-  set min(minExpr) {
-    this.minExpr = this.store.parseExpr(minExpr);
+  set min(value) {
+    if (this.setMin) {
+      return this.store.setViewModel(this.setMin, value);
+    }
+    this.minExpr = UIStore.parseExpr(value);
+  }
+  @computed get setMin() {
+    return this.store.execExpr(this.setMinExpr);
+  }
+  set setMin(setValue) {
+      this.setMinExpr = UIStore.parseExpr(setValue);
   }
   @computed get max() {
     return this.store.execExpr(this.maxExpr);
   }
-  set max(maxExpr) {
-    this.maxExpr = this.store.parseExpr(maxExpr);
+  set max(value) {
+    if (this.setMax) {
+      return this.store.setViewModel(this.setMax, value);
+    }
+    this.maxExpr = UIStore.parseExpr(value);
+  }
+  @computed get setMax() {
+    return this.store.execExpr(this.setMaxExpr);
+  }
+  set setMax(setValue) {
+      this.setMaxExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get disable() {
     return this.store.execExpr(this.disableExpr);
   }
-  set disable(disableExpr) {
-    this.disableExpr = this.store.parseExpr(disableExpr);
+  set disable(value) {
+    if (this.setDisable) {
+      return this.store.setViewModel(this.setDisable, value);
+    }
+    this.disableExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDisable() {
+    return this.store.execExpr(this.setDisableExpr);
+  }
+  set setDisable(setValue) {
+      this.setDisableExpr = UIStore.parseExpr(setValue);
   }
 
   constructor(store, name, typeExpr, messageExpr, requiredExpr, enumExpr, lenExpr,
@@ -116,31 +216,32 @@ export class Rule {
     this.store = store;
     this.name = name || this.key;
 
-    this.typeExpr = store.parseExpr(typeExpr);
-    this.requiredExpr = store.parseExpr(requiredExpr);
-    this.messageExpr = store.parseExpr(messageExpr);
-    this.enumExpr = store.parseExpr(enumExpr);
-    this.lenExpr = store.parseExpr(lenExpr);
-    this.patternExpr = store.parseExpr(patternExpr);
-    this.whitespaceExpr = store.parseExpr(whitespaceExpr);
-    this.minExpr = store.parseExpr(minExpr);
-    this.maxExpr = store.parseExpr(maxExpr);
-    this.disableExpr = store.parseExpr(disableExpr);
+    this.typeExpr = typeExpr;
+    this.requiredExpr = requiredExpr;
+    this.messageExpr = messageExpr;
+    this.enumExpr = enumExpr;
+    this.lenExpr = lenExpr;
+    this.patternExpr = patternExpr;
+    this.whitespaceExpr = whitespaceExpr;
+    this.minExpr = minExpr;
+    this.maxExpr = maxExpr;
+    this.disableExpr = disableExpr;
   }
 
-  static createSchema(obj, options = {}) {
-    console.log('create %s rule...', obj.name || obj.type)
+  static createSchema(config, options = {}) {
+    console.log('parse %s rule...', config.name || config.type)
     return {
       type: Rule,
-      args: [obj.name, obj.type,
-        obj.message  ,
-        obj.required || options.required,
-        obj.enum || options.enum,
-        obj.len || options.len,
-        obj.pattern || options.pattern,
-        obj.whitespace || options.whitespace,
-        obj.min || options.min,
-        obj.max || options.max
+      args: [config.name || config.type,
+        UIStore.parseExpr(config.type),
+        UIStore.parseExpr(config.message),
+        UIStore.parseExpr(config.required || options.required),
+        UIStore.parseExpr(config.enum || options.enum),
+        UIStore.parseExpr(config.len || options.len),
+        UIStore.parseExpr(config.pattern || options.pattern),
+        UIStore.parseExpr(config.whitespace || options.whitespace),
+        UIStore.parseExpr(config.min || options.min),
+        UIStore.parseExpr(config.max || options.max)
       ]
     };
   }
@@ -167,13 +268,19 @@ export class FormItem {
   name;
 
   @observable labelSpanExpr;
+  @observable setLabelSpanExpr;
   @observable labelTextExpr;
+  @observable setLabelTextExpr;
   @observable labelIconExpr;
+  @observable setLabelIconExpr;
   @observable tipTextExpr;
+  @observable setTipTextExpr;
   @observable inputItem;
   @observable extraExpr;
+  @observable setExtraExpr;
   // 描述信息和extra信息是不一样的，长文本
   @observable descriptionExpr;
+  @observable setDescriptionExpr;
 
   @observable allrules;
 
@@ -193,69 +300,141 @@ export class FormItem {
   }
 
   @computed get visible() {
-    return this.inputItem.visible;
+    return !!(this.inputItem && this.inputItem.visible);
   }
-  set visible(visibleExpr) {
-    this.inputItem.visible = visibleExpr;
+  set visible(value) {
+    if (this.setVisible) {
+      return this.store.setViewModel(this.setVisible, value);
+    }
+    this.visibleExpr = UIStore.parseExpr(value);
+  }
+  @computed get setVisible() {
+    return this.store.execExpr(this.setVisibleExpr);
+  }
+  set setVisible(setValue) {
+      this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
   @computed get disable() {
     return this.inputItem.disable;
   }
-  set disable(disableExpr) {
-    this.inputItem.disable = disableExpr;
+  set disable(value) {
+    if (this.setDisable) {
+      return this.store.setViewModel(this.setDisable, value);
+    }
+    this.disableExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDisable() {
+    return this.store.execExpr(this.setDisableExpr);
+  }
+  set setDisable(setValue) {
+      this.setDisableExpr = UIStore.parseExpr(setValue);
   }
   @computed get extra() {
     return this.store.execExpr(this.extraExpr);
   }
-  set extra(extraExpr) {
-    this.extraExpr = this.store.parseExpr(extraExpr);
+  set extra(value) {
+    if (this.setExtra) {
+      return this.store.setViewModel(this.setExtra, value);
+    }
+    this.extraExpr = UIStore.parseExpr(value);
+  }
+  @computed get setExtra() {
+    return this.store.execExpr(this.setExtraExpr);
+  }
+  set setExtra(setValue) {
+      this.setExtraExpr = UIStore.parseExpr(setValue);
   }
   @computed get description() {
     return this.store.execExpr(this.descriptionExpr);
   }
-  set description(descriptionExpr) {
-    this.descriptionExpr = this.store.parseExpr(descriptionExpr);
+  set description(value) {
+    if (this.setDescription) {
+      return this.store.setViewModel(this.setDescription, value);
+    }
+    this.descriptionExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDescription() {
+    return this.store.execExpr(this.setDescriptionExpr);
+  }
+  set setDescription(setValue) {
+      this.setDescriptionExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get labelSpan() {
     const span = parseInt(this.store.execExpr(this.labelSpanExpr));
     return span !== 0 ? ((span || 4) % 24) : span;
   }
-  set labelSpan(labelSpanExpr) {
-    this.labelSpanExpr = this.store.parseExpr(labelSpanExpr);
+  set labelSpan(value) {
+    if (this.setLabelSpan) {
+      return this.store.setViewModel(this.setLabelSpan, value);
+    }
+    this.labelSpanExpr = UIStore.parseExpr(value);
+  }
+  @computed get setLabelSpan() {
+    return this.store.execExpr(this.setLabelSpanExpr);
+  }
+  set setLabelSpan(setValue) {
+      this.setLabelSpanExpr = UIStore.parseExpr(setValue);
   }
   @computed get labelText() {
     return this.store.execExpr(this.labelTextExpr);
   }
-  set labelText(labelTextExpr) {
-    this.labelTextExpr = this.store.parseExpr(labelTextExpr);
+  set labelText(value) {
+    if (this.setLabelText) {
+      return this.store.setViewModel(this.setLabelText, value);
+    }
+    this.labelTextExpr = UIStore.parseExpr(value);
+  }
+  @computed get setLabelText() {
+    return this.store.execExpr(this.setLabelTextExpr);
+  }
+  set setLabelText(setValue) {
+      this.setLabelTextExpr = UIStore.parseExpr(setValue);
   }
   @computed get labelIcon() {
     return this.store.execExpr(this.labelIconExpr);
   }
-  set labelIcon(labelIconExpr) {
-    this.labelIconExpr = this.store.parseExpr(labelIconExpr);
+  set labelIcon(value) {
+    if (this.setLabelIcon) {
+      return this.store.setViewModel(this.setLabelIcon, value);
+    }
+    this.labelIconExpr = UIStore.parseExpr(value);
+  }
+  @computed get setLabelIcon() {
+    return this.store.execExpr(this.setLabelIconExpr);
+  }
+  set setLabelIcon(setValue) {
+      this.setLabelIconExpr = UIStore.parseExpr(setValue);
   }
   @computed get tipText() {
     return this.store.execExpr(this.tipTextExpr);
   }
-  set tipText(tipTextExpr) {
-    this.tipTextExpr = this.store.parseExpr(tipTextExpr);
+  set tipText(value) {
+    if (this.setTipText) {
+      return this.store.setViewModel(this.setTipText, value);
+    }
+    this.tipTextExpr = UIStore.parseExpr(value);
+  }
+  @computed get setTipText() {
+    return this.store.execExpr(this.setTipTextExpr);
+  }
+  set setTipText(setValue) {
+      this.setTipTextExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, labelSpanExpr = 6, labelTextExpr = '', labelIconExpr,
-    tipTextExpr = '', extraExpr, descriptionExpr, inputItem, rules = [], btns = []) {
+  constructor(store, name, labelSpanExpr, labelTextExpr, labelIconExpr,
+    tipTextExpr, extraExpr, descriptionExpr, inputItem, rules, btns) {
     this.key = assignId('FormItem');
     this.store = store;
     this.name = name || this.key;
 
-    this.labelSpanExpr = store.parseExpr(labelSpanExpr);
-    this.labelTextExpr = store.parseExpr(labelTextExpr);
-    this.labelIconExpr = store.parseExpr(labelIconExpr);
-    this.tipTextExpr = store.parseExpr(tipTextExpr);
+    this.labelSpanExpr = labelSpanExpr;
+    this.labelTextExpr = labelTextExpr;
+    this.labelIconExpr = labelIconExpr;
+    this.tipTextExpr = tipTextExpr;
 
-    this.extraExpr = store.parseExpr(extraExpr);
-    this.descriptionExpr = store.parseExpr(descriptionExpr);
+    this.extraExpr = extraExpr;
+    this.descriptionExpr = descriptionExpr;
 
     this.inputItem = inputItem;
     this.allrules = rules;
@@ -300,55 +479,63 @@ export class FormItem {
     this.allrules.clear();
   }
 
-  static createSchema(obj, options = {}) {
-    console.log('create %s form item...', obj.name || obj.type)
-    let labelSpan = obj.labelSpan || options.labelSpan;
-    let labelText = obj.labelText || obj.label || obj.text;
+  static createSchema(config, options = {}) {
+    console.log('parse %s form item...', config.name || config.type)
+    let labelSpan = config.labelSpan || options.labelSpan;
+    let labelText = config.labelText || config.label || config.text;
     if (!labelSpan && !labelText) {
       labelSpan = 0;
     }
-    let rules = obj.rules;
+    let rules = config.rules;
     // formitem 和 inputitem 合并一起配置
     if (!rules || rules.length <= 0) {
       rules = [];
       const rule = {};
       // 规则type 和数据类型重复
-      // if ('type' in obj) {
-      //   rule.type = obj.type;
+      // if ('type' in config) {
+      //   rule.type = config.type;
       // }
-      if ('required' in obj) {
-        rule.required = obj.required;
+      if ('required' in config) {
+        rule.required = config.required;
       }
-      if ('enum' in obj) {
-        rule.enum = obj.enum;
+      if ('enum' in config) {
+        rule.enum = config.enum;
       }
-      if ('len' in obj) {
-        rule.len = obj.len;
+      if ('len' in config) {
+        rule.len = config.len;
       }
-      if ('pattern' in obj) {
-        rule.pattern = obj.pattern;
+      if ('pattern' in config) {
+        rule.pattern = config.pattern;
       }
-      if ('min' in obj) {
-        rule.min = obj.min;
+      if ('min' in config) {
+        rule.min = config.min;
       }
-      if ('max' in obj) {
-        rule.max = obj.max;
+      if ('max' in config) {
+        rule.max = config.max;
       }
       if (Object.keys(rule).length > 0) {
         rules.push(rule);
       }
     }
+    const {
+      input,
+      type,
+      ...inputconfig
+    } = config;
     return {
       type: FormItem,
-      args: [obj.name, labelSpan, labelText, obj.labelIcon || obj.icon,
-        obj.tipText || obj.tip, obj.width || options.itemWidth, obj.extra, obj.description,
-        UIStore.createSchema(obj),
-        // 默认有一条规则obj中尝试查找
+      args: [config.name || config.type, UIStore.parseExpr(labelSpan || 6), UIStore.parseExpr(labelText || ''), UIStore.parseExpr(config.labelIcon || config.icon),
+        UIStore.parseExpr(config.tipText || config.tip || ''), UIStore.parseExpr(config.extra), UIStore.parseExpr(config.description || ''),
+        UIStore.createSchema({
+          ...inputconfig,
+          type: input || type
+        }),
+        // 默认有一条规则config中尝试查找
         rules.map(it => Rule.createSchema(it, {
-          ...obj,
+          ...config,
           labelText
         })),
-        (obj.btns || []).map(it => Button.createSchema(it, options))
+        (config.btns || []).map(it => Button.createSchema(it, options))
       ]
     };
   }
@@ -361,19 +548,65 @@ export class Form {
 
   name;
   @observable typeExpr;
+  @observable setTypeExpr;
 
-  // from的下一级是container，支持将formitem划分多个区域展示
-  @observable allcontainers;
+  @observable disableExpr;
+  @observable setDisableExpr;
+  @observable visibleExpr;
+  @observable setVisibleExpr;
+
+  // from的下一级可以是container，支持将formitem划分多个区域展示
+  @observable allitems;
 
   @computed get type() {
     return this.store.execExpr(this.typeExpr);
   }
-  set type(typeExpr) {
-    this.typeExpr = this.store.parseExpr(typeExpr);
+  set type(value) {
+    if (this.setType) {
+      return this.store.setViewModel(this.setType, value);
+    }
+    this.typeExpr = UIStore.parseExpr(value);
+  }
+  @computed get setType() {
+    return this.store.execExpr(this.setTypeExpr);
+  }
+  set setType(setValue) {
+      this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
-  @computed get containers() {
-    return this.allcontainers.filter(it => it.visible);
+  @computed get items() {
+    return this.allitems.filter(it => it.visible);
+  }
+
+  @computed get disable() {
+    return this.store.execExpr(this.disableExpr);
+  }
+  set disable(value) {
+    if (this.setDisable) {
+      return this.store.setViewModel(this.setDisable, value);
+    }
+    this.disableExpr = UIStore.parseExpr(value);
+  }
+  @computed get setDisable() {
+    return this.store.execExpr(this.setDisableExpr);
+  }
+  set setDisable(setValue) {
+      this.setDisableExpr = UIStore.parseExpr(setValue);
+  }
+  @computed get visible() {
+    return this.store.execExpr(this.visibleExpr);
+  }
+  set visible(value) {
+    if (this.setVisible) {
+      return this.store.setViewModel(this.setVisible, value);
+    }
+    this.visibleExpr = UIStore.parseExpr(value);
+  }
+  @computed get setVisible() {
+    return this.store.execExpr(this.setVisibleExpr);
+  }
+  set setVisible(setValue) {
+      this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
 
   @observable onBeforeChange;
@@ -392,7 +625,9 @@ export class Form {
   @observable onSave;
   @observable onAfterSave;
 
-  constructor(store, name, type, containers = [],
+  constructor(store, name, type,
+    disableExpr, visibleExpr = true,
+    items = [],
     onBeforeChange, onChange, onAfterChange,
     onBeforeLoad, onLoad, onAfterLoad,
     onBeforeValidate, onValidate, onAfterValidate,
@@ -402,12 +637,18 @@ export class Form {
     this.key = assignId('Form');
     this.store = store;
     this.name = name || this.key;
-    this.allcontainers = containers;
-    this.typeExpr = this.store.parseExpr(type);
+    this.allitems = items;
+    this.typeExpr = UIStore.parseExpr(type);
+    this.disableExpr = UIStore.parseExpr(disableExpr);
+    this.visibleExpr = UIStore.parseExpr(visibleExpr);
 
     this.onBeforeChange = onBeforeChange;
     this.onChange = onChange;
     this.onAfterChange = onAfterChange;
+
+    this.onBeforeLoad = onBeforeLoad;
+    this.onLoad = onLoad;
+    this.onAfterLoad = onAfterLoad;
 
     this.onBeforeValidate = onBeforeValidate;
     this.onValidate = onValidate;
@@ -418,35 +659,37 @@ export class Form {
     this.onAfterSave = onAfterSave;
   }
 
-  @action addContainer(...items) {
-    this.allcontainers.push(...items);
+  @action addItem(...items) {
+    this.allitems.push(...items);
   }
 
-  @action removeContainer(...names) {
+  @action removeItem(...names) {
     for (const name of names) {
-      const reit = this.allcontainers.find(it => it.name === name);
+      const reit = this.allitems.find(it => it.name === name);
       if (reit) {
-        this.allcontainers.splice(this.allcontainers.indexOf(reit), 1);
+        this.allitems.splice(this.allitems.indexOf(reit), 1);
       } else {
         console.warn('form container not exists!', name);
       }
     }
   }
 
-  @action clearContainers() {
-    this.allcontainers.clear();
+  @action clearItems() {
+    this.allitems.clear();
   }
 
-  static createSchema(object = []) {
-    console.log('create %s form...', obj.name || obj.type)
-    let obj = {};
-    if (Array.isArray(object)) {
-      obj.containers = object;
+  static createSchema(config = []) {
+    console.log('parse %s form...', config.name || config.type)
+    let props = {};
+    if (Array.isArray(config)) {
+      props.items = config;
     } else {
       const {
-        containers,
+        items,
         name,
         type,
+        disable,
+        visible,
         onChanging,
         onChange,
         onChanged,
@@ -460,11 +703,13 @@ export class Form {
         onSave,
         onSaveed,
         ...other
-      } = object;
-      obj = {
-        containers,
+      } = config;
+      props = {
+        items,
         name,
         type,
+        disable,
+        visible,
         onChanging,
         onChange,
         onChanged,
@@ -478,24 +723,25 @@ export class Form {
         onSave,
         onSaveed
       }
-      if (!obj.containers) {
-        obj.containers = [other];
-        obj.options = {};
+      if (!config.items) {
+        props.items = [other];
+        props.options = {};
       } else {
-        obj.options = other;
+        props.options = other;
       }
     }
-    if (!Array.isArray(obj.containers)) {
-      obj.containers = [obj.containers];
+    if (!Array.isArray(props.items)) {
+      props.items = [props.items];
     }
     return {
       type: Form,
-      args: [obj.name, obj.type || 'form',
-        obj.containers.map(it => Container.createSchema(it, obj.options)),
-        Action.createSchema(obj.onChanging), Action.createSchema(obj.onChange), Action.createSchema(obj.onChanged),
-        Action.createSchema(obj.onLoading), Action.createSchema(obj.onLoad), Action.createSchema(obj.onLoaded),
-        Action.createSchema(obj.onValidating), Action.createSchema(obj.onValidate), Action.createSchema(obj.onValidatied),
-        Action.createSchema(obj.onSaveing), Action.createSchema(obj.onSave), Action.createSchema(obj.onSaveed)
+      args: [props.name || props.type, UIStore.parseExpr(props.type),
+        UIStore.parseExpr(props.disable || false), UIStore.parseExpr(props.visible || true),
+        props.items.map(it => Container.createSchema(it, props.options)),
+        Action.createSchema(props.onChanging), Action.createSchema(props.onChange), Action.createSchema(props.onChanged),
+        Action.createSchema(props.onLoading), Action.createSchema(props.onLoad), Action.createSchema(props.onLoaded),
+        Action.createSchema(props.onValidating), Action.createSchema(props.onValidate), Action.createSchema(props.onValidatied),
+        Action.createSchema(props.onSaveing), Action.createSchema(props.onSave), Action.createSchema(props.onSaveed)
       ]
     };
   }

@@ -1,7 +1,16 @@
+import {
+  observable,
+  computed,
+  action
+} from "mobx";
+import {
+  assignId
+} from './util';
+import UIStore from '../UIStore';
+
 export class Filter {
   store;
   key;
-
   name;
 
   constructor(store, name) {
@@ -10,11 +19,11 @@ export class Filter {
     this.name = name || this.key;
   }
 
-  static createSchema() {
-    console.log('create filter...')
+  static createSchema(config) {
+    console.log('parse filter...')
     return {
       type: Filter,
-      args: []
+      args: [config.name]
     }
   }
 }

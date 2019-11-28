@@ -31,5 +31,4 @@ output/
 output.tar.gz
 
 /dist
-/dev
-/saas-plat-win32-x64
+/bak*

@@ -5,6 +5,8 @@ export UIContainer from './components/UIContainer';
 // 组件类型管理器
 export UIStore from './UIStore';
 
+export feedback, {registerFeedback} from './feedback';
+
 // common
 export {Action as ActionModel} from './models/Action';
 export {Container as ContainerModel } from './models/Container';

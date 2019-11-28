@@ -342,8 +342,10 @@ export class Input {
     return this.type + ':' + this.name;
   }
 
-  constructor(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, editableExpr, sizeExpr,
-    maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
+  constructor(store, name, typeExpr, setTypeExpr, textExpr, setTextExpr, placeholderExpr, setPlaceholderExpr,
+    clearExpr, setClearExpr, visibleExpr, setVisibleExpr, disableExpr, setDisableExpr, editableExpr, setEditableExpr, sizeExpr, setSizeExpr,
+    maxLengthExpr, setMaxLengthExpr, widthExpr, setWidthExpr, defaultValueExpr, setDefaultValueExpr, valueExpr, setValueExpr,
+    mappingExpr, setMappingExpr, formatExpr, setFormatExpr, errorExpr, setErrorExpr, extraExpr, setExtraExpr,
     onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
     onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick) {
 
@@ -352,23 +354,37 @@ export class Input {
     this.name = name || this.key;
 
     this.typeExpr = typeExpr;
+    this.setTypeExpr = setTypeExpr;
     this.textExpr = textExpr;
+    this.setTextExpr = setTextExpr;
     this.placeholderExpr = placeholderExpr;
+    this.setPlaceholderExpr = setPlaceholderExpr;
     this.clearExpr = clearExpr;
+    this.setClearExpr = setClearExpr;
     this.disableExpr = disableExpr;
+    this.setDisableExpr = setDisableExpr;
     this.editableExpr = editableExpr;
+    this.setEditableExpr = setEditableExpr;
     this.visibleExpr = visibleExpr;
+    this.setVisibleExpr = setVisibleExpr;
     this.sizeExpr = sizeExpr;
+    this.setSizeExpr = setSizeExpr;
     this.maxLengthExpr = maxLengthExpr;
+    this.setMaxLengthExpr = setMaxLengthExpr;
     this.widthExpr = widthExpr;
+    this.setWidthExpr = setWidthExpr;
     this.defaultValueExpr = defaultValueExpr;
+    this.setDefaultValueExpr = setDefaultValueExpr;
     this.valueExpr = valueExpr;
-    this.mappingExpr = mappingExpr;
-    this.formatExpr = formatExpr;
-    this.errorExpr = errorExpr;
-    this.extraExpr = extraExpr;
-
     this.setValueExpr = setValueExpr;
+    this.mappingExpr = mappingExpr;
+    this.setMappingExpr = setMappingExpr;
+    this.formatExpr = formatExpr;
+    this.setFormatExpr = setFormatExpr;
+    this.errorExpr = errorExpr;
+    this.setErrorExpr = setErrorExpr;
+    this.extraExpr = extraExpr;
+    this.setExtraExpr = setExtraExpr;
 
     this.onBeforeChange = onBeforeChange;
     // 默认赋值功能
@@ -394,132 +410,101 @@ export class Input {
       config.type = 'number';
       config.format = config.format || 'thousandth';
     }
-    config.text = config.text || '';
-    config.placeholder = config.placeholder || '';
-    config.size = config.size || 'default';
-    config.clear = config.clear || true;
-    config.visible = config.visible || true;
-    config.disable = config.disable || false;
-    config.editable = config.editable || true;
+    const args = [
+      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+      UIStore.parseExpr(config.text), UIStore.parseExpr(config.setText),
+      UIStore.parseExpr(config.placeholder), UIStore.parseExpr(config.setPlaceholder),
+      UIStore.parseExpr(config.clear || false), UIStore.parseExpr(config.setClear ),
+      UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible ),
+       UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable ),
+      UIStore.parseExpr(config.editable || true), UIStore.parseExpr(config.setEditable),
+      UIStore.parseExpr(config.size || 'default'), UIStore.parseExpr(config.setSize ),
+      UIStore.parseExpr(config.maxLength), UIStore.parseExpr(config.setMaxLength),
+       UIStore.parseExpr(config.width), UIStore.parseExpr(config.setWidth),
+      UIStore.parseExpr(config.defaultValue), UIStore.parseExpr(config.setDefaultValue),
+       UIStore.parseExpr(config.value), UIStore.parseExpr(config.setValue),
+       UIStore.parseExpr(config.mapping), UIStore.parseExpr(config.setMapping),
+      UIStore.parseExpr(config.format), UIStore.parseExpr(config.setFormat),
+      UIStore.parseExpr(config.error || true), UIStore.parseExpr(config.setError ),
+      UIStore.parseExpr(config.extra), UIStore.parseExpr(config.setExtra),
+      UIStore.parseExpr(config.min || -Infinity), UIStore.parseExpr(config.setMin ),
+      UIStore.parseExpr(config.max || Infinity), UIStore.parseExpr(config.setMax),
+      Action.createSchema(config.onChanging),
+      Action.createSchema(config.onChange), Action.createSchema(config.onChanged), Action.createSchema(config.onBluring),
+      Action.createSchema(config.onBlur), Action.createSchema(config.onBlured), Action.createSchema(config.onFocusing),
+      Action.createSchema(config.onFocus), Action.createSchema(config.onFocused), Action.createSchema(config.onErrorClicking),
+      Action.createSchema(config.onErrorClick), Action.createSchema(config.onErrorClicked),
+      Action.createSchema(config.onExtraClicking), Action.createSchema(config.onExtraClick),
+      Action.createSchema(config.onExtraClicked)
+    ];
+
     if (config.type === 'refselect') {
       return {
         type: RefInput,
-        args: [config.name || config.type, UIStore.parseExpr(config.type),
-          UIStore.parseExpr(config.text), UIStore.parseExpr(config.placeholder), UIStore.parseExpr(config.clear),
-          UIStore.parseExpr(config.visible), UIStore.parseExpr(config.disable),
-          UIStore.parseExpr(config.editable), UIStore.parseExpr(config.size),
-          UIStore.parseExpr(config.maxLength), UIStore.parseExpr(config.width),
-          UIStore.parseExpr(config.defaultValue), UIStore.parseExpr(config.value),
-          UIStore.parseExpr(config.setValue || config.value), UIStore.parseExpr(config.mapping),
-          UIStore.parseExpr(config.format), UIStore.parseExpr(config.error),
-          UIStore.parseExpr(config.extra), Action.createSchema(config.onChanging),
-          Action.createSchema(config.onChange), Action.createSchema(config.onChanged), Action.createSchema(config.onBluring),
-          Action.createSchema(config.onBlur), Action.createSchema(config.onBlured), Action.createSchema(config.onFocusing),
-          Action.createSchema(config.onFocus), Action.createSchema(config.onFocused), Action.createSchema(config.onErrorClicking),
-          Action.createSchema(config.onErrorClick), Action.createSchema(config.onErrorClicked),
-          Action.createSchema(config.onExtraClicking), Action.createSchema(config.onExtraClick),
+        args: [config.name || config.type,
           Action.createSchema(config.onExtraClicked),
-          UIStore.parseExpr(config.dropdownStyle || 'table'),
-          UIStore.parseExpr(config.multiple || false),
-          UIStore.parseExpr(config.showSearch || true),
-          UIStore.parseExpr(config.query), UIStore.parseExpr(config.variables),
-          UIStore.parseExpr(config.displayField),
-          UIStore.parseExpr(config.sortField),
-          UIStore.parseExpr(config.showHeader || this.dropdownStyle === 'table'),
-          UIStore.parseExpr(config.columns),
-          UIStore.parseExpr(config.setValue),
-          UIStore.parseExpr(config.pageSize || 20),
-          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.pidField || 'pid'),
-          UIStore.parseExpr(config.rootIdValue), UIStore.parseExpr(config.defaultExpandAll || false),
-          UIStore.parseExpr(config.defaultExpandKeys)
+          UIStore.parseExpr(config.dropdownStyle || 'table'), UIStore.parseExpr(config.setDropdownStyle ),
+          UIStore.parseExpr(config.multiple || false), UIStore.parseExpr(config.setMultiple ),
+          UIStore.parseExpr(config.showSearch || true), UIStore.parseExpr(config.setShowSearch ),
+          UIStore.parseExpr(config.query), UIStore.parseExpr(config.setQuery),
+          UIStore.parseExpr(config.variables), UIStore.parseExpr(config.setVariables),
+          UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.setDisplayField),
+          UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
+          UIStore.parseExpr(config.showHeader || this.dropdownStyle === 'table'), UIStore.parseExpr(config.setShowHeader ),
+          UIStore.parseExpr(config.columns), UIStore.parseExpr(config.setColumns), 
+          UIStore.parseExpr(config.pageSize || 20), UIStore.parseExpr(config.setPageSize ),
+          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField ),
+          UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField ),
+          UIStore.parseExpr(config.rootIdValue), UIStore.parseExpr(config.setRootIdValue),
+          UIStore.parseExpr(config.defaultExpandAll || false), UIStore.parseExpr(config.setDefaultExpandAll ),
+          UIStore.parseExpr(config.defaultExpandKeys),
+            ...args
         ]
       };
     } else if (config.type === 'inputtable' || config.type === 'table') {
       return {
         type: InputTable,
-        args: [config.name || config.type, UIStore.parseExpr(config.type),
-          UIStore.parseExpr(config.text), UIStore.parseExpr(config.placeholder), UIStore.parseExpr(config.clear),
-          UIStore.parseExpr(config.visible), UIStore.parseExpr(config.disable),
-          UIStore.parseExpr(config.editable), UIStore.parseExpr(config.size),
-          UIStore.parseExpr(config.maxLength), UIStore.parseExpr(config.width),
-          UIStore.parseExpr(config.defaultValue), UIStore.parseExpr(config.value),
-          UIStore.parseExpr(config.setValue || config.value), UIStore.parseExpr(config.mapping),
-          UIStore.parseExpr(config.format), UIStore.parseExpr(config.error),
-          UIStore.parseExpr(config.extra), Action.createSchema(config.onChanging),
-          Action.createSchema(config.onChange), Action.createSchema(config.onChanged), Action.createSchema(config.onBluring),
-          Action.createSchema(config.onBlur), Action.createSchema(config.onBlured), Action.createSchema(config.onFocusing),
-          Action.createSchema(config.onFocus), Action.createSchema(config.onFocused), Action.createSchema(config.onErrorClicking),
-          Action.createSchema(config.onErrorClick), Action.createSchema(config.onErrorClicked),
-          Action.createSchema(config.onExtraClicking), Action.createSchema(config.onExtraClick),
-          Action.createSchema(config.onExtraClicked),
-          EditTable.createSchema(config.table)
+        args: [config.name || config.type,
+          EditTable.createSchema(config.table),
+          ...args
         ]
       };
     } else if (config.type === 'select') {
       return {
         type: Select,
-        args: [config.name || config.type, UIStore.parseExpr(config.type),
-          UIStore.parseExpr(config.text), UIStore.parseExpr(config.placeholder), UIStore.parseExpr(config.clear),
-          UIStore.parseExpr(config.visible), UIStore.parseExpr(config.disable),
-          UIStore.parseExpr(config.editable), UIStore.parseExpr(config.size),
-          UIStore.parseExpr(config.maxLength), UIStore.parseExpr(config.width),
-          UIStore.parseExpr(config.defaultValue), UIStore.parseExpr(config.value),
-          UIStore.parseExpr(config.setValue || config.value), UIStore.parseExpr(config.mapping),
-          UIStore.parseExpr(config.format), UIStore.parseExpr(config.error),
-          UIStore.parseExpr(config.extra), Action.createSchema(config.onChanging),
-          Action.createSchema(config.onChange), Action.createSchema(config.onChanged), Action.createSchema(config.onBluring),
-          Action.createSchema(config.onBlur), Action.createSchema(config.onBlured), Action.createSchema(config.onFocusing),
-          Action.createSchema(config.onFocus), Action.createSchema(config.onFocused), Action.createSchema(config.onErrorClicking),
-          Action.createSchema(config.onErrorClick), Action.createSchema(config.onErrorClicked),
-          Action.createSchema(config.onExtraClicking), Action.createSchema(config.onExtraClick),
-          Action.createSchema(config.onExtraClicked),
-          UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.mode),
-          UIStore.parseExpr(config.displayField || 'id'), UIStore.parseExpr(config.valueField || 'id'), UIStore.parseExpr(config.sortField)
+        args: [config.name || config.type,
+          UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.setDataSource),
+          UIStore.parseExpr(config.mode), UIStore.parseExpr(config.setMode),
+          UIStore.parseExpr(config.displayField || 'id'), UIStore.parseExpr(config.setDisplayField ),
+          UIStore.parseExpr(config.valueField || 'id'), UIStore.parseExpr(config.setValueField ),
+          UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
+          ...args
         ]
       };
     } else if (config.type === 'treeselect') {
       return {
         type: TreeSelect,
-        args: [config.name || config.type, UIStore.parseExpr(config.type),
-          UIStore.parseExpr(config.text), UIStore.parseExpr(config.placeholder), UIStore.parseExpr(config.clear),
-          UIStore.parseExpr(config.visible), UIStore.parseExpr(config.disable),
-          UIStore.parseExpr(config.editable), UIStore.parseExpr(config.size),
-          UIStore.parseExpr(config.maxLength), UIStore.parseExpr(config.width),
-          UIStore.parseExpr(config.defaultValue), UIStore.parseExpr(config.value),
-          UIStore.parseExpr(config.setValue || config.value), UIStore.parseExpr(config.mapping),
-          UIStore.parseExpr(config.format), UIStore.parseExpr(config.error),
-          UIStore.parseExpr(config.extra), Action.createSchema(config.onChanging),
-          Action.createSchema(config.onChange), Action.createSchema(config.onChanged), Action.createSchema(config.onBluring),
-          Action.createSchema(config.onBlur), Action.createSchema(config.onBlured), Action.createSchema(config.onFocusing),
-          Action.createSchema(config.onFocus), Action.createSchema(config.onFocused), Action.createSchema(config.onErrorClicking),
-          Action.createSchema(config.onErrorClick), Action.createSchema(config.onErrorClicked),
-          Action.createSchema(config.onExtraClicking), Action.createSchema(config.onExtraClick),
-          Action.createSchema(config.onExtraClicked),
-          UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.mode),
-          UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.valueField), UIStore.parseExpr(config.sortField),
-          UIStore.parseExpr(config.showSearch || false), UIStore.parseExpr(config.allowClear || true), UIStore.parseExpr(config.treeDefaultExpandAll || true), UIStore.parseExpr(config.maxHeight || 400), UIStore.parseExpr(config.treeCheckable || false),
-          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.rootIdValue)
+        args: [config.name || config.type,
+          UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.setDataSource),
+          UIStore.parseExpr(config.mode), UIStore.parseExpr(config.setMode),
+          UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.setDisplayField),
+          UIStore.parseExpr(config.valueField), UIStore.parseExpr(config.setValueField),
+          UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
+          UIStore.parseExpr(config.showSearch || false), UIStore.parseExpr(config.setShowSearch ),
+          UIStore.parseExpr(config.allowClear || true), UIStore.parseExpr(config.setAllowClear ),
+          UIStore.parseExpr(config.treeDefaultExpandAll || true), UIStore.parseExpr(config.setTreeDefaultExpandAll),
+          UIStore.parseExpr(config.maxHeight || 400), UIStore.parseExpr(config.setMaxHeight ),
+          UIStore.parseExpr(config.treeCheckable || false), UIStore.parseExpr(config.setTreeCheckable),
+          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField ),
+          UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField ),
+          UIStore.parseExpr(config.rootIdValue), UIStore.parseExpr(config.setRootIdValue),
+          ...args
         ]
       };
     } else if (config.type === 'number') {
       return {
         type: NumberInput,
-        args: [config.name || config.type, UIStore.parseExpr(config.type),
-          UIStore.parseExpr(config.text), UIStore.parseExpr(config.placeholder), UIStore.parseExpr(config.clear),
-          UIStore.parseExpr(config.visible), UIStore.parseExpr(config.disable),
-          UIStore.parseExpr(config.editable), UIStore.parseExpr(config.size),
-          UIStore.parseExpr(config.maxLength), UIStore.parseExpr(config.width),
-          UIStore.parseExpr(config.defaultValue), UIStore.parseExpr(config.value),
-          UIStore.parseExpr(config.setValue || config.value), UIStore.parseExpr(config.mapping),
-          UIStore.parseExpr(config.format), UIStore.parseExpr(config.error),
-          UIStore.parseExpr(config.extra), UIStore.parseExpr(config.min), UIStore.parseExpr(config.max), Action.createSchema(config.onChanging),
-          Action.createSchema(config.onChange), Action.createSchema(config.onChanged), Action.createSchema(config.onBluring),
-          Action.createSchema(config.onBlur), Action.createSchema(config.onBlured), Action.createSchema(config.onFocusing),
-          Action.createSchema(config.onFocus), Action.createSchema(config.onFocused), Action.createSchema(config.onErrorClicking),
-          Action.createSchema(config.onErrorClick), Action.createSchema(config.onErrorClicked),
-          Action.createSchema(config.onExtraClicking), Action.createSchema(config.onExtraClick),
-          Action.createSchema(config.onExtraClicked)
-        ]
+        args: [config.name || config.type, ...args]
       };
     } else {
       if (!config.format) {
@@ -544,22 +529,7 @@ export class Input {
       }
       return {
         type: Input,
-        args: [config.name || config.type || 'text', UIStore.parseExpr(config.type),
-          UIStore.parseExpr(config.text), UIStore.parseExpr(config.placeholder), UIStore.parseExpr(config.clear),
-          UIStore.parseExpr(config.visible), UIStore.parseExpr(config.disable),
-          UIStore.parseExpr(config.editable), UIStore.parseExpr(config.size),
-          UIStore.parseExpr(config.maxLength), UIStore.parseExpr(config.width),
-          UIStore.parseExpr(config.defaultValue), UIStore.parseExpr(config.value),
-          UIStore.parseExpr(config.setValue || config.value), UIStore.parseExpr(config.mapping),
-          UIStore.parseExpr(config.format), UIStore.parseExpr(config.error),
-          UIStore.parseExpr(config.extra), Action.createSchema(config.onChanging),
-          Action.createSchema(config.onChange), Action.createSchema(config.onChanged), Action.createSchema(config.onBluring),
-          Action.createSchema(config.onBlur), Action.createSchema(config.onBlured), Action.createSchema(config.onFocusing),
-          Action.createSchema(config.onFocus), Action.createSchema(config.onFocused), Action.createSchema(config.onErrorClicking),
-          Action.createSchema(config.onErrorClick), Action.createSchema(config.onErrorClicked),
-          Action.createSchema(config.onExtraClicking), Action.createSchema(config.onExtraClick),
-          Action.createSchema(config.onExtraClicked)
-        ]
+        args: [config.name || config.type, ...args]
       };
     }
   }
@@ -588,17 +558,13 @@ export class NumberInput extends Input {
     this.setMinExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
-    maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr, minExpr = -Infinity, maxExpr = Infinity,
-    onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-    onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
-      maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
-      onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-      onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick);
+  constructor(store, name, minExpr, setMinExpr, maxExpr, setMaxExpr, ...other) {
+    super(store, name, ...other);
 
     this.minExpr = minExpr;
+    this.setMinExpr = setMinExpr;
     this.maxExpr = maxExpr;
+    this.setMaxExpr = setMaxExpr;
   }
 }
 
@@ -719,23 +685,26 @@ export class Select extends Input {
     });
   }
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
-    maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
-    onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-    onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
-    dataSourceExpr, modeExpr, dataMappingExpr, displayFieldExpr, valueFieldExpr, sortFieldExpr) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
-      maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
-      onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-      onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick);
+  constructor(store, name,
+    dataSourceExpr, setDataSourceExpr, modeExpr, setModeExpr, dataMappingExpr,
+    setDataMappingExpr, displayFieldExpr, setDisplayFieldExpr, valueFieldExpr,
+    setValueFieldExpr, sortFieldExpr, setSortFieldExpr,
+    ...other) {
+    super(store, name, ...other);
 
-    this.dataSourceExpr = dataSourceExpr || [];
+    this.dataSourceExpr = dataSourceExpr ;
+    this.setDataSourceExpr = setDataSourceExpr;
     this.modeExpr = modeExpr;
+    this.setModeExpr = setModeExpr;
     this.dataMappingExpr = dataMappingExpr;
+    this.setDataMappingExpr = setDataMappingExpr;
 
     this.displayFieldExpr = displayFieldExpr;
+    this.setDisplayFieldExpr = setDisplayFieldExpr;
     this.valueFieldExpr = valueFieldExpr;
+    this.setValueFieldExpr = setValueFieldExpr;
     this.sortFieldExpr = sortFieldExpr;
+    this.setSortFieldExpr = setSortFieldExpr;
   }
 }
 
@@ -998,45 +967,39 @@ export class TreeSelect extends Select {
     });
   }
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
-    maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
-    onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-    onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
-    dataSourceExpr, modeExpr,
-    displayFieldExpr, valueFieldExpr, sortFieldExpr,
-    showSearchExpr, allowClearExpr, treeDefaultExpandAllExpr, maxHeightExpr, treeCheckableExpr,
-    idFieldExpr, pidFieldExpr, rootIdValueExpr) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
-      maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
-      onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-      onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
-      dataSourceExpr, modeExpr,
-      displayFieldExpr, valueFieldExpr, sortFieldExpr);
+  constructor(store, name,
+    showSearchExpr, setShowSearchExpr, allowClearExpr, setAllowClearExpr,
+    treeDefaultExpandAllExpr, setTreeDefaultExpandAllExpr, maxHeightExpr,
+    setMaxHeightExpr, treeCheckableExpr, setTreeCheckableExpr,
+    idFieldExpr, setIdFieldExpr, pidFieldExpr, setPidFieldExpr, rootIdValueExpr, setRootIdValueExpr,
+    ...other) {
+    super(store, name, ...other);
 
     this.showSearchExpr = showSearchExpr;
+    this.setShowSearchExpr = setShowSearchExpr;
     this.allowClearExpr = allowClearExpr;
+    this.setAllowClearExpr = setAllowClearExpr;
     this.treeDefaultExpandAllExpr = treeDefaultExpandAllExpr;
+    this.setTreeDefaultExpandAllExpr = setTreeDefaultExpandAllExpr;
     this.maxHeightExpr = maxHeightExpr;
+    this.setMaxHeightExpr = setMaxHeightExpr;
     this.treeCheckableExpr = treeCheckableExpr;
+    this.setTreeCheckableExpr = setTreeCheckableExpr;
 
     this.idFieldExpr = idFieldExpr;
+    this.setIdFieldExpr = setIdFieldExpr;
     this.pidFieldExpr = pidFieldExpr;
+    this.setPidFieldExpr = setPidFieldExpr;
     this.rootIdValueExpr = rootIdValueExpr;
+    this.setRootIdValueExpr = setRootIdValueExpr;
   }
 }
 
 export class InputTable extends Input {
   @observable table;
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
-    maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
-    onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-    onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
-    table) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
-      maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
-      onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-      onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick);
+  constructor(store, name, table, ...other) {
+    super(store, name, ...other);
 
     this.table = table;
   }
@@ -1321,35 +1284,36 @@ export class RefInput extends Input {
     }
   }
 
-  constructor(store, name, typeExpr = 'text', textExpr, placeholderExpr, clearExpr = false, visibleExpr = true, disableExpr = false, sizeExpr = 'default',
-    maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr = '', errorExpr = true, extraExpr,
-    onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-    onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick,
-    dropdownStyleExpr,
-    multipleExpr,
-    showSearchExpr,
-    queryExpr,
-    variablesExpr,
-    displayFieldExpr,
-    sortFieldExpr,
-    showHeaderExpr,
+  constructor(store, name,
+    dropdownStyleExpr, setDropdownStyleExpr, multipleExpr, setMultipleExpr,
+     showSearchExpr, setShowSearchExpr, queryExpr, setQueryExpr, variablesExpr,
+     setVariablesExpr, displayFieldExpr, setDisplayFieldExpr, sortFieldExpr,
+     setSortFieldExpr, showHeaderExpr, setShowHeaderExpr,
     columns,
-    pageSizeExpr,
-    idFieldExpr, pidFieldExpr, rootIdValueExpr, defaultExpandAllExpr, defaultExpandKeysExpr) {
-    super(store, name, typeExpr, textExpr, placeholderExpr, clearExpr, visibleExpr, disableExpr, sizeExpr,
-      maxLengthExpr, widthExpr, defaultValueExpr, valueExpr, setValueExpr, mappingExpr, formatExpr, errorExpr, extraExpr,
-      onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
-      onErrorClick, onAfterErrorClick, onBeforeExtraClick, onExtraClick, onAfterExtraClick)
+    pageSizeExpr, setPageSizeExpr, idFieldExpr, setIdFieldExpr, pidFieldExpr,
+    setPidFieldExpr, rootIdValueExpr, setRootIdValueExpr, defaultExpandAllExpr,
+    setDefaultExpandAllExpr, defaultExpandKeysExpr, setDefaultExpandKeysExpr,
+    ...other) {
+    super(store, name, ...other)
 
     this.dropdownStyleExpr = dropdownStyleExpr;
+    this.setDropdownStyleExpr = setDropdownStyleExpr;
     this.multipleExpr = multipleExpr;
+    this.setMultipleExpr = setMultipleExpr;
     this.showSearchExpr = showSearchExpr;
+    this.setShowSearchExpr = setShowSearchExpr;
     this.queryExpr = queryExpr;
+    this.setQueryExpr = setQueryExpr;
     this.variablesExpr = variablesExpr;
+    this.setVariablesExpr = setVariablesExpr;
     this.displayFieldExpr = displayFieldExpr;
+    this.setDisplayFieldExpr = setDisplayFieldExpr;
     this.sortFieldExpr = sortFieldExpr;
+    this.setSortFieldExpr = setSortFieldExpr;
     this.showHeaderExpr = showHeaderExpr;
+    this.setShowHeaderExpr = setShowHeaderExpr;
     this.pageSizeExpr = pageSizeExpr;
+    this.setPageSizeExpr = setPageSizeExpr;
     if (!columns) {
       // list 和 tree 不显示header
       if (this.dropdownStyle !== 'table') {
@@ -1361,9 +1325,14 @@ export class RefInput extends Input {
     }
     this.columns = columns;
     this.idFieldExpr = idFieldExpr;
+    this.setIdFieldExpr = setIdFieldExpr;
     this.pidFieldExpr = pidFieldExpr;
+    this.setPidFieldExpr = setPidFieldExpr;
     this.rootIdValueExpr = rootIdValueExpr;
+    this.setRootIdValueExpr = setRootIdValueExpr;
     this.defaultExpandAllExpr = defaultExpandAllExpr;
+    this.setDefaultExpandAllExpr = setDefaultExpandAllExpr;
     this.defaultExpandKeysExpr = defaultExpandKeysExpr;
+    this.setDefaultExpandKeysExpr = setDefaultExpandKeysExpr;
   }
 }

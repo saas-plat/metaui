@@ -194,23 +194,33 @@ export class Container {
       this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, type, text, description, icon, disableExpr, visibleExpr = true,
-    layout, spanExpr, itemWidthExpr, items = [], btns = []) {
+  constructor(store, name, typeExpr, setTypeExpr, textExpr, setTextExpr, descriptionExpr, setDescriptionExpr,
+    iconExpr, setIconExpr, disableExpr, setDisableExpr, visibleExpr, setVisibleExpr, layoutExpr,setLayoutExpr,
+    spanExpr,  setSpanExpr, itemWidthExpr, setItemWidthExpr, items , btns) {
     this.key = assignId('Container');
     this.store = store;
     this.name = name || this.key;
-    this.typeExpr = type;
-    this.textExpr = text;
-    this.descriptionExpr = description;
-    this.iconExpr = icon;
+    this.typeExpr = typeExpr;
+    this.setTypeExpr = setTypeExpr;
+    this.textExpr = textExpr;
+    this.setTextExpr = setTextExpr;
+    this.descriptionExpr = descriptionExpr;
+    this.setDescriptionExpr = setDescriptionExpr;
+    this.iconExpr = iconExpr;
+    this.setIconExpr = setIconExpr;
     this.disableExpr = disableExpr;
+    this.setDisableExpr = setDisableExpr;
     this.visibleExpr = visibleExpr;
+    this.setVisibleExpr = setVisibleExpr;
     this.allitems = items;
     this.allbtns = btns;
 
-    this.layoutExpr = layout;
+    this.layoutExpr = layoutExpr;
+    this.setLayoutExpr = setLayoutExpr;
     this.spanExpr = spanExpr;
+    this.setSpanExpr = setSpanExpr;
     this.itemWidthExpr = itemWidthExpr;
+    this.setItemWidthExpr = setItemWidthExpr;
   }
 
   @action addItem(...items) {
@@ -262,9 +272,16 @@ export class Container {
     return {
       type: Container,
       args: [
-        config.name || config.type, UIStore.parseExpr(config.type), UIStore.parseExpr(config.title || config.text),
-        UIStore.parseExpr(config.description), UIStore.parseExpr(config.icon), UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.visible || true),
-        UIStore.parseExpr(config.layout || 'flow'), UIStore.parseExpr(config.span), UIStore.parseExpr(config.itemWidth),
+        config.name || config.type,
+         UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+         UIStore.parseExpr(config.title || config.text), UIStore.parseExpr(config.setTitle),
+        UIStore.parseExpr(config.description), UIStore.parseExpr(config.setDescription),
+        UIStore.parseExpr(config.icon), UIStore.parseExpr(config.setIcon),
+        UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable),
+        UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible ),
+        UIStore.parseExpr(config.layout || 'flow'), UIStore.parseExpr(config.setLayout ),
+        UIStore.parseExpr(config.span), UIStore.parseExpr(config.setSpan),
+        UIStore.parseExpr(config.itemWidth), UIStore.parseExpr(config.setItemWidth),
         items.map(it => UIStore.createSchema(it, options)),
         (config.btns || []).map(it => Button.createSchema(it, options))
       ]

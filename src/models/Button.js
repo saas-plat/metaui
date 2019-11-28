@@ -48,7 +48,7 @@ export class Button {
     return this.store.execExpr(this.setTypeExpr);
   }
   set setType(setValue) {
-      this.setTypeExpr = UIStore.parseExpr(setValue);
+    this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get disable() {
@@ -64,7 +64,7 @@ export class Button {
     return this.store.execExpr(this.setDisableExpr);
   }
   set setDisable(setValue) {
-      this.setDisableExpr = UIStore.parseExpr(setValue);
+    this.setDisableExpr = UIStore.parseExpr(setValue);
   }
   @computed get visible() {
     return this.store.execExpr(this.visibleExpr);
@@ -79,7 +79,7 @@ export class Button {
     return this.store.execExpr(this.setVisibleExpr);
   }
   set setVisible(setValue) {
-      this.setVisibleExpr = UIStore.parseExpr(setValue);
+    this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get text() {
@@ -95,7 +95,7 @@ export class Button {
     return this.store.execExpr(this.setTextExpr);
   }
   set setText(setValue) {
-      this.setTextExpr = UIStore.parseExpr(setValue);
+    this.setTextExpr = UIStore.parseExpr(setValue);
   }
   @computed get icon() {
     return this.store.execExpr(this.iconExpr);
@@ -110,19 +110,26 @@ export class Button {
     return this.store.execExpr(this.setIconExpr);
   }
   set setIcon(setValue) {
-      this.setIconExpr = UIStore.parseExpr(setValue);
+    this.setIconExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, type, text, icon, disableExpr = false, visibleExpr = true, onClick, items = []) {
+  constructor(store, name, typeExpr, setTypeExpr, textExpr, setTextExpr,
+    iconExpr, setIconExpr, disableExpr, setDisableExpr,
+    visibleExpr, setVisibleExpr, onClick, items) {
     this.key = assignId('Button');
     this.store = store;
     this.name = name || this.key;
 
-    this.typeExpr = type;
-    this.textExpr = text;
-    this.iconExpr = icon;
+    this.typeExpr = typeExpr;
+    this.setTypeExpr = setTypeExpr;
+    this.textExpr = textExpr;
+    this.setTextExpr = setTextExpr;
+    this.iconExpr = iconExpr;
+    this.setIconExpr = setIconExpr;
     this.disableExpr = disableExpr;
+    this.setDisableExpr = setDisableExpr;
     this.visibleExpr = visibleExpr;
+    this.setVisibleExpr = setVisibleExpr;
 
     this.allitems = items;
 
@@ -133,9 +140,12 @@ export class Button {
     console.log('parse %s button item...', config.name)
     return {
       type: Button,
-      args: [config.name || config.type, UIStore.parseExpr(config.type || 'button'),
-        UIStore.parseExpr(config.text), UIStore.parseExpr(config.icon),
-        UIStore.parseExpr(config.disable), UIStore.parseExpr(config.visible),
+      args: [config.name || config.type,
+        UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+        UIStore.parseExpr(config.text), UIStore.parseExpr(config.setText),
+        UIStore.parseExpr(config.icon), UIStore.parseExpr(config.setIcon),
+        UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable ),
+        UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible ),
         Action.createSchema(config.onClick),
         config.items && config.items.map(it => Button.createSchema(it))
       ]

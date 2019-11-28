@@ -210,22 +210,31 @@ export class Rule {
       this.setDisableExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, typeExpr, messageExpr, requiredExpr, enumExpr, lenExpr,
-    patternExpr, whitespaceExpr, minExpr, maxExpr, disableExpr) {
+  constructor(store, name,typeExpr, setTypeExpr,messageExpr, setMessageExpr, requiredExpr, setRequiredExpr, enumExpr, setEnumExpr, lenExpr, setLenExpr, patternExpr, setPatternExpr, whitespaceExpr, setWhitespaceExpr, minExpr, setMinExpr, maxExpr, setMaxExpr, disableExpr, setDisableExpr) {
     this.key = assignId('Rule');
     this.store = store;
     this.name = name || this.key;
 
     this.typeExpr = typeExpr;
+    this.setTypeExpr = setTypeExpr;
     this.requiredExpr = requiredExpr;
+    this.setRequiredExpr = setRequiredExpr;
     this.messageExpr = messageExpr;
+    this.setMessageExpr = setMessageExpr;
     this.enumExpr = enumExpr;
+    this.setEnumExpr = setEnumExpr;
     this.lenExpr = lenExpr;
+    this.setLenExpr = setLenExpr;
     this.patternExpr = patternExpr;
+    this.setPatternExpr = setPatternExpr;
     this.whitespaceExpr = whitespaceExpr;
+    this.setWhitespaceExpr = setWhitespaceExpr;
     this.minExpr = minExpr;
+    this.setMinExpr = setMinExpr;
     this.maxExpr = maxExpr;
+    this.setMaxExpr = setMaxExpr;
     this.disableExpr = disableExpr;
+    this.setDisableExpr = setDisableExpr;
   }
 
   static createSchema(config, options = {}) {
@@ -233,15 +242,15 @@ export class Rule {
     return {
       type: Rule,
       args: [config.name || config.type,
-        UIStore.parseExpr(config.type),
-        UIStore.parseExpr(config.message),
-        UIStore.parseExpr(config.required || options.required),
-        UIStore.parseExpr(config.enum || options.enum),
-        UIStore.parseExpr(config.len || options.len),
-        UIStore.parseExpr(config.pattern || options.pattern),
-        UIStore.parseExpr(config.whitespace || options.whitespace),
-        UIStore.parseExpr(config.min || options.min),
-        UIStore.parseExpr(config.max || options.max)
+        UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+        UIStore.parseExpr(config.message), UIStore.parseExpr(config.setMessage),
+        UIStore.parseExpr(config.required || options.required), UIStore.parseExpr(config.setRequired || options.required),
+        UIStore.parseExpr(config.enum || options.enum), UIStore.parseExpr(config.setEnum || options.enum),
+        UIStore.parseExpr(config.len || options.len), UIStore.parseExpr(config.setLen || options.len),
+        UIStore.parseExpr(config.pattern || options.pattern), UIStore.parseExpr(config.setPattern || options.pattern),
+        UIStore.parseExpr(config.whitespace || options.whitespace), UIStore.parseExpr(config.setWhitespace || options.whitespace),
+        UIStore.parseExpr(config.min || options.min), UIStore.parseExpr(config.setMin || options.min),
+        UIStore.parseExpr(config.max || options.max), UIStore.parseExpr(config.setMax || options.max)
       ]
     };
   }
@@ -422,19 +431,26 @@ export class FormItem {
       this.setTipTextExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, labelSpanExpr, labelTextExpr, labelIconExpr,
-    tipTextExpr, extraExpr, descriptionExpr, inputItem, rules, btns) {
+  constructor(store, name, labelSpanExpr, setLabelSpanExpr, labelTextExpr,
+    setLabelTextExpr, labelIconExpr, setLabelIconExpr, tipTextExpr, setTipTextExpr,
+    extraExpr, setExtraExpr, descriptionExpr, setDescriptionExpr, inputItem, rules, btns) {
     this.key = assignId('FormItem');
     this.store = store;
     this.name = name || this.key;
 
     this.labelSpanExpr = labelSpanExpr;
+    this.setLabelSpanExpr = setLabelSpanExpr;
     this.labelTextExpr = labelTextExpr;
+    this.setLabelTextExpr = setLabelTextExpr;
     this.labelIconExpr = labelIconExpr;
+    this.setLabelIconExpr = setLabelIconExpr;
     this.tipTextExpr = tipTextExpr;
+    this.setTipTextExpr = setTipTextExpr;
 
     this.extraExpr = extraExpr;
+    this.setExtraExpr = setExtraExpr;
     this.descriptionExpr = descriptionExpr;
+    this.setDescriptionExpr = setDescriptionExpr;
 
     this.inputItem = inputItem;
     this.allrules = rules;
@@ -524,8 +540,13 @@ export class FormItem {
     } = config;
     return {
       type: FormItem,
-      args: [config.name || config.type, UIStore.parseExpr(labelSpan || 6), UIStore.parseExpr(labelText || ''), UIStore.parseExpr(config.labelIcon || config.icon),
-        UIStore.parseExpr(config.tipText || config.tip || ''), UIStore.parseExpr(config.extra), UIStore.parseExpr(config.description || ''),
+      args: [config.name || config.type,
+      UIStore.parseExpr(labelSpan || 6),  UIStore.parseExpr(config.setLabelSpan  ),
+      UIStore.parseExpr(labelText || ''),  UIStore.parseExpr(config.setLabelText  ),
+      UIStore.parseExpr(config.labelIcon || config.icon), UIStore.parseExpr(config.setLabelIcon  ),
+        UIStore.parseExpr(config.tipText || config.tip || ''), UIStore.parseExpr(config.setTipText ),
+        UIStore.parseExpr(config.extra), UIStore.parseExpr(config.setExtra),
+        UIStore.parseExpr(config.description || ''), UIStore.parseExpr(config.setDescription  ),
         UIStore.createSchema({
           ...inputconfig,
           type: input || type
@@ -625,8 +646,7 @@ export class Form {
   @observable onSave;
   @observable onAfterSave;
 
-  constructor(store, name, type,
-    disableExpr, visibleExpr = true,
+  constructor(store, name, typeExpr, setTypeExpr, disableExpr, setDisableExpr, visibleExpr, setVisibleExpr ,
     items = [],
     onBeforeChange, onChange, onAfterChange,
     onBeforeLoad, onLoad, onAfterLoad,
@@ -638,9 +658,12 @@ export class Form {
     this.store = store;
     this.name = name || this.key;
     this.allitems = items;
-    this.typeExpr = UIStore.parseExpr(type);
-    this.disableExpr = UIStore.parseExpr(disableExpr);
-    this.visibleExpr = UIStore.parseExpr(visibleExpr);
+    this.typeExpr = typeExpr;
+    this.setTypeExpr = setTypeExpr;
+    this.disableExpr = disableExpr;
+    this.setDisableExpr = setDisableExpr;
+    this.visibleExpr = visibleExpr;
+    this.setVisibleExpr = setVisibleExpr;
 
     this.onBeforeChange = onBeforeChange;
     this.onChange = onChange;
@@ -690,6 +713,9 @@ export class Form {
         type,
         disable,
         visible,
+        setType,
+        setDisable,
+        setVisible,
         onChanging,
         onChange,
         onChanged,
@@ -710,6 +736,9 @@ export class Form {
         type,
         disable,
         visible,
+        setType,
+        setDisable,
+        setVisible,
         onChanging,
         onChange,
         onChanged,
@@ -735,8 +764,10 @@ export class Form {
     }
     return {
       type: Form,
-      args: [props.name || props.type, UIStore.parseExpr(props.type),
-        UIStore.parseExpr(props.disable || false), UIStore.parseExpr(props.visible || true),
+      args: [props.name || props.type,
+       UIStore.parseExpr(props.type), UIStore.parseExpr(props.setType),
+        UIStore.parseExpr(props.disable || false), UIStore.parseExpr(props.setDisable  ),
+        UIStore.parseExpr(props.visible || true),UIStore.parseExpr(props.setDisable  ),
         props.items.map(it => Container.createSchema(it, props.options)),
         Action.createSchema(props.onChanging), Action.createSchema(props.onChange), Action.createSchema(props.onChanged),
         Action.createSchema(props.onLoading), Action.createSchema(props.onLoad), Action.createSchema(props.onLoaded),

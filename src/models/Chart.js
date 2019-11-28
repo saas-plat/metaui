@@ -51,7 +51,7 @@ class Style {
       this.setWidthExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, heightExpr = '300', widthExpr = '100%') {
+  constructor(store, name, heightExpr, setHeightExpr , widthExpr, setWidthExpr ) {
 
     this.key = assignId('Style');
     this.store = store;
@@ -64,7 +64,10 @@ class Style {
   static createSchema(config = {}) {
     return {
       type: Style,
-      args: [config.name || config.type, UIStore.parseExpr(config.height), UIStore.parseExpr(config.width)]
+      args: [config.name || config.type,
+       UIStore.parseExpr(config.height || '300'), UIStore.parseExpr(config.setHeight ),
+        UIStore.parseExpr(config.width || '100%'), UIStore.parseExpr(config.setWidth )
+        ]
     };
   }
 }
@@ -96,13 +99,14 @@ export class Chart {
       this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, typeExpr, style) {
+  constructor(store, name, typeExpr, setTypeExpr, style) {
 
     this.key = assignId('Chart');
     this.store = store;
     this.name = name || this.key;
 
     this.typeExpr = typeExpr;
+    this.setTypeExpr = setTypeExpr;
     this.style = style;
   }
 
@@ -110,7 +114,9 @@ export class Chart {
     console.log('parse chart...')
     return {
       type: Chart,
-      args: [config.name || config.type, UIStore.parseExpr(config.type), Style.createSchema(config.style)]
+      args: [config.name || config.type, 
+      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType), 
+      Style.createSchema(config.style)]
     };
   }
 }

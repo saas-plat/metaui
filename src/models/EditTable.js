@@ -161,21 +161,28 @@ export class EditColumn {
       this.setWidthExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, inputItem, visibleExpr = true, disabledExpr = false, alignExpr,
-    colSpanExpr, dataIndexExpr, fixedExpr, titleExpr, widthExpr, children = null) {
+  constructor(store, name, inputItem, visibleExpr, setVisibleExpr, disabledExpr, setDisabledExpr , alignExpr, setAlignExpr, colSpanExpr, setColSpanExpr, dataIndexExpr, setDataIndexExpr, fixedExpr, setFixedExpr, titleExpr, setTitleExpr, widthExpr, setWidthExpr, children ) {
     this.key = assignId('EditColumn');
     this.store = store;
     this.name = name || this.key;
 
     this.inputItem = inputItem;
     this.alignExpr = alignExpr;
+    this.setAlignExpr = setAlignExpr;
     this.colSpanExpr = colSpanExpr;
+    this.setColSpanExpr = setColSpanExpr;
     this.dataIndexExpr = dataIndexExpr;
+    this.setDataIndexExpr = setDataIndexExpr;
     this.fixedExpr = fixedExpr;
+    this.setFixedExpr = setFixedExpr;
     this.titleExpr = titleExpr;
+    this.setTitleExpr = setTitleExpr;
     this.widthExpr = widthExpr;
+    this.setWidthExpr = setWidthExpr;
     this.disabledExpr = disabledExpr;
+    this.setDisabledExpr = setDisabledExpr;
     this.visibleExpr = visibleExpr;
+    this.setVisibleExpr = setVisibleExpr;
     this.children = children;
   }
 
@@ -183,10 +190,17 @@ export class EditColumn {
     console.log('parse edit table column...')
     return {
       type: EditColumn,
-      args: [config.name || config.type, UIStore.createSchema(config),
-        UIStore.parseExpr(config.visible || options.visible), UIStore.parseExpr(config.disabled || options.visible), UIStore.parseExpr(config.align),
-        UIStore.parseExpr(config.colSpan), UIStore.parseExpr(config.dataIndex || config.value), UIStore.parseExpr(config.fixed), UIStore.parseExpr(config.title || config.text),
-        UIStore.parseExpr(config.width || config.columnWidth), (config.columns || []).map(it => EditColumn.createSchema(it))
+      args: [config.name || config.type, 
+      UIStore.createSchema(config),
+        UIStore.parseExpr(config.visible || options.visible || true), UIStore.parseExpr(config.setVisible),
+         UIStore.parseExpr(config.disable || options.disable || false), UIStore.parseExpr(config.setDisable ), 
+         UIStore.parseExpr(config.align), UIStore.parseExpr(config.setAlign),
+        UIStore.parseExpr(config.colSpan), UIStore.parseExpr(config.setColSpan),
+         UIStore.parseExpr(config.dataIndex || config.value), UIStore.parseExpr(config.setDataIndex ), 
+         UIStore.parseExpr(config.fixed), UIStore.parseExpr(config.setFixed), 
+         UIStore.parseExpr(config.title || config.text), UIStore.parseExpr(config.setTitle ),
+        UIStore.parseExpr(config.width || config.columnWidth), UIStore.parseExpr(config.setWidth ),
+         (config.columns || []).map(it => EditColumn.createSchema(it))
       ]
     };
   }
@@ -354,20 +368,25 @@ export class EditTable {
     })
   }
 
-  constructor(store, name, columns = [], dataSourceExpr, borderedExpr,
-    visibleExpr, disableExpr,
-    showHeaderExpr, sizeExpr, titleExpr) {
+  constructor(store, name, columns, dataSourceExpr, setDataSourceExpr, borderedExpr, setBorderedExpr, visibleExpr, setVisibleExpr, disableExpr, setDisableExpr, showHeaderExpr, setShowHeaderExpr, sizeExpr, setSizeExpr, titleExpr, setTitleExpr) {
     this.key = assignId('EditTable');
     this.store = store;
     this.name = name || this.key;
 
     this.borderedExpr = borderedExpr;
+    this.setBorderedExpr = setBorderedExpr;
     this.showHeaderExpr = showHeaderExpr;
+    this.setShowHeaderExpr = setShowHeaderExpr;
     this.visibleExpr = visibleExpr;
+    this.setVisibleExpr = setVisibleExpr;
     this.disableExpr = disableExpr;
+    this.setDisableExpr = setDisableExpr;
     this.sizeExpr = sizeExpr;
+    this.setSizeExpr = setSizeExpr;
     this.titleExpr = titleExpr;
+    this.setTitleExpr = setTitleExpr;
     this.dataSourceExpr = dataSourceExpr;
+    this.setDataSourceExpr = setDataSourceExpr;
     this.allcolumns = columns;
   }
 
@@ -375,10 +394,15 @@ export class EditTable {
     console.log('parse edit table...')
     return {
       type: EditTable,
-      args: [config.name || config.type, (config.columns || []).map(it => EditColumn.createSchema(it, config)),
-        UIStore.parseExpr(config.dataSource || config.value), UIStore.parseExpr(config.bordered || true),
-         UIStore.parseExpr(config.visible || true),   UIStore.parseExpr(config.disable  || false),
-        UIStore.parseExpr(config.showHeader || true), UIStore.parseExpr(config.size || 'default'), UIStore.parseExpr(config.title)
+      args: [config.name || config.type, 
+      (config.columns || []).map(it => EditColumn.createSchema(it, config)),
+        UIStore.parseExpr(config.dataSource || config.value), UIStore.parseExpr(config.setDataSource ), 
+        UIStore.parseExpr(config.bordered || true), UIStore.parseExpr(config.setBordered ),
+         UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible ),  
+          UIStore.parseExpr(config.disable  || false), UIStore.parseExpr(config.setDisable  ),
+        UIStore.parseExpr(config.showHeader || true), UIStore.parseExpr(config.setShowHeader ), 
+        UIStore.parseExpr(config.size || 'default'), UIStore.parseExpr(config.setSize ),
+         UIStore.parseExpr(config.title), UIStore.parseExpr(config.setTitle)
       ]
     };
   }

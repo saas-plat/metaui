@@ -16,6 +16,7 @@ import {
   Container
 } from './Container';
 import UIStore from '../UIStore';
+import UISchema from '../UISchema';
 
 export class Rule {
   store;
@@ -71,7 +72,7 @@ export class Rule {
     return this.store.execExpr(this.setTypeExpr);
   }
   set setType(setValue) {
-      this.setTypeExpr = UIStore.parseExpr(setValue);
+    this.setTypeExpr = UIStore.parseExpr(setValue);
   }
   @computed get required() {
     return this.store.execExpr(this.requiredExpr);
@@ -86,7 +87,7 @@ export class Rule {
     return this.store.execExpr(this.setRequiredExpr);
   }
   set setRequired(setValue) {
-      this.setRequiredExpr = UIStore.parseExpr(setValue);
+    this.setRequiredExpr = UIStore.parseExpr(setValue);
   }
   @computed get message() {
     return this.store.execExpr(this.messageExpr) || this.labelText + this.store.t('输入无效');
@@ -101,7 +102,7 @@ export class Rule {
     return this.store.execExpr(this.setMessageExpr);
   }
   set setMessage(setValue) {
-      this.setMessageExpr = UIStore.parseExpr(setValue);
+    this.setMessageExpr = UIStore.parseExpr(setValue);
   }
   @computed get enum() {
     return this.store.execExpr(this.enumExpr);
@@ -116,7 +117,7 @@ export class Rule {
     return this.store.execExpr(this.setEnumExpr);
   }
   set setEnum(setValue) {
-      this.setEnumExpr = UIStore.parseExpr(setValue);
+    this.setEnumExpr = UIStore.parseExpr(setValue);
   }
   @computed get len() {
     return this.store.execExpr(this.lenExpr);
@@ -131,7 +132,7 @@ export class Rule {
     return this.store.execExpr(this.setLenExpr);
   }
   set setLen(setValue) {
-      this.setLenExpr = UIStore.parseExpr(setValue);
+    this.setLenExpr = UIStore.parseExpr(setValue);
   }
   @computed get pattern() {
     return this.store.execExpr(this.patternExpr);
@@ -146,7 +147,7 @@ export class Rule {
     return this.store.execExpr(this.setPatternExpr);
   }
   set setPattern(setValue) {
-      this.setPatternExpr = UIStore.parseExpr(setValue);
+    this.setPatternExpr = UIStore.parseExpr(setValue);
   }
   @computed get whitespace() {
     return this.store.execExpr(this.whitespaceExpr);
@@ -161,7 +162,7 @@ export class Rule {
     return this.store.execExpr(this.setWhitespaceExpr);
   }
   set setWhitespace(setValue) {
-      this.setWhitespaceExpr = UIStore.parseExpr(setValue);
+    this.setWhitespaceExpr = UIStore.parseExpr(setValue);
   }
   @computed get min() {
     return this.store.execExpr(this.minExpr);
@@ -176,7 +177,7 @@ export class Rule {
     return this.store.execExpr(this.setMinExpr);
   }
   set setMin(setValue) {
-      this.setMinExpr = UIStore.parseExpr(setValue);
+    this.setMinExpr = UIStore.parseExpr(setValue);
   }
   @computed get max() {
     return this.store.execExpr(this.maxExpr);
@@ -191,7 +192,7 @@ export class Rule {
     return this.store.execExpr(this.setMaxExpr);
   }
   set setMax(setValue) {
-      this.setMaxExpr = UIStore.parseExpr(setValue);
+    this.setMaxExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get disable() {
@@ -207,10 +208,10 @@ export class Rule {
     return this.store.execExpr(this.setDisableExpr);
   }
   set setDisable(setValue) {
-      this.setDisableExpr = UIStore.parseExpr(setValue);
+    this.setDisableExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name,typeExpr, setTypeExpr,messageExpr, setMessageExpr, requiredExpr, setRequiredExpr, enumExpr, setEnumExpr, lenExpr, setLenExpr, patternExpr, setPatternExpr, whitespaceExpr, setWhitespaceExpr, minExpr, setMinExpr, maxExpr, setMaxExpr, disableExpr, setDisableExpr) {
+  constructor(store, name, typeExpr, setTypeExpr, messageExpr, setMessageExpr, requiredExpr, setRequiredExpr, enumExpr, setEnumExpr, lenExpr, setLenExpr, patternExpr, setPatternExpr, whitespaceExpr, setWhitespaceExpr, minExpr, setMinExpr, maxExpr, setMaxExpr, disableExpr, setDisableExpr) {
     this.key = assignId('Rule');
     this.store = store;
     this.name = name || this.key;
@@ -239,23 +240,20 @@ export class Rule {
 
   static createSchema(config, options = {}) {
     console.log('parse %s rule...', config.name || config.type)
-    return {
-      type: Rule,
-      args: [config.name || config.type,
-        UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
-        UIStore.parseExpr(config.message), UIStore.parseExpr(config.setMessage),
-        UIStore.parseExpr(config.required || options.required), UIStore.parseExpr(config.setRequired || options.required),
-        UIStore.parseExpr(config.enum || options.enum), UIStore.parseExpr(config.setEnum || options.enum),
-        UIStore.parseExpr(config.len || options.len), UIStore.parseExpr(config.setLen || options.len),
-        UIStore.parseExpr(config.pattern || options.pattern), UIStore.parseExpr(config.setPattern || options.pattern),
-        UIStore.parseExpr(config.whitespace || options.whitespace), UIStore.parseExpr(config.setWhitespace || options.whitespace),
-        UIStore.parseExpr(config.min || options.min), UIStore.parseExpr(config.setMin || options.min),
-        UIStore.parseExpr(config.max || options.max), UIStore.parseExpr(config.setMax || options.max)
-      ]
-    };
+    return new UISchema(Rule,
+      config.name || config.type,
+      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+      UIStore.parseExpr(config.message), UIStore.parseExpr(config.setMessage),
+      UIStore.parseExpr(config.required || options.required), UIStore.parseExpr(config.setRequired || options.required),
+      UIStore.parseExpr(config.enum || options.enum), UIStore.parseExpr(config.setEnum || options.enum),
+      UIStore.parseExpr(config.len || options.len), UIStore.parseExpr(config.setLen || options.len),
+      UIStore.parseExpr(config.pattern || options.pattern), UIStore.parseExpr(config.setPattern || options.pattern),
+      UIStore.parseExpr(config.whitespace || options.whitespace), UIStore.parseExpr(config.setWhitespace || options.whitespace),
+      UIStore.parseExpr(config.min || options.min), UIStore.parseExpr(config.setMin || options.min),
+      UIStore.parseExpr(config.max || options.max), UIStore.parseExpr(config.setMax || options.max)
+    )
   }
 
- 
 }
 
 export class FormItem {
@@ -308,7 +306,7 @@ export class FormItem {
     return this.store.execExpr(this.setVisibleExpr);
   }
   set setVisible(setValue) {
-      this.setVisibleExpr = UIStore.parseExpr(setValue);
+    this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
   @computed get disable() {
     return this.inputItem.disable;
@@ -323,7 +321,7 @@ export class FormItem {
     return this.store.execExpr(this.setDisableExpr);
   }
   set setDisable(setValue) {
-      this.setDisableExpr = UIStore.parseExpr(setValue);
+    this.setDisableExpr = UIStore.parseExpr(setValue);
   }
   @computed get extra() {
     return this.store.execExpr(this.extraExpr);
@@ -338,7 +336,7 @@ export class FormItem {
     return this.store.execExpr(this.setExtraExpr);
   }
   set setExtra(setValue) {
-      this.setExtraExpr = UIStore.parseExpr(setValue);
+    this.setExtraExpr = UIStore.parseExpr(setValue);
   }
   @computed get description() {
     return this.store.execExpr(this.descriptionExpr);
@@ -353,7 +351,7 @@ export class FormItem {
     return this.store.execExpr(this.setDescriptionExpr);
   }
   set setDescription(setValue) {
-      this.setDescriptionExpr = UIStore.parseExpr(setValue);
+    this.setDescriptionExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get labelSpan() {
@@ -370,7 +368,7 @@ export class FormItem {
     return this.store.execExpr(this.setLabelSpanExpr);
   }
   set setLabelSpan(setValue) {
-      this.setLabelSpanExpr = UIStore.parseExpr(setValue);
+    this.setLabelSpanExpr = UIStore.parseExpr(setValue);
   }
   @computed get labelText() {
     return this.store.execExpr(this.labelTextExpr);
@@ -385,7 +383,7 @@ export class FormItem {
     return this.store.execExpr(this.setLabelTextExpr);
   }
   set setLabelText(setValue) {
-      this.setLabelTextExpr = UIStore.parseExpr(setValue);
+    this.setLabelTextExpr = UIStore.parseExpr(setValue);
   }
   @computed get labelIcon() {
     return this.store.execExpr(this.labelIconExpr);
@@ -400,7 +398,7 @@ export class FormItem {
     return this.store.execExpr(this.setLabelIconExpr);
   }
   set setLabelIcon(setValue) {
-      this.setLabelIconExpr = UIStore.parseExpr(setValue);
+    this.setLabelIconExpr = UIStore.parseExpr(setValue);
   }
   @computed get tipText() {
     return this.store.execExpr(this.tipTextExpr);
@@ -415,7 +413,7 @@ export class FormItem {
     return this.store.execExpr(this.setTipTextExpr);
   }
   set setTipText(setValue) {
-      this.setTipTextExpr = UIStore.parseExpr(setValue);
+    this.setTipTextExpr = UIStore.parseExpr(setValue);
   }
 
   constructor(store, name, labelSpanExpr, setLabelSpanExpr, labelTextExpr,
@@ -525,27 +523,25 @@ export class FormItem {
       type,
       ...inputconfig
     } = config;
-    return {
-      type: FormItem,
-      args: [config.name || config.type,
-      UIStore.parseExpr(labelSpan || 6),  UIStore.parseExpr(config.setLabelSpan  ),
-      UIStore.parseExpr(labelText || ''),  UIStore.parseExpr(config.setLabelText  ),
-      UIStore.parseExpr(config.labelIcon || config.icon), UIStore.parseExpr(config.setLabelIcon  ),
-        UIStore.parseExpr(config.tipText || config.tip || ''), UIStore.parseExpr(config.setTipText ),
-        UIStore.parseExpr(config.extra), UIStore.parseExpr(config.setExtra),
-        UIStore.parseExpr(config.description || ''), UIStore.parseExpr(config.setDescription  ),
-        UIStore.createSchema({
-          ...inputconfig,
-          type: input || type
-        }),
-        // 默认有一条规则config中尝试查找
-        rules.map(it => Rule.createSchema(it, {
-          ...config,
-          labelText
-        })),
-        (config.btns || []).map(it => Button.createSchema(it, options))
-      ]
-    };
+    return new UISchema(FormItem,
+      config.name || config.type,
+      UIStore.parseExpr(labelSpan || 6), UIStore.parseExpr(config.setLabelSpan),
+      UIStore.parseExpr(labelText || ''), UIStore.parseExpr(config.setLabelText),
+      UIStore.parseExpr(config.labelIcon || config.icon), UIStore.parseExpr(config.setLabelIcon),
+      UIStore.parseExpr(config.tipText || config.tip || ''), UIStore.parseExpr(config.setTipText),
+      UIStore.parseExpr(config.extra), UIStore.parseExpr(config.setExtra),
+      UIStore.parseExpr(config.description || ''), UIStore.parseExpr(config.setDescription),
+      UIStore.createSchema({
+        ...inputconfig,
+        type: input || type
+      }),
+      // 默认有一条规则config中尝试查找
+      rules.map(it => Rule.createSchema(it, {
+        ...config,
+        labelText
+      })),
+      (config.btns || []).map(it => Button.createSchema(it, options))
+    )
   }
 }
 
@@ -579,7 +575,7 @@ export class Form {
     return this.store.execExpr(this.setTypeExpr);
   }
   set setType(setValue) {
-      this.setTypeExpr = UIStore.parseExpr(setValue);
+    this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get items() {
@@ -599,7 +595,7 @@ export class Form {
     return this.store.execExpr(this.setDisableExpr);
   }
   set setDisable(setValue) {
-      this.setDisableExpr = UIStore.parseExpr(setValue);
+    this.setDisableExpr = UIStore.parseExpr(setValue);
   }
   @computed get visible() {
     return this.store.execExpr(this.visibleExpr);
@@ -614,7 +610,7 @@ export class Form {
     return this.store.execExpr(this.setVisibleExpr);
   }
   set setVisible(setValue) {
-      this.setVisibleExpr = UIStore.parseExpr(setValue);
+    this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
 
   @observable onBeforeChange;
@@ -633,7 +629,7 @@ export class Form {
   @observable onSave;
   @observable onAfterSave;
 
-  constructor(store, name, typeExpr, setTypeExpr, disableExpr, setDisableExpr, visibleExpr, setVisibleExpr ,
+  constructor(store, name, typeExpr, setTypeExpr, disableExpr, setDisableExpr, visibleExpr, setVisibleExpr,
     items = [],
     onBeforeChange, onChange, onAfterChange,
     onBeforeLoad, onLoad, onAfterLoad,
@@ -749,18 +745,16 @@ export class Form {
     if (!Array.isArray(props.items)) {
       props.items = [props.items];
     }
-    return {
-      type: Form,
-      args: [props.name || props.type,
-       UIStore.parseExpr(props.type), UIStore.parseExpr(props.setType),
-        UIStore.parseExpr(props.disable || false), UIStore.parseExpr(props.setDisable  ),
-        UIStore.parseExpr(props.visible || true),UIStore.parseExpr(props.setDisable  ),
-        props.items.map(it => Container.createSchema(it, props.options)),
-        Action.createSchema(props.onChanging), Action.createSchema(props.onChange), Action.createSchema(props.onChanged),
-        Action.createSchema(props.onLoading), Action.createSchema(props.onLoad), Action.createSchema(props.onLoaded),
-        Action.createSchema(props.onValidating), Action.createSchema(props.onValidate), Action.createSchema(props.onValidatied),
-        Action.createSchema(props.onSaveing), Action.createSchema(props.onSave), Action.createSchema(props.onSaveed)
-      ]
-    };
+    return new UISchema(Form,
+      props.name || props.type,
+      UIStore.parseExpr(props.type), UIStore.parseExpr(props.setType),
+      UIStore.parseExpr(props.disable || false), UIStore.parseExpr(props.setDisable),
+      UIStore.parseExpr(props.visible || true), UIStore.parseExpr(props.setDisable),
+      props.items.map(it => Container.createSchema(it, props.options)),
+      Action.createSchema(props.onChanging), Action.createSchema(props.onChange), Action.createSchema(props.onChanged),
+      Action.createSchema(props.onLoading), Action.createSchema(props.onLoad), Action.createSchema(props.onLoaded),
+      Action.createSchema(props.onValidating), Action.createSchema(props.onValidate), Action.createSchema(props.onValidatied),
+      Action.createSchema(props.onSaveing), Action.createSchema(props.onSave), Action.createSchema(props.onSaveed)
+    )
   }
 }

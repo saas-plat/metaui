@@ -7,6 +7,7 @@ import {
   Button
 } from './Button';
 import UIStore from '../UIStore';
+import UISchema from '../UISchema';
 import {
   assignId
 } from './util';
@@ -57,7 +58,7 @@ export class Container {
     return this.store.execExpr(this.setLayoutExpr);
   }
   set setLayout(setValue) {
-      this.setLayoutExpr = UIStore.parseExpr(setValue);
+    this.setLayoutExpr = UIStore.parseExpr(setValue);
   }
   @computed get itemWidth() {
     return parseFloat(this.store.execExpr(this.itemWidthExpr)) || 360;
@@ -72,7 +73,7 @@ export class Container {
     return this.store.execExpr(this.setItemWidthExpr);
   }
   set setItemWidth(setValue) {
-      this.setItemWidthExpr = UIStore.parseExpr(setValue);
+    this.setItemWidthExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get span() {
@@ -92,7 +93,7 @@ export class Container {
     return this.store.execExpr(this.setSpanExpr);
   }
   set setSpan(setValue) {
-      this.setSpanExpr = UIStore.parseExpr(setValue);
+    this.setSpanExpr = UIStore.parseExpr(setValue);
   }
   @computed get items() {
     return this.allitems.filter(it => it.visible);
@@ -115,7 +116,7 @@ export class Container {
     return this.store.execExpr(this.setTypeExpr);
   }
   set setType(setValue) {
-      this.setTypeExpr = UIStore.parseExpr(setValue);
+    this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get text() {
@@ -131,7 +132,7 @@ export class Container {
     return this.store.execExpr(this.setTextExpr);
   }
   set setText(setValue) {
-      this.setTextExpr = UIStore.parseExpr(setValue);
+    this.setTextExpr = UIStore.parseExpr(setValue);
   }
   @computed get description() {
     return this.store.execExpr(this.descriptionExpr);
@@ -146,7 +147,7 @@ export class Container {
     return this.store.execExpr(this.setDescriptionExpr);
   }
   set setDescription(setValue) {
-      this.setDescriptionExpr = UIStore.parseExpr(setValue);
+    this.setDescriptionExpr = UIStore.parseExpr(setValue);
   }
   @computed get icon() {
     return this.store.execExpr(this.iconExpr);
@@ -161,7 +162,7 @@ export class Container {
     return this.store.execExpr(this.setIconExpr);
   }
   set setIcon(setValue) {
-      this.setIconExpr = UIStore.parseExpr(setValue);
+    this.setIconExpr = UIStore.parseExpr(setValue);
   }
   @computed get disable() {
     return this.store.execExpr(this.disableExpr);
@@ -176,7 +177,7 @@ export class Container {
     return this.store.execExpr(this.setDisableExpr);
   }
   set setDisable(setValue) {
-      this.setDisableExpr = UIStore.parseExpr(setValue);
+    this.setDisableExpr = UIStore.parseExpr(setValue);
   }
   @computed get visible() {
     return this.store.execExpr(this.visibleExpr);
@@ -191,12 +192,12 @@ export class Container {
     return this.store.execExpr(this.setVisibleExpr);
   }
   set setVisible(setValue) {
-      this.setVisibleExpr = UIStore.parseExpr(setValue);
+    this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
 
   constructor(store, name, typeExpr, setTypeExpr, textExpr, setTextExpr, descriptionExpr, setDescriptionExpr,
-    iconExpr, setIconExpr, disableExpr, setDisableExpr, visibleExpr, setVisibleExpr, layoutExpr,setLayoutExpr,
-    spanExpr,  setSpanExpr, itemWidthExpr, setItemWidthExpr, items , btns) {
+    iconExpr, setIconExpr, disableExpr, setDisableExpr, visibleExpr, setVisibleExpr, layoutExpr, setLayoutExpr,
+    spanExpr, setSpanExpr, itemWidthExpr, setItemWidthExpr, items, btns) {
     this.key = assignId('Container');
     this.store = store;
     this.name = name || this.key;
@@ -269,22 +270,19 @@ export class Container {
     } else {
       items.push(config)
     }
-    return {
-      type: Container,
-      args: [
-        config.name || config.type,
-         UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
-         UIStore.parseExpr(config.title || config.text), UIStore.parseExpr(config.setTitle),
-        UIStore.parseExpr(config.description), UIStore.parseExpr(config.setDescription),
-        UIStore.parseExpr(config.icon), UIStore.parseExpr(config.setIcon),
-        UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable),
-        UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible ),
-        UIStore.parseExpr(config.layout || 'flow'), UIStore.parseExpr(config.setLayout ),
-        UIStore.parseExpr(config.span), UIStore.parseExpr(config.setSpan),
-        UIStore.parseExpr(config.itemWidth), UIStore.parseExpr(config.setItemWidth),
-        items.map(it => UIStore.createSchema(it, options)),
-        (config.btns || []).map(it => Button.createSchema(it, options))
-      ]
-    };
+    return new UISchema(Container,
+      config.name || config.type,
+      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+      UIStore.parseExpr(config.title || config.text), UIStore.parseExpr(config.setTitle),
+      UIStore.parseExpr(config.description), UIStore.parseExpr(config.setDescription),
+      UIStore.parseExpr(config.icon), UIStore.parseExpr(config.setIcon),
+      UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable),
+      UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible),
+      UIStore.parseExpr(config.layout || 'flow'), UIStore.parseExpr(config.setLayout),
+      UIStore.parseExpr(config.span), UIStore.parseExpr(config.setSpan),
+      UIStore.parseExpr(config.itemWidth), UIStore.parseExpr(config.setItemWidth),
+      items.map(it => UIStore.createSchema(it, options)),
+      (config.btns || []).map(it => Button.createSchema(it, options))
+    );
   }
 }

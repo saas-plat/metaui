@@ -8,6 +8,7 @@ import {
   assignId
 } from './util';
 import UIStore from '../UIStore';
+import UISchema from '../UISchema';
 
 export class Action {
   store;
@@ -112,7 +113,7 @@ export class Action {
     this.exprs = {};
   }
 
-  constructor(store, nameExpr, setNameExpr, getArgsExpr, setArgsExpr,args = {}) {
+  constructor(store, nameExpr, setNameExpr, getArgsExpr, setArgsExpr, args = {}) {
     this.key = assignId();
     this.store = store;
     this.nameExpr = nameExpr;
@@ -134,15 +135,10 @@ export class Action {
     }, {}));
   }
 
- 
-
   static createSchema(config) {
     if (typeof config === 'string') {
       console.log('parse %s action...', config)
-      return {
-        type: Action,
-        args: [UIStore.parseExpr(config)]
-      };
+      return new UISchema(Action, UIStore.parseExpr(config));
     } else if (Array.isArray(config)) {
       return config.map(it => Action.createSchema(it));
     } else if (config) {
@@ -159,17 +155,14 @@ export class Action {
         ...other,
         ...args
       };
-      return {
-        type: Action,
-        args: [
-          UIStore.parseExpr(name), UIStore.parseExpr(setName),
-          UIStore.parseExpr(setArgs),UIStore.parseExpr(getArgs),
-          Object.keys(argobj).reduce((obj, key) => {
-            obj[key] = UIStore.parseExpr(argobj[key]);
-            return obj;
-          }, {})
-        ]
-      }
+      return new UISchema(Action,
+        UIStore.parseExpr(name), UIStore.parseExpr(setName),
+        UIStore.parseExpr(setArgs), UIStore.parseExpr(getArgs),
+        Object.keys(argobj).reduce((obj, key) => {
+          obj[key] = UIStore.parseExpr(argobj[key]);
+          return obj;
+        }, {})
+      )
     } else {
       // 这里就是支持返回无行为
       return null;

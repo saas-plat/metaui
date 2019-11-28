@@ -6,6 +6,7 @@ import {
   assignId
 } from './util';
 import UIStore from '../UIStore';
+import UISchema from '../UISchema';
 
 class Style {
   store;
@@ -31,7 +32,7 @@ class Style {
     return this.store.execExpr(this.setHeightExpr);
   }
   set setHeight(setValue) {
-      this.setHeightExpr = UIStore.parseExpr(setValue);
+    this.setHeightExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get width() {
@@ -48,10 +49,10 @@ class Style {
     return this.store.execExpr(this.setWidthExpr);
   }
   set setWidth(setValue) {
-      this.setWidthExpr = UIStore.parseExpr(setValue);
+    this.setWidthExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, heightExpr, setHeightExpr , widthExpr, setWidthExpr ) {
+  constructor(store, name, heightExpr, setHeightExpr, widthExpr, setWidthExpr) {
 
     this.key = assignId('Style');
     this.store = store;
@@ -62,13 +63,11 @@ class Style {
   }
 
   static createSchema(config = {}) {
-    return {
-      type: Style,
-      args: [config.name || config.type,
-       UIStore.parseExpr(config.height || '300'), UIStore.parseExpr(config.setHeight ),
-        UIStore.parseExpr(config.width || '100%'), UIStore.parseExpr(config.setWidth )
-        ]
-    };
+    return new UISchema(Style,
+      config.name || config.type,
+      UIStore.parseExpr(config.height || '300'), UIStore.parseExpr(config.setHeight),
+      UIStore.parseExpr(config.width || '100%'), UIStore.parseExpr(config.setWidth)
+    );
   }
 }
 
@@ -80,7 +79,6 @@ export class Chart {
   @observable typeExpr;
   @observable setTypeExpr;
   @observable style;
-
 
   @computed get type() {
     return this.store.execExpr(this.typeExpr);
@@ -96,7 +94,7 @@ export class Chart {
     return this.store.execExpr(this.setTypeExpr);
   }
   set setType(setValue) {
-      this.setTypeExpr = UIStore.parseExpr(setValue);
+    this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
   constructor(store, name, typeExpr, setTypeExpr, style) {
@@ -112,11 +110,10 @@ export class Chart {
 
   static createSchema(config) {
     console.log('parse chart...')
-    return {
-      type: Chart,
-      args: [config.name || config.type, 
-      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType), 
-      Style.createSchema(config.style)]
-    };
+    return new UISchema(Chart,
+      config.name || config.type,
+      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+      Style.createSchema(config.style)
+    );
   }
 }

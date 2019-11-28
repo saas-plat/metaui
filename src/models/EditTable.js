@@ -6,6 +6,7 @@ import {
   assignId
 } from './util';
 import UIStore from '../UIStore';
+import UISchema from '../UISchema';
 
 export class EditColumn {
   store;
@@ -52,7 +53,7 @@ export class EditColumn {
     return this.store.execExpr(this.setVisibleExpr);
   }
   set setVisible(setValue) {
-      this.setVisibleExpr = UIStore.parseExpr(setValue);
+    this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
   @computed get disabled() {
     return this.store.execExpr(this.disabledExpr);
@@ -67,7 +68,7 @@ export class EditColumn {
     return this.store.execExpr(this.setDisabledExpr);
   }
   set setDisabled(setValue) {
-      this.setDisabledExpr = UIStore.parseExpr(setValue);
+    this.setDisabledExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get align() {
@@ -83,7 +84,7 @@ export class EditColumn {
     return this.store.execExpr(this.setAlignExpr);
   }
   set setAlign(setValue) {
-      this.setAlignExpr = UIStore.parseExpr(setValue);
+    this.setAlignExpr = UIStore.parseExpr(setValue);
   }
   @computed get colSpan() {
     return this.store.execExpr(this.colSpanExpr);
@@ -98,7 +99,7 @@ export class EditColumn {
     return this.store.execExpr(this.setColSpanExpr);
   }
   set setColSpan(setValue) {
-      this.setColSpanExpr = UIStore.parseExpr(setValue);
+    this.setColSpanExpr = UIStore.parseExpr(setValue);
   }
   @computed get dataIndex() {
     return this.store.execExpr(this.dataIndexExpr);
@@ -113,7 +114,7 @@ export class EditColumn {
     return this.store.execExpr(this.setDataIndexExpr);
   }
   set setDataIndex(setValue) {
-      this.setDataIndexExpr = UIStore.parseExpr(setValue);
+    this.setDataIndexExpr = UIStore.parseExpr(setValue);
   }
   @computed get fixed() {
     return this.store.execExpr(this.fixedExpr);
@@ -128,7 +129,7 @@ export class EditColumn {
     return this.store.execExpr(this.setFixedExpr);
   }
   set setFixed(setValue) {
-      this.setFixedExpr = UIStore.parseExpr(setValue);
+    this.setFixedExpr = UIStore.parseExpr(setValue);
   }
   @computed get title() {
     return this.store.execExpr(this.titleExpr);
@@ -143,7 +144,7 @@ export class EditColumn {
     return this.store.execExpr(this.setTitleExpr);
   }
   set setTitle(setValue) {
-      this.setTitleExpr = UIStore.parseExpr(setValue);
+    this.setTitleExpr = UIStore.parseExpr(setValue);
   }
   @computed get width() {
     return this.store.execExpr(this.widthExpr);
@@ -158,10 +159,10 @@ export class EditColumn {
     return this.store.execExpr(this.setWidthExpr);
   }
   set setWidth(setValue) {
-      this.setWidthExpr = UIStore.parseExpr(setValue);
+    this.setWidthExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name, inputItem, visibleExpr, setVisibleExpr, disabledExpr, setDisabledExpr , alignExpr, setAlignExpr, colSpanExpr, setColSpanExpr, dataIndexExpr, setDataIndexExpr, fixedExpr, setFixedExpr, titleExpr, setTitleExpr, widthExpr, setWidthExpr, children ) {
+  constructor(store, name, inputItem, visibleExpr, setVisibleExpr, disabledExpr, setDisabledExpr, alignExpr, setAlignExpr, colSpanExpr, setColSpanExpr, dataIndexExpr, setDataIndexExpr, fixedExpr, setFixedExpr, titleExpr, setTitleExpr, widthExpr, setWidthExpr, children) {
     this.key = assignId('EditColumn');
     this.store = store;
     this.name = name || this.key;
@@ -188,21 +189,19 @@ export class EditColumn {
 
   static createSchema(config = {}, options = {}) {
     console.log('parse edit table column...')
-    return {
-      type: EditColumn,
-      args: [config.name || config.type, 
+    return new UISchema(EditColumn,
+      config.name || config.type,
       UIStore.createSchema(config),
-        UIStore.parseExpr(config.visible || options.visible || true), UIStore.parseExpr(config.setVisible),
-         UIStore.parseExpr(config.disable || options.disable || false), UIStore.parseExpr(config.setDisable ), 
-         UIStore.parseExpr(config.align), UIStore.parseExpr(config.setAlign),
-        UIStore.parseExpr(config.colSpan), UIStore.parseExpr(config.setColSpan),
-         UIStore.parseExpr(config.dataIndex || config.value), UIStore.parseExpr(config.setDataIndex ), 
-         UIStore.parseExpr(config.fixed), UIStore.parseExpr(config.setFixed), 
-         UIStore.parseExpr(config.title || config.text), UIStore.parseExpr(config.setTitle ),
-        UIStore.parseExpr(config.width || config.columnWidth), UIStore.parseExpr(config.setWidth ),
-         (config.columns || []).map(it => EditColumn.createSchema(it))
-      ]
-    };
+      UIStore.parseExpr(config.visible || options.visible || true), UIStore.parseExpr(config.setVisible),
+      UIStore.parseExpr(config.disable || options.disable || false), UIStore.parseExpr(config.setDisable),
+      UIStore.parseExpr(config.align), UIStore.parseExpr(config.setAlign),
+      UIStore.parseExpr(config.colSpan), UIStore.parseExpr(config.setColSpan),
+      UIStore.parseExpr(config.dataIndex || config.value), UIStore.parseExpr(config.setDataIndex),
+      UIStore.parseExpr(config.fixed), UIStore.parseExpr(config.setFixed),
+      UIStore.parseExpr(config.title || config.text), UIStore.parseExpr(config.setTitle),
+      UIStore.parseExpr(config.width || config.columnWidth), UIStore.parseExpr(config.setWidth),
+      (config.columns || []).map(it => EditColumn.createSchema(it))
+    )
   }
 }
 
@@ -263,7 +262,7 @@ export class EditTable {
     return this.store.execExpr(this.setVisibleExpr);
   }
   set setVisible(setValue) {
-      this.setVisibleExpr = UIStore.parseExpr(setValue);
+    this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
   @computed get disable() {
     return this.store.execExpr(this.disableExpr);
@@ -278,7 +277,7 @@ export class EditTable {
     return this.store.execExpr(this.setDisableExpr);
   }
   set setDisable(setValue) {
-      this.setDisableExpr = UIStore.parseExpr(setValue);
+    this.setDisableExpr = UIStore.parseExpr(setValue);
   }
   @computed get bordered() {
     return this.store.execExpr(this.borderedExpr);
@@ -293,7 +292,7 @@ export class EditTable {
     return this.store.execExpr(this.setBorderedExpr);
   }
   set setBordered(setValue) {
-      this.setBorderedExpr = UIStore.parseExpr(setValue);
+    this.setBorderedExpr = UIStore.parseExpr(setValue);
   }
   @computed get showHeader() {
     return this.store.execExpr(this.showHeaderExpr);
@@ -308,7 +307,7 @@ export class EditTable {
     return this.store.execExpr(this.setShowHeaderExpr);
   }
   set setShowHeader(setValue) {
-      this.setShowHeaderExpr = UIStore.parseExpr(setValue);
+    this.setShowHeaderExpr = UIStore.parseExpr(setValue);
   }
   @computed get size() {
     return this.store.execExpr(this.sizeExpr);
@@ -323,7 +322,7 @@ export class EditTable {
     return this.store.execExpr(this.setSizeExpr);
   }
   set setSize(setValue) {
-      this.setSizeExpr = UIStore.parseExpr(setValue);
+    this.setSizeExpr = UIStore.parseExpr(setValue);
   }
   @computed get title() {
     return this.store.execExpr(this.titleExpr);
@@ -338,7 +337,7 @@ export class EditTable {
     return this.store.execExpr(this.setTitleExpr);
   }
   set setTitle(setValue) {
-      this.setTitleExpr = UIStore.parseExpr(setValue);
+    this.setTitleExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get dataSource() {
@@ -354,7 +353,7 @@ export class EditTable {
     return this.store.execExpr(this.setDataSourceExpr);
   }
   set setDataSource(setValue) {
-      this.setDataSourceExpr = UIStore.parseExpr(setValue);
+    this.setDataSourceExpr = UIStore.parseExpr(setValue);
   }
   @computed get rows() {
     return (this.store.model.get(this.dataSource) || []).map(rdata => {
@@ -392,18 +391,16 @@ export class EditTable {
 
   static createSchema(config = {}) {
     console.log('parse edit table...')
-    return {
-      type: EditTable,
-      args: [config.name || config.type, 
+    return new UISchema(EditTable,
+      config.name || config.type,
       (config.columns || []).map(it => EditColumn.createSchema(it, config)),
-        UIStore.parseExpr(config.dataSource || config.value), UIStore.parseExpr(config.setDataSource ), 
-        UIStore.parseExpr(config.bordered || true), UIStore.parseExpr(config.setBordered ),
-         UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible ),  
-          UIStore.parseExpr(config.disable  || false), UIStore.parseExpr(config.setDisable  ),
-        UIStore.parseExpr(config.showHeader || true), UIStore.parseExpr(config.setShowHeader ), 
-        UIStore.parseExpr(config.size || 'default'), UIStore.parseExpr(config.setSize ),
-         UIStore.parseExpr(config.title), UIStore.parseExpr(config.setTitle)
-      ]
-    };
+      UIStore.parseExpr(config.dataSource || config.value), UIStore.parseExpr(config.setDataSource),
+      UIStore.parseExpr(config.bordered || true), UIStore.parseExpr(config.setBordered),
+      UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible),
+      UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable),
+      UIStore.parseExpr(config.showHeader || true), UIStore.parseExpr(config.setShowHeader),
+      UIStore.parseExpr(config.size || 'default'), UIStore.parseExpr(config.setSize),
+      UIStore.parseExpr(config.title), UIStore.parseExpr(config.setTitle)
+    )
   }
 }

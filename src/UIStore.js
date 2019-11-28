@@ -6,10 +6,14 @@ import {
 import Expression from 'saas-plat-expression';
 import jxon from 'jxon';
 import _set from 'lodash/set';
+import UISchema from './UISchema';
 
 let tProvider = txt => txt;
 
 export default class UIStore {
+  static models = new Map();
+  static components = new Map();
+
   // 数据级别的模型，前端的业务实体模型，包含状态和数据
   @observable viewModel;
   // UI级别的模型，观察viewModel
@@ -19,47 +23,6 @@ export default class UIStore {
     this.viewModel = viewModel;
     this.setValuable = typeof this.viewModel.setValue === 'function';
   }
-
-  static registerT(provider) {
-    tProvider = provider;
-  }
-
-  t(txt) {
-    return tProvider(txt);
-  }
-
-  @action setViewModel(path, value) {
-    console.log('set view model',path, value);
-    if (this.setValuable) {
-      return this.viewModel.setValue(path, value);
-    }
-    _set(this.viewModel, path, value);
-  }
-
-  static parseExpr(txt) {
-    return new Expression(txt);
-  }
-
-  execExpr(expr) {
-    return expr.exec(this.viewModel);
-  }
-
-  map(obj, mapping) {
-    if (!mapping) {
-      return obj;
-    }
-    const expr = new Expression(mapping);
-    // 这里是有个问题，要是调用了异步函数，这里需要await
-    // 异步函数表达式还没有支持
-    if (expr.tree) {
-      return expr.exec(obj);
-    } else {
-      return {};
-    }
-  }
-
-  static models = new Map();
-  static components = new Map();
 
   static register(...items) {
     const registerOne = (type, Component, Model) => {
@@ -117,8 +80,46 @@ export default class UIStore {
     }
   }
 
+  static registerT(provider) {
+    tProvider = provider;
+  }
+
+  t(txt) {
+    return tProvider(txt);
+  }
+
+  @action setViewModel(path, value) {
+    console.log('set view model', path, value);
+    if (this.setValuable) {
+      return this.viewModel.setValue(path, value);
+    }
+    _set(this.viewModel, path, value);
+  }
+
+  static parseExpr(txt) {
+    return new Expression(txt);
+  }
+
+  execExpr(expr) {
+    return expr.exec(this.viewModel);
+  }
+
+  map(obj, mapping) {
+    if (!mapping) {
+      return obj;
+    }
+    const expr = new Expression(mapping);
+    // 这里是有个问题，要是调用了异步函数，这里需要await
+    // 异步函数表达式还没有支持
+    if (expr.tree) {
+      return expr.exec(obj);
+    } else {
+      return {};
+    }
+  }
+
   build(node) {
-    if (node && typeof node === 'object' && 'type' in node && 'args' in node) {
+    if (node instanceof UISchema) {
       console.log('create %s...', node.type.name);
       return new node.type(this, ...node.args.map(it => this.build(it)));
     } else if (Array.isArray(node)) {
@@ -144,6 +145,13 @@ export default class UIStore {
   }
 
   static create(schema, data) {
+    if (!(schema instanceof UISchema)) {
+      schema = schema ? UIStore.createSchema(schema) : null;
+      if (!schema) {
+        console.error('not support ui schema', schema);
+        return null;
+      }
+    }
     const store = new UIStore(data);
     const uiModel = store.build(schema);
     runInAction(() => {

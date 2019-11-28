@@ -9,6 +9,7 @@ import {
   Action
 } from './Action';
 import UIStore from '../UIStore';
+import UISchema from '../UISchema';
 
 export class Column {
   store;
@@ -52,7 +53,7 @@ export class Column {
     return this.store.execExpr(this.setTypeExpr);
   }
   set setType(setValue) {
-      this.setTypeExpr = UIStore.parseExpr(setValue);
+    this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get visible() {
@@ -68,7 +69,7 @@ export class Column {
     return this.store.execExpr(this.setVisibleExpr);
   }
   set setVisible(setValue) {
-      this.setVisibleExpr = UIStore.parseExpr(setValue);
+    this.setVisibleExpr = UIStore.parseExpr(setValue);
   }
   @computed get disabled() {
     return this.store.execExpr(this.disabledExpr);
@@ -83,7 +84,7 @@ export class Column {
     return this.store.execExpr(this.setDisabledExpr);
   }
   set setDisabled(setValue) {
-      this.setDisabledExpr = UIStore.parseExpr(setValue);
+    this.setDisabledExpr = UIStore.parseExpr(setValue);
   }
 
   @computed get align() {
@@ -99,7 +100,7 @@ export class Column {
     return this.store.execExpr(this.setAlignExpr);
   }
   set setAlign(setValue) {
-      this.setAlignExpr = UIStore.parseExpr(setValue);
+    this.setAlignExpr = UIStore.parseExpr(setValue);
   }
   @computed get colSpan() {
     return this.store.execExpr(this.colSpanExpr);
@@ -114,7 +115,7 @@ export class Column {
     return this.store.execExpr(this.setColSpanExpr);
   }
   set setColSpan(setValue) {
-      this.setColSpanExpr = UIStore.parseExpr(setValue);
+    this.setColSpanExpr = UIStore.parseExpr(setValue);
   }
   @computed get dataIndex() {
     return this.store.execExpr(this.dataIndexExpr);
@@ -129,7 +130,7 @@ export class Column {
     return this.store.execExpr(this.setDataIndexExpr);
   }
   set setDataIndex(setValue) {
-      this.setDataIndexExpr = UIStore.parseExpr(setValue);
+    this.setDataIndexExpr = UIStore.parseExpr(setValue);
   }
   @computed get fixed() {
     return this.store.execExpr(this.fixedExpr);
@@ -144,7 +145,7 @@ export class Column {
     return this.store.execExpr(this.setFixedExpr);
   }
   set setFixed(setValue) {
-      this.setFixedExpr = UIStore.parseExpr(setValue);
+    this.setFixedExpr = UIStore.parseExpr(setValue);
   }
   @computed get title() {
     return this.store.execExpr(this.titleExpr);
@@ -159,7 +160,7 @@ export class Column {
     return this.store.execExpr(this.setTitleExpr);
   }
   set setTitle(setValue) {
-      this.setTitleExpr = UIStore.parseExpr(setValue);
+    this.setTitleExpr = UIStore.parseExpr(setValue);
   }
   @computed get width() {
     return this.store.execExpr(this.widthExpr);
@@ -174,11 +175,11 @@ export class Column {
     return this.store.execExpr(this.setWidthExpr);
   }
   set setWidth(setValue) {
-      this.setWidthExpr = UIStore.parseExpr(setValue);
+    this.setWidthExpr = UIStore.parseExpr(setValue);
   }
 
-  constructor(store, name,  visibleExpr, setVisibleExpr  , disabledExpr, setDisabledExpr  , alignExpr, setAlignExpr,
-     colSpanExpr, setColSpanExpr, dataIndexExpr, setDataIndexExpr, fixedExpr, setFixedExpr, titleExpr, setTitleExpr, widthExpr, setWidthExpr, columns  ) {
+  constructor(store, name, visibleExpr, setVisibleExpr, disabledExpr, setDisabledExpr, alignExpr, setAlignExpr,
+    colSpanExpr, setColSpanExpr, dataIndexExpr, setDataIndexExpr, fixedExpr, setFixedExpr, titleExpr, setTitleExpr, widthExpr, setWidthExpr, columns) {
     this.key = assignId('Column');
     this.store = store;
     this.name = name || this.key;
@@ -204,22 +205,19 @@ export class Column {
 
   static createSchema(config = {}, options = {}) {
     console.log('parse table column...')
-    return {
-      type: Column,
-      args: [
-       config.name || config.type,
-       UIStore.parseExpr(config.type ), UIStore.parseExpr(config.setType ),
-        UIStore.parseExpr(config.visible || options.visible || true), UIStore.parseExpr(config.setVisible ),
-         UIStore.parseExpr(config.disabled || options.disabled || false), UIStore.parseExpr(config.setDisabled),
-        UIStore.parseExpr(config.align), UIStore.parseExpr(config.setAlign),
-        UIStore.parseExpr(config.colSpan), UIStore.parseExpr(config.setColSpan), 
-        UIStore.parseExpr(config.dataIndex || config.value), UIStore.parseExpr(config.setDataIndex),
-         UIStore.parseExpr(config.fixed), UIStore.parseExpr(config.setFixed),
-          UIStore.parseExpr(config.title || config.text), UIStore.parseExpr(config.setTitle ),
-        UIStore.parseExpr(config.width || config.columnWidth), UIStore.parseExpr(config.setWidth ),
-         (config.columns || []).map(it => Column.createSchema(it))
-      ]
-    };
+    return new UISchema(Column,
+      config.name || config.type,
+      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+      UIStore.parseExpr(config.visible || options.visible || true), UIStore.parseExpr(config.setVisible),
+      UIStore.parseExpr(config.disabled || options.disabled || false), UIStore.parseExpr(config.setDisabled),
+      UIStore.parseExpr(config.align), UIStore.parseExpr(config.setAlign),
+      UIStore.parseExpr(config.colSpan), UIStore.parseExpr(config.setColSpan),
+      UIStore.parseExpr(config.dataIndex || config.value), UIStore.parseExpr(config.setDataIndex),
+      UIStore.parseExpr(config.fixed), UIStore.parseExpr(config.setFixed),
+      UIStore.parseExpr(config.title || config.text), UIStore.parseExpr(config.setTitle),
+      UIStore.parseExpr(config.width || config.columnWidth), UIStore.parseExpr(config.setWidth),
+      (config.columns || []).map(it => Column.createSchema(it))
+    )
   }
 }
 
@@ -260,7 +258,7 @@ export class Table {
     return this.store.execExpr(this.setTypeExpr);
   }
   set setType(setValue) {
-      this.setTypeExpr = UIStore.parseExpr(setValue);
+    this.setTypeExpr = UIStore.parseExpr(setValue);
   }
 
   constructor(store, name, typeExpr, setTypeExpr, onLoading, onLoad, onLoaded) {
@@ -280,18 +278,16 @@ export class Table {
   static createSchema(config = []) {
     let name, onLoading, onLoad, onLoaded;
     console.log('parse table...')
-    name = config.name   || config.type;
+    name = config.name || config.type;
     onLoading = config.onLoading;
     onLoad = config.onLoad;
     onLoaded = config.onLoaded;
 
-    return {
-      type: Table,
-      args: [name, 
-      UIStore.parseExpr(config.type ), UIStore.parseExpr(config.setType ),
-        (config.columns || []).map(it => Column.createSchema(it, config)),
-        Action.createSchema(onLoading), Action.createSchema(onLoad), Action.createSchema(onLoaded)
-      ]
-    };
+    return new UISchema(Table,
+      name,
+      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+      (config.columns || []).map(it => Column.createSchema(it, config)),
+      Action.createSchema(onLoading), Action.createSchema(onLoad), Action.createSchema(onLoaded)
+    )
   }
 }

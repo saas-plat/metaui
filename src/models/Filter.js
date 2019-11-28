@@ -7,6 +7,7 @@ import {
   assignId
 } from './util';
 import UIStore from '../UIStore';
+import UISchema from '../UISchema';
 
 export class Filter {
   store;
@@ -21,9 +22,6 @@ export class Filter {
 
   static createSchema(config) {
     console.log('parse filter...')
-    return {
-      type: Filter,
-      args: [config.name]
-    }
+    return new UISchema(Filter, config.name);
   }
 }

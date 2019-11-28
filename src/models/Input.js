@@ -16,6 +16,7 @@ import {
   EditTable
 } from './EditTable';
 import UIStore from '../UIStore';
+import UISchema from '../UISchema';
 
 export class Input {
   store;
@@ -436,77 +437,67 @@ export class Input {
     ];
 
     if (config.type === 'refselect') {
-      return {
-        type: RefInput,
-        args: [config.name || config.type,
-          Action.createSchema(config.onExtraClicked),
-          UIStore.parseExpr(config.dropdownStyle || 'table'), UIStore.parseExpr(config.setDropdownStyle),
-          UIStore.parseExpr(config.multiple || false), UIStore.parseExpr(config.setMultiple),
-          UIStore.parseExpr(config.showSearch || true), UIStore.parseExpr(config.setShowSearch),
-          UIStore.parseExpr(config.query), UIStore.parseExpr(config.setQuery),
-          UIStore.parseExpr(config.variables), UIStore.parseExpr(config.setVariables),
-          UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.setDisplayField),
-          UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
-          UIStore.parseExpr(config.showHeader || this.dropdownStyle === 'table'), UIStore.parseExpr(config.setShowHeader),
-          UIStore.parseExpr(config.columns), UIStore.parseExpr(config.setColumns),
-          UIStore.parseExpr(config.pageSize || 20), UIStore.parseExpr(config.setPageSize),
-          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField),
-          UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField),
-          UIStore.parseExpr(config.rootIdValue), UIStore.parseExpr(config.setRootIdValue),
-          UIStore.parseExpr(config.defaultExpandAll || false), UIStore.parseExpr(config.setDefaultExpandAll),
-          UIStore.parseExpr(config.defaultExpandKeys),
-          ...args
-        ]
-      };
+      return new UISchema(RefInput,
+        config.name || config.type,
+        Action.createSchema(config.onExtraClicked),
+        UIStore.parseExpr(config.dropdownStyle || 'table'), UIStore.parseExpr(config.setDropdownStyle),
+        UIStore.parseExpr(config.multiple || false), UIStore.parseExpr(config.setMultiple),
+        UIStore.parseExpr(config.showSearch || true), UIStore.parseExpr(config.setShowSearch),
+        UIStore.parseExpr(config.query), UIStore.parseExpr(config.setQuery),
+        UIStore.parseExpr(config.variables), UIStore.parseExpr(config.setVariables),
+        UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.setDisplayField),
+        UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
+        UIStore.parseExpr(config.showHeader || this.dropdownStyle === 'table'), UIStore.parseExpr(config.setShowHeader),
+        UIStore.parseExpr(config.columns), UIStore.parseExpr(config.setColumns),
+        UIStore.parseExpr(config.pageSize || 20), UIStore.parseExpr(config.setPageSize),
+        UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField),
+        UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField),
+        UIStore.parseExpr(config.rootIdValue), UIStore.parseExpr(config.setRootIdValue),
+        UIStore.parseExpr(config.defaultExpandAll || false), UIStore.parseExpr(config.setDefaultExpandAll),
+        UIStore.parseExpr(config.defaultExpandKeys),
+        ...args
+      )
     } else if (config.type === 'inputtable' || config.type === 'table') {
-      return {
-        type: InputTable,
-        args: [config.name || config.type,
-          EditTable.createSchema(config.table),
-          ...args
-        ]
-      };
+      return new UISchema(InputTable,
+        config.name || config.type,
+        EditTable.createSchema(config.table),
+        ...args
+      )
     } else if (config.type === 'select') {
-      return {
-        type: Select,
-        args: [config.name || config.type,
-          UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.setDataSource),
-          UIStore.parseExpr(config.mode), UIStore.parseExpr(config.setMode),
-          UIStore.parseExpr(config.displayField || 'id'), UIStore.parseExpr(config.setDisplayField),
-          UIStore.parseExpr(config.valueField || 'id'), UIStore.parseExpr(config.setValueField),
-          UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
-          ...args
-        ]
-      };
+      return new UISchema(Select,
+        config.name || config.type,
+        UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.setDataSource),
+        UIStore.parseExpr(config.mode), UIStore.parseExpr(config.setMode),
+        UIStore.parseExpr(config.displayField || 'id'), UIStore.parseExpr(config.setDisplayField),
+        UIStore.parseExpr(config.valueField || 'id'), UIStore.parseExpr(config.setValueField),
+        UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
+        ...args
+      )
     } else if (config.type === 'treeselect') {
-      return {
-        type: TreeSelect,
-        args: [config.name || config.type,
-          UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.setDataSource),
-          UIStore.parseExpr(config.mode), UIStore.parseExpr(config.setMode),
-          UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.setDisplayField),
-          UIStore.parseExpr(config.valueField), UIStore.parseExpr(config.setValueField),
-          UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
-          UIStore.parseExpr(config.showSearch || false), UIStore.parseExpr(config.setShowSearch),
-          UIStore.parseExpr(config.allowClear || true), UIStore.parseExpr(config.setAllowClear),
-          UIStore.parseExpr(config.treeDefaultExpandAll || true), UIStore.parseExpr(config.setTreeDefaultExpandAll),
-          UIStore.parseExpr(config.maxHeight || 400), UIStore.parseExpr(config.setMaxHeight),
-          UIStore.parseExpr(config.treeCheckable || false), UIStore.parseExpr(config.setTreeCheckable),
-          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField),
-          UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField),
-          UIStore.parseExpr(config.rootIdValue), UIStore.parseExpr(config.setRootIdValue),
-          ...args
-        ]
-      };
+      return new UISchema(TreeSelect,
+        config.name || config.type,
+        UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.setDataSource),
+        UIStore.parseExpr(config.mode), UIStore.parseExpr(config.setMode),
+        UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.setDisplayField),
+        UIStore.parseExpr(config.valueField), UIStore.parseExpr(config.setValueField),
+        UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
+        UIStore.parseExpr(config.showSearch || false), UIStore.parseExpr(config.setShowSearch),
+        UIStore.parseExpr(config.allowClear || true), UIStore.parseExpr(config.setAllowClear),
+        UIStore.parseExpr(config.treeDefaultExpandAll || true), UIStore.parseExpr(config.setTreeDefaultExpandAll),
+        UIStore.parseExpr(config.maxHeight || 400), UIStore.parseExpr(config.setMaxHeight),
+        UIStore.parseExpr(config.treeCheckable || false), UIStore.parseExpr(config.setTreeCheckable),
+        UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField),
+        UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField),
+        UIStore.parseExpr(config.rootIdValue), UIStore.parseExpr(config.setRootIdValue),
+        ...args
+      )
     } else if (config.type === 'number') {
-      return {
-        type: NumberInput,
-        args: [config.name || config.type,
-          UIStore.parseExpr(config.min || -Infinity), UIStore.parseExpr(config.setMin),
-          UIStore.parseExpr(config.max || Infinity), UIStore.parseExpr(config.setMax),
-          ...args
-        ]
-      };
+      return new UISchema(NumberInput,
+        config.name || config.type,
+        UIStore.parseExpr(config.min || -Infinity), UIStore.parseExpr(config.setMin),
+        UIStore.parseExpr(config.max || Infinity), UIStore.parseExpr(config.setMax),
+        ...args
+      )
     } else {
       if (!config.format) {
         switch (config.type) {
@@ -528,10 +519,7 @@ export class Input {
           break;
         }
       }
-      return {
-        type: Input,
-        args: [config.name || config.type, ...args]
-      };
+      return new UISchema(Input, config.name || config.type, ...args)
     }
   }
 }

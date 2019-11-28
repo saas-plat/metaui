@@ -125,6 +125,7 @@ describe('视图模板', () => {
     expect(v.items[0].text).to.be.equal('this is title');
     expect(v.items[0].type).to.be.equal('navbar');
     expect(v.items[0].items.length).to.be.equal(2);
+    console.log(v.items[0].items[0].onClick)
     expect(v.items[0].items[0].onClick.name).to.be.equal('dosamething');
 
     // voucher

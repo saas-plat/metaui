@@ -9,6 +9,7 @@ import {
   Action
 } from './Action';
 import UIStore from '../UIStore';
+import UISchema from '../UISchema';
 
 // 行为按钮模型，可以表示按钮或者菜单等能触发action的对象
 export class Button {
@@ -138,17 +139,15 @@ export class Button {
 
   static createSchema(config) {
     console.log('parse %s button item...', config.name)
-    return {
-      type: Button,
-      args: [config.name || config.type,
-        UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
-        UIStore.parseExpr(config.text), UIStore.parseExpr(config.setText),
-        UIStore.parseExpr(config.icon), UIStore.parseExpr(config.setIcon),
-        UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable ),
-        UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible ),
-        Action.createSchema(config.onClick),
-        config.items && config.items.map(it => Button.createSchema(it))
-      ]
-    };
+    return new UISchema(Button,
+      config.name || config.type,
+      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+      UIStore.parseExpr(config.text), UIStore.parseExpr(config.setText),
+      UIStore.parseExpr(config.icon), UIStore.parseExpr(config.setIcon),
+      UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable),
+      UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible),
+      Action.createSchema(config.onClick),
+      config.items && config.items.map(it => Button.createSchema(it))
+    );
   }
 }

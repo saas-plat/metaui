@@ -255,20 +255,7 @@ export class Rule {
     };
   }
 
-  toJS() {
-    return {
-      name: this.name,
-      type: this.store.execExpr(this.typeExpr),
-      required: this.store.execExpr(this.requiredExpr),
-      message: this.store.execExpr(this.messageExpr),
-      enum: this.store.execExpr(this.enumExpr),
-      len: this.store.execExpr(this.lenExpr),
-      pattern: this.store.execExpr(this.patternExpr),
-      whitespace: this.store.execExpr(this.whitespaceExpr),
-      min: this.store.execExpr(this.minExpr),
-      max: this.store.execExpr(this.maxExpr),
-    }
-  }
+ 
 }
 
 export class FormItem {

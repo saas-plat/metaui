@@ -134,15 +134,7 @@ export class Action {
     }, {}));
   }
 
-  toJS() {
-    return {
-      name: this.nameExpr.toString(),
-      args: Object.keys(this.exprs).reduce((config, key) => {
-        config[key] = this.exprs[key].toString();
-        return config;
-      }, {})
-    }
-  }
+ 
 
   static createSchema(config) {
     if (typeof config === 'string') {

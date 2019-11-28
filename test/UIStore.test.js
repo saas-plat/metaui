@@ -95,13 +95,13 @@ describe('视图模板', () => {
             type: 'formitem',
             input: 'decimal',
             text: 'item1',
-            value: 'item1',
+            value: '$item1',
             onChange: 'action1'
           }, {
             type: 'formitem',
             input: 'decimal',
             text: 'item2',
-            getValue: 'item1'
+            value: '$item1'
           }]
         }],
         onLoad: {
@@ -150,9 +150,9 @@ describe('视图模板', () => {
     // input
     expect(v.items[1].items[0].items[0].inputItem).to.be.a.instanceof(Input);
     expect(v.items[1].items[0].items[1].inputItem).to.be.a.instanceof(Input);
-    expect(v.items[1].items[0].items[0].inputItem.type).to.be.equal('number');
-    expect(v.items[1].items[0].items[0].inputItem.placeholder).to.be.equal('');
-    expect(v.items[1].items[0].items[0].inputItem.clear).to.be.equal(true);
+    expect(v.items[1].items[0].items[0].inputItem.type).to.be.equal('decimal');
+    expect(v.items[1].items[0].items[0].inputItem.placeholder).to.be.undefined;
+    expect(v.items[1].items[0].items[0].inputItem.clear).to.be.equal(false);
     expect(v.items[1].items[0].items[0].inputItem.editable).to.be.equal(true);
     expect(v.items[1].items[0].items[0].inputItem.disable).to.be.equal(false);
     expect(v.items[1].items[0].items[0].inputItem.maxLength).to.be.equal(undefined);
@@ -162,6 +162,7 @@ describe('视图模板', () => {
     expect(v.items[1].items[0].items[0].inputItem.extra).to.be.equal(undefined);
     expect(v.items[1].items[0].items[0].inputItem.text).to.be.equal('item1');
     expect(v.items[1].items[0].items[0].inputItem.value).to.be.equal(1000.00);
+    //console.log(v.items[1].items[0].items[0].inputItem.onChange)
     expect(v.items[1].items[0].items[0].inputItem.onChange.name).to.be.equal('action1');
     expect(v.items[1].items[0].items[0].inputItem.onBeforeChange).to.be.equal(null);
     expect(v.items[1].items[0].items[0].inputItem.onAfterChange).to.be.equal(null);
@@ -250,14 +251,14 @@ describe('视图模板', () => {
     })
     const ui = UIStore.create(s, vm).ui;
 
-    const item1 = ui.items[0].items[0].inputItem;
-    expect(item1.value).to.be.equal(1000)
+    const uiitem1 = ui.items[0].items[0].inputItem;
+    expect(uiitem1.value).to.be.equal(1000)
 
     // 直接ui赋值
-    item1.value = 2000;
-    item1.visible = false;
-    expect(item1.value).to.be.equal(2000)
-    expect(item1.visible).to.be.false;
+    uiitem1.value = 2000;
+    uiitem1.visible = false;
+    expect(uiitem1.value).to.be.equal(2000)
+    expect(uiitem1.visible).to.be.false;
 
     // 会影响到vm
     expect(vm.item1.value).to.be.equal(2000)

@@ -407,28 +407,25 @@ export class Input {
   static createSchema(config) {
     console.log('parse %s input...', config.name || config.type)
     if (config.type === 'money' || config.type === 'decimal') {
-      config.type = 'number';
       config.format = config.format || 'thousandth';
     }
     const args = [
       UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
       UIStore.parseExpr(config.text), UIStore.parseExpr(config.setText),
       UIStore.parseExpr(config.placeholder), UIStore.parseExpr(config.setPlaceholder),
-      UIStore.parseExpr(config.clear || false), UIStore.parseExpr(config.setClear ),
-      UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible ),
-       UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable ),
+      UIStore.parseExpr(config.clear || false), UIStore.parseExpr(config.setClear),
+      UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible),
+      UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable),
       UIStore.parseExpr(config.editable || true), UIStore.parseExpr(config.setEditable),
-      UIStore.parseExpr(config.size || 'default'), UIStore.parseExpr(config.setSize ),
+      UIStore.parseExpr(config.size || 'default'), UIStore.parseExpr(config.setSize),
       UIStore.parseExpr(config.maxLength), UIStore.parseExpr(config.setMaxLength),
-       UIStore.parseExpr(config.width), UIStore.parseExpr(config.setWidth),
+      UIStore.parseExpr(config.width), UIStore.parseExpr(config.setWidth),
       UIStore.parseExpr(config.defaultValue), UIStore.parseExpr(config.setDefaultValue),
-       UIStore.parseExpr(config.value), UIStore.parseExpr(config.setValue),
-       UIStore.parseExpr(config.mapping), UIStore.parseExpr(config.setMapping),
+      UIStore.parseExpr(config.value), UIStore.parseExpr(config.setValue),
+      UIStore.parseExpr(config.mapping), UIStore.parseExpr(config.setMapping),
       UIStore.parseExpr(config.format), UIStore.parseExpr(config.setFormat),
-      UIStore.parseExpr(config.error || true), UIStore.parseExpr(config.setError ),
+      UIStore.parseExpr(config.error || true), UIStore.parseExpr(config.setError),
       UIStore.parseExpr(config.extra), UIStore.parseExpr(config.setExtra),
-      UIStore.parseExpr(config.min || -Infinity), UIStore.parseExpr(config.setMin ),
-      UIStore.parseExpr(config.max || Infinity), UIStore.parseExpr(config.setMax),
       Action.createSchema(config.onChanging),
       Action.createSchema(config.onChange), Action.createSchema(config.onChanged), Action.createSchema(config.onBluring),
       Action.createSchema(config.onBlur), Action.createSchema(config.onBlured), Action.createSchema(config.onFocusing),
@@ -443,22 +440,22 @@ export class Input {
         type: RefInput,
         args: [config.name || config.type,
           Action.createSchema(config.onExtraClicked),
-          UIStore.parseExpr(config.dropdownStyle || 'table'), UIStore.parseExpr(config.setDropdownStyle ),
-          UIStore.parseExpr(config.multiple || false), UIStore.parseExpr(config.setMultiple ),
-          UIStore.parseExpr(config.showSearch || true), UIStore.parseExpr(config.setShowSearch ),
+          UIStore.parseExpr(config.dropdownStyle || 'table'), UIStore.parseExpr(config.setDropdownStyle),
+          UIStore.parseExpr(config.multiple || false), UIStore.parseExpr(config.setMultiple),
+          UIStore.parseExpr(config.showSearch || true), UIStore.parseExpr(config.setShowSearch),
           UIStore.parseExpr(config.query), UIStore.parseExpr(config.setQuery),
           UIStore.parseExpr(config.variables), UIStore.parseExpr(config.setVariables),
           UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.setDisplayField),
           UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
-          UIStore.parseExpr(config.showHeader || this.dropdownStyle === 'table'), UIStore.parseExpr(config.setShowHeader ),
-          UIStore.parseExpr(config.columns), UIStore.parseExpr(config.setColumns), 
-          UIStore.parseExpr(config.pageSize || 20), UIStore.parseExpr(config.setPageSize ),
-          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField ),
-          UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField ),
+          UIStore.parseExpr(config.showHeader || this.dropdownStyle === 'table'), UIStore.parseExpr(config.setShowHeader),
+          UIStore.parseExpr(config.columns), UIStore.parseExpr(config.setColumns),
+          UIStore.parseExpr(config.pageSize || 20), UIStore.parseExpr(config.setPageSize),
+          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField),
+          UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField),
           UIStore.parseExpr(config.rootIdValue), UIStore.parseExpr(config.setRootIdValue),
-          UIStore.parseExpr(config.defaultExpandAll || false), UIStore.parseExpr(config.setDefaultExpandAll ),
+          UIStore.parseExpr(config.defaultExpandAll || false), UIStore.parseExpr(config.setDefaultExpandAll),
           UIStore.parseExpr(config.defaultExpandKeys),
-            ...args
+          ...args
         ]
       };
     } else if (config.type === 'inputtable' || config.type === 'table') {
@@ -475,8 +472,8 @@ export class Input {
         args: [config.name || config.type,
           UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.setDataSource),
           UIStore.parseExpr(config.mode), UIStore.parseExpr(config.setMode),
-          UIStore.parseExpr(config.displayField || 'id'), UIStore.parseExpr(config.setDisplayField ),
-          UIStore.parseExpr(config.valueField || 'id'), UIStore.parseExpr(config.setValueField ),
+          UIStore.parseExpr(config.displayField || 'id'), UIStore.parseExpr(config.setDisplayField),
+          UIStore.parseExpr(config.valueField || 'id'), UIStore.parseExpr(config.setValueField),
           UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
           ...args
         ]
@@ -490,13 +487,13 @@ export class Input {
           UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.setDisplayField),
           UIStore.parseExpr(config.valueField), UIStore.parseExpr(config.setValueField),
           UIStore.parseExpr(config.sortField), UIStore.parseExpr(config.setSortField),
-          UIStore.parseExpr(config.showSearch || false), UIStore.parseExpr(config.setShowSearch ),
-          UIStore.parseExpr(config.allowClear || true), UIStore.parseExpr(config.setAllowClear ),
+          UIStore.parseExpr(config.showSearch || false), UIStore.parseExpr(config.setShowSearch),
+          UIStore.parseExpr(config.allowClear || true), UIStore.parseExpr(config.setAllowClear),
           UIStore.parseExpr(config.treeDefaultExpandAll || true), UIStore.parseExpr(config.setTreeDefaultExpandAll),
-          UIStore.parseExpr(config.maxHeight || 400), UIStore.parseExpr(config.setMaxHeight ),
+          UIStore.parseExpr(config.maxHeight || 400), UIStore.parseExpr(config.setMaxHeight),
           UIStore.parseExpr(config.treeCheckable || false), UIStore.parseExpr(config.setTreeCheckable),
-          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField ),
-          UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField ),
+          UIStore.parseExpr(config.idField || 'id'), UIStore.parseExpr(config.setIdField),
+          UIStore.parseExpr(config.pidField || 'pid'), UIStore.parseExpr(config.setPidField),
           UIStore.parseExpr(config.rootIdValue), UIStore.parseExpr(config.setRootIdValue),
           ...args
         ]
@@ -504,7 +501,11 @@ export class Input {
     } else if (config.type === 'number') {
       return {
         type: NumberInput,
-        args: [config.name || config.type, ...args]
+        args: [config.name || config.type,
+          UIStore.parseExpr(config.min || -Infinity), UIStore.parseExpr(config.setMin),
+          UIStore.parseExpr(config.max || Infinity), UIStore.parseExpr(config.setMax),
+          ...args
+        ]
       };
     } else {
       if (!config.format) {
@@ -692,7 +693,7 @@ export class Select extends Input {
     ...other) {
     super(store, name, ...other);
 
-    this.dataSourceExpr = dataSourceExpr ;
+    this.dataSourceExpr = dataSourceExpr;
     this.setDataSourceExpr = setDataSourceExpr;
     this.modeExpr = modeExpr;
     this.setModeExpr = setModeExpr;
@@ -1286,9 +1287,9 @@ export class RefInput extends Input {
 
   constructor(store, name,
     dropdownStyleExpr, setDropdownStyleExpr, multipleExpr, setMultipleExpr,
-     showSearchExpr, setShowSearchExpr, queryExpr, setQueryExpr, variablesExpr,
-     setVariablesExpr, displayFieldExpr, setDisplayFieldExpr, sortFieldExpr,
-     setSortFieldExpr, showHeaderExpr, setShowHeaderExpr,
+    showSearchExpr, setShowSearchExpr, queryExpr, setQueryExpr, variablesExpr,
+    setVariablesExpr, displayFieldExpr, setDisplayFieldExpr, sortFieldExpr,
+    setSortFieldExpr, showHeaderExpr, setShowHeaderExpr,
     columns,
     pageSizeExpr, setPageSizeExpr, idFieldExpr, setIdFieldExpr, pidFieldExpr,
     setPidFieldExpr, rootIdValueExpr, setRootIdValueExpr, defaultExpandAllExpr,

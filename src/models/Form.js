@@ -241,7 +241,7 @@ export class Rule {
   static createSchema(config, options = {}) {
     console.log('parse %s rule...', config.name || config.type)
     return new UISchema(Rule,
-      config.name || config.type,
+      config.name,
       UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
       UIStore.parseExpr(config.message), UIStore.parseExpr(config.setMessage),
       UIStore.parseExpr(config.required || options.required), UIStore.parseExpr(config.setRequired || options.required),
@@ -524,7 +524,7 @@ export class FormItem {
       ...inputconfig
     } = config;
     return new UISchema(FormItem,
-      config.name || config.type,
+      config.name,
       UIStore.parseExpr(labelSpan || 6), UIStore.parseExpr(config.setLabelSpan),
       UIStore.parseExpr(labelText || ''), UIStore.parseExpr(config.setLabelText),
       UIStore.parseExpr(config.labelIcon || config.icon), UIStore.parseExpr(config.setLabelIcon),

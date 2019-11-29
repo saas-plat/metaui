@@ -265,7 +265,7 @@ export class Container {
   static createSchema(config, options = {}) {
     console.log('parse %s container...', config.name || config.type)
     return new UISchema(Container,
-      config.name || config.type,
+      config.name,
       UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
       UIStore.parseExpr(config.title || config.text), UIStore.parseExpr(config.setTitle),
       UIStore.parseExpr(config.description), UIStore.parseExpr(config.setDescription),

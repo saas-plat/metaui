@@ -64,7 +64,7 @@ class Style {
 
   static createSchema(config = {}) {
     return new UISchema(Style,
-      config.name || config.type,
+      config.name,
       UIStore.parseExpr(config.height || '300'), UIStore.parseExpr(config.setHeight),
       UIStore.parseExpr(config.width || '100%'), UIStore.parseExpr(config.setWidth)
     );
@@ -111,7 +111,7 @@ export class Chart {
   static createSchema(config) {
     console.log('parse chart...')
     return new UISchema(Chart,
-      config.name || config.type,
+      config.name,
       UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
       Style.createSchema(config.style)
     );

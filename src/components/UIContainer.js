@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  Inflectors
+} from "en-inflectors";
 
 const none = () => {}
 
@@ -24,24 +27,27 @@ export default class UIContainer extends React.Component {
     t: PropTypes.func,
   }
 
-  handleEvent = (target, event, args, defaultAction = null) => {
+  handleEvent = (target, evtName, args, defaultAction = null) => {
     const key = target.name,
-      evtName = event,
-      formatEvent = evtName[0].toUpperCase() + evtName.substr(1),
-      eventName = key + '.' + evtName,
-      beforeEvent = key + '.before' + formatEvent,
-      afterEvent = key + '.after' + formatEvent,
-      onevent = eventName,
-      beforeAction = target['onBefore' + formatEvent],
-      action = target['on' + formatEvent] || defaultAction,
-      afterAction = target['onAfter' + formatEvent];
+      before = new Inflectors(evtName).toGerund(),
+      doing = new Inflectors(evtName).toPresent(),
+      after = new Inflectors(evtName).toPast(),
+      beforeEvent = key + '.' + before,
+      event = key + '.' + doing,
+      afterEvent = key + '.' + after,
+      beforeTitleCase = before[0].toUpperCase() + before.substr(1),
+      titleCase = doing[0].toUpperCase() + doing.substr(1),
+      afterTitleCase = after[0].toUpperCase() + after.substr(1),
+      beforeAction = target['on' + beforeTitleCase],
+      action = target['on' + titleCase] || defaultAction,
+      afterAction = target['on' + afterTitleCase];
     if (!key) {
       console.warn('target key not exists, skip handle event.');
       return;
     }
     this.execute({
       beforeEvent,
-      event: onevent,
+      event,
       afterEvent
     }, {
       beforeAction,
@@ -110,7 +116,7 @@ export default class UIContainer extends React.Component {
           return;
         }
         actionObj = {
-          ...action.toJS().args,
+          ...action.args,
           ...params,
           name: action.name
         };

@@ -187,7 +187,7 @@ export class Button {
   static createSchema(config) {
     console.log('parse %s button item...', config.name)
     return new UISchema(Button,
-      config.name || config.type,
+      config.name,
       UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
       UIStore.parseExpr(config.text), UIStore.parseExpr(config.setText),
       UIStore.parseExpr(config.icon), UIStore.parseExpr(config.setIcon),

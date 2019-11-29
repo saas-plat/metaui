@@ -138,7 +138,8 @@ export class Action {
   static createSchema(config) {
     if (typeof config === 'string') {
       console.log('parse %s action...', config)
-      return new UISchema(Action, UIStore.parseExpr(config));
+      return new UISchema(Action, UIStore.parseExpr(config), UIStore.parseExpr(null),
+        UIStore.parseExpr(null), UIStore.parseExpr(null), {});
     } else if (Array.isArray(config)) {
       return config.map(it => Action.createSchema(it));
     } else if (config) {
@@ -157,7 +158,7 @@ export class Action {
       };
       return new UISchema(Action,
         UIStore.parseExpr(name), UIStore.parseExpr(setName),
-        UIStore.parseExpr(setArgs), UIStore.parseExpr(getArgs),
+        UIStore.parseExpr(getArgs), UIStore.parseExpr(setArgs),
         Object.keys(argobj).reduce((obj, key) => {
           obj[key] = UIStore.parseExpr(argobj[key]);
           return obj;

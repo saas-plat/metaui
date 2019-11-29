@@ -206,7 +206,7 @@ export class Column {
   static createSchema(config = {}, options = {}) {
     console.log('parse table column...')
     return new UISchema(Column,
-      config.name || config.type,
+      config.name,
       UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
       UIStore.parseExpr(config.visible || options.visible || true), UIStore.parseExpr(config.setVisible),
       UIStore.parseExpr(config.disabled || options.disabled || false), UIStore.parseExpr(config.setDisabled),
@@ -278,7 +278,7 @@ export class Table {
   static createSchema(config = []) {
     let name, onLoading, onLoad, onLoaded;
     console.log('parse table...')
-    name = config.name || config.type;
+    name = config.name;
     onLoading = config.onLoading;
     onLoad = config.onLoad;
     onLoaded = config.onLoaded;

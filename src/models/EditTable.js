@@ -190,7 +190,7 @@ export class EditColumn {
   static createSchema(config = {}, options = {}) {
     console.log('parse edit table column...')
     return new UISchema(EditColumn,
-      config.name || config.type,
+      config.name,
       UIStore.createSchema(config),
       UIStore.parseExpr(config.visible || options.visible || true), UIStore.parseExpr(config.setVisible),
       UIStore.parseExpr(config.disable || options.disable || false), UIStore.parseExpr(config.setDisable),
@@ -392,7 +392,7 @@ export class EditTable {
   static createSchema(config = {}) {
     console.log('parse edit table...')
     return new UISchema(EditTable,
-      config.name || config.type,
+      config.name,
       (config.columns || []).map(it => EditColumn.createSchema(it, config)),
       UIStore.parseExpr(config.dataSource || config.value), UIStore.parseExpr(config.setDataSource),
       UIStore.parseExpr(config.bordered || true), UIStore.parseExpr(config.setBordered),

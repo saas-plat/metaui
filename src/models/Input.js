@@ -460,7 +460,7 @@ export class Input {
 
     if (config.type === 'refselect') {
       return new UISchema(RefInput,
-        config.name || config.type,
+        config.name,
         Action.createSchema(config.onExtraClicked),
         UIStore.parseExpr(config.dropdownStyle || 'table'), UIStore.parseExpr(config.setDropdownStyle),
         UIStore.parseExpr(config.multiple || false), UIStore.parseExpr(config.setMultiple),
@@ -481,13 +481,13 @@ export class Input {
       )
     } else if (config.type === 'inputtable' || config.type === 'table') {
       return new UISchema(InputTable,
-        config.name || config.type,
+        config.name,
         EditTable.createSchema(config.table),
         ...args
       )
     } else if (config.type === 'select') {
       return new UISchema(Select,
-        config.name || config.type,
+        config.name,
         UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.setDataSource),
         UIStore.parseExpr(config.mode), UIStore.parseExpr(config.setMode),
         UIStore.parseExpr(config.displayField || 'id'), UIStore.parseExpr(config.setDisplayField),
@@ -497,7 +497,7 @@ export class Input {
       )
     } else if (config.type === 'treeselect') {
       return new UISchema(TreeSelect,
-        config.name || config.type,
+        config.name,
         UIStore.parseExpr(config.dataSource), UIStore.parseExpr(config.setDataSource),
         UIStore.parseExpr(config.mode), UIStore.parseExpr(config.setMode),
         UIStore.parseExpr(config.displayField), UIStore.parseExpr(config.setDisplayField),
@@ -515,7 +515,7 @@ export class Input {
       )
     } else if (config.type === 'number') {
       return new UISchema(NumberInput,
-        config.name || config.type,
+        config.name,
         UIStore.parseExpr(config.min || -Infinity), UIStore.parseExpr(config.setMin),
         UIStore.parseExpr(config.max || Infinity), UIStore.parseExpr(config.setMax),
         ...args
@@ -541,7 +541,7 @@ export class Input {
           break;
         }
       }
-      return new UISchema(Input, config.name || config.type, ...args)
+      return new UISchema(Input, config.name, ...args)
     }
   }
 }

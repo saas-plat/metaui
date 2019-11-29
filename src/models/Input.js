@@ -53,6 +53,9 @@ export class Input {
   @observable formatExpr;
   @observable setFormatExpr;
 
+  @observable sizeExpr;
+  @observable setReadonlyExpr;
+
   // 这个就是值表达式，或者一个常量值
   @observable valueExpr;
   @observable setValueExpr;
@@ -198,6 +201,21 @@ export class Input {
   }
   set setSize(setValue) {
     this.setSizeExpr = UIStore.parseExpr(setValue);
+  }
+  @computed get readonly() {
+    return this.store.execExpr(this.readonlyExpr);
+  }
+  set readonly(value) {
+    if (this.setReadonly) {
+      return this.store.setViewModel(this.setReadonly, value);
+    }
+    this.readonlyExpr = UIStore.parseExpr(value);
+  }
+  @computed get setReadonly() {
+    return this.store.execExpr(this.setReadonlyExpr);
+  }
+  set setReadonly(setValue) {
+    this.setReadonlyExpr = UIStore.parseExpr(setValue);
   }
   @computed get maxLength() {
     return this.store.execExpr(this.maxLengthExpr);
@@ -345,6 +363,7 @@ export class Input {
 
   constructor(store, name, typeExpr, setTypeExpr, textExpr, setTextExpr, placeholderExpr, setPlaceholderExpr,
     clearExpr, setClearExpr, visibleExpr, setVisibleExpr, disableExpr, setDisableExpr, editableExpr, setEditableExpr, sizeExpr, setSizeExpr,
+    readonlyExpr, setReadonlyExpr,
     maxLengthExpr, setMaxLengthExpr, widthExpr, setWidthExpr, defaultValueExpr, setDefaultValueExpr, valueExpr, setValueExpr,
     mappingExpr, setMappingExpr, formatExpr, setFormatExpr, errorExpr, setErrorExpr, extraExpr, setExtraExpr,
     onBeforeChange, onChange, onAfterChange, onBeforeBlur, onBlur, onAfterBlur, onBeforeFocus, onFocus, onAfterFocus, onBeforeErrorClick,
@@ -370,6 +389,8 @@ export class Input {
     this.setVisibleExpr = setVisibleExpr;
     this.sizeExpr = sizeExpr;
     this.setSizeExpr = setSizeExpr;
+    this.readonlyExpr = readonlyExpr;
+    this.setReadonlyExpr = setReadonlyExpr;
     this.maxLengthExpr = maxLengthExpr;
     this.setMaxLengthExpr = setMaxLengthExpr;
     this.widthExpr = widthExpr;
@@ -419,6 +440,7 @@ export class Input {
       UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable),
       UIStore.parseExpr(config.editable || true), UIStore.parseExpr(config.setEditable),
       UIStore.parseExpr(config.size || 'default'), UIStore.parseExpr(config.setSize),
+      UIStore.parseExpr(config.readonly || false), UIStore.parseExpr(config.setReadonly),
       UIStore.parseExpr(config.maxLength), UIStore.parseExpr(config.setMaxLength),
       UIStore.parseExpr(config.width), UIStore.parseExpr(config.setWidth),
       UIStore.parseExpr(config.defaultValue), UIStore.parseExpr(config.setDefaultValue),

@@ -42,12 +42,12 @@ export function registerFeedback({
     return () => dispose();
   }
 
-  feedback.secure = (title, content, placeholder, okText, cancelText, onOk = none, onCancel = none) => {
+  feedback.secure = (title, placeholder, okText, cancelText, onOk = none, onCancel = none) => {
     if (!alert) {
       console.warn('secure not support!');
       return;
     }
-    const dispose = secure(title, content, placeholder, okText, cancelText, (txt) => onOk(txt), () => onCancel());
+    const dispose = secure(title, placeholder, okText, cancelText, (txt) => onOk(txt), () => onCancel());
     return () => dispose();
   }
 

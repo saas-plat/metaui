@@ -1,15 +1,16 @@
 {
   "name": "saas-plat-metaui",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "metaui components",
   "productName": "saas-plat",
   "main": "dist/index.js",
   "scripts": {
     "i": "npm i --registry https://npm.saas-plat.com",
     "up": "npm update --registry https://npm.saas-plat.com",
+    "build": "node node_modules/saas-plat-clientTools/bin/build",
     "pub": "node node_modules/saas-plat-clientTools/bin/publish",
-    "lpub": "npm publish --registry https://npm.saas-plat.com",
-    "dev": "",
+    "lpub": "npm run build && npm publish --registry https://npm.saas-plat.com",
+    "dev": "cross-env DISTPATH=../saas-plat-metauiweb/node_modules/saas-plat-metaui/dist npm run build",
     "watch": "cross-env DEBUG=saas-plat:*,-not_this mocha --watch",
     "test": "cross-env DEBUG=saas-plat:*,-not_this mocha"
   },

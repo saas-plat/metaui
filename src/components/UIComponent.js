@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import UIRender from './UIRender';
 
 export default class UIComponent extends React.Component{
   static propTypes = {
-    viewModel: PropTypes.object.isRequired,
-
+    config: PropTypes.object.isRequired,
   }
 
   static contextTypes = {
@@ -13,5 +13,9 @@ export default class UIComponent extends React.Component{
   }
 
   state = {}
+
+  renderItem(config){
+    return <UIRender key={config.key} ui={config}/>
+  }
 
 }

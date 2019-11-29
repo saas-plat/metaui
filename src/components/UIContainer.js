@@ -10,7 +10,7 @@ export default class UIContainer extends React.Component {
     context: PropTypes.object,
     onEvent: PropTypes.func,
     onAction: PropTypes.func, // action 和 event是有区别的，action是event配置的默认行为，就算不配置也可以有view的默认行为
-    children: PropTypes.element,
+    children: PropTypes.node,
   }
 
   static defaultProps = {
@@ -21,6 +21,7 @@ export default class UIContainer extends React.Component {
 
   static childContextTypes = {
     onEvent: PropTypes.func,
+    t: PropTypes.func,
   }
 
   handleEvent = (target, event, args, defaultAction = null) => {

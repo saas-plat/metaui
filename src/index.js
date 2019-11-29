@@ -4,6 +4,8 @@ export UIComponent from './components/UIComponent';
 export UIContainer from './components/UIContainer';
 // 组件类型管理器
 export UIStore from './UIStore';
+// ui模型渲染器
+export UIRender from './components/UIRender';
 
 export feedback, {registerFeedback} from './feedback';
 
@@ -19,5 +21,5 @@ export {Form as FormModel, FormItem as FormItemModel, Rule as RuleModel } from '
 
 // display
 export {Filter as FilterModel} from './models/Filter';
-export {Table as TableModel, Column as ColumnModel, Cell as CellModel} from './models/Display';
+export {Table as TableModel, Column as ColumnModel, Cell as CellModel} from './models/Table';
 export {Chart as ChartModel} from './models/Chart';

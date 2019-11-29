@@ -61,7 +61,7 @@ export class Container {
     this.setLayoutExpr = UIStore.parseExpr(setValue);
   }
   @computed get itemWidth() {
-    return parseFloat(this.store.execExpr(this.itemWidthExpr)) || 360;
+    return parseFloat(this.store.execExpr(this.itemWidthExpr));
   }
   set itemWidth(value) {
     if (this.setItemWidth) {
@@ -264,12 +264,6 @@ export class Container {
 
   static createSchema(config, options = {}) {
     console.log('parse %s container...', config.name || config.type)
-    let items = [];
-    if (config.items) {
-      items.push(...config.items);
-    } else {
-      items.push(config)
-    }
     return new UISchema(Container,
       config.name || config.type,
       UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
@@ -280,8 +274,8 @@ export class Container {
       UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setVisible),
       UIStore.parseExpr(config.layout || 'flow'), UIStore.parseExpr(config.setLayout),
       UIStore.parseExpr(config.span), UIStore.parseExpr(config.setSpan),
-      UIStore.parseExpr(config.itemWidth), UIStore.parseExpr(config.setItemWidth),
-      items.map(it => UIStore.createSchema(it, options)),
+      UIStore.parseExpr(config.itemWidth || 'auto'), UIStore.parseExpr(config.setItemWidth),
+      (config.items || []).map(it => UIStore.createSchema(it, options)),
       (config.btns || []).map(it => Button.createSchema(it, options))
     );
   }

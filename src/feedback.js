@@ -10,7 +10,9 @@ export function registerFeedback({
   // 确认是否
   confirm,
   // 安全确认，需要输入安全码
-  secure
+  secure,
+  // 提醒，不阻塞操作
+  notification
 }) {
   // 规范接口
   feedback.message = (content, duration = 3, type = 'success', onClose = none) => {
@@ -46,6 +48,23 @@ export function registerFeedback({
       return;
     }
     const dispose = secure(title, content, placeholder, okText, cancelText, (txt) => onOk(txt), () => onCancel());
+    return () => dispose();
+  }
+
+  feedback.notification = (title, content, duration = 3, onClose = none, btns = [], onClick = none) => {
+    if (!alert) {
+      console.warn('notification not support!');
+      return;
+    }
+    const dispose = notification(title, content, duration, btns.map(({
+      text,
+      key,
+      type
+    }) => ({
+      text,
+      key,
+      type
+    })), () => onClose(), (key) => onClick(key));
     return () => dispose();
   }
 }

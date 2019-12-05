@@ -4,7 +4,6 @@ import {
   runInAction
 } from "mobx";
 import Expression from 'saas-plat-expression';
-import jxon from 'jxon';
 import _set from 'lodash/set';
 import UISchema from './UISchema';
 
@@ -160,36 +159,5 @@ export default class UIStore {
     return store;
   }
 
-  static loadJxon(strxml) {
-    jxon.config({
-      valueKey: 'text',
-      // attrKey: '$',
-      attrPrefix: '',
-      // lowerCaseTags: false,
-      // trueIsEmpty: false,
-      // autoDate: false,
-      // ignorePrefixedNodes: false,
-      // parseValues: false
-    })
-    const formatNode = (node) => {
-      if (node.parentNode && node.nodeType === 1) {
-        // 节点名称是type类型
-        const attr = node.ownerDocument.createAttribute('type');
-        attr.value = node.nodeName;
-        node.setAttributeNode(attr);
-        // 所有子节点都是items数组
-        node.nodeName = 'items';
-      }
-      if (node.hasChildNodes()) {
-        for (let i = 0; i < node.childNodes.length; i++) {
-          formatNode(node.childNodes.item(i));
-        }
-      }
-      return node;
-    }
 
-    var xml = jxon.stringToXml(strxml);
-    formatNode(xml.documentElement);
-    return jxon.xmlToJs(xml).items;
-  }
 }

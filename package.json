@@ -25,7 +25,6 @@
   "license": "ISC",
   "dependencies": {
     "en-inflectors": "^1.0.12",
-    "jxon": "^2.0.0-beta.5",
     "mobx": "^5.15.0",
     "mobx-react": "^6.1.4",
     "prop-types": "^15.6.2",

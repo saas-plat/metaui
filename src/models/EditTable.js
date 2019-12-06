@@ -187,13 +187,13 @@ export class EditColumn {
     this.children = children;
   }
 
-  static createSchema(config = {}, options = {}) {
+  static createSchema(config = {}) {
     console.log('parse edit table column...')
     return new UISchema(EditColumn,
       config.name,
       UIStore.createSchema(config),
-      UIStore.parseExpr(config.visible || options.visible || true), UIStore.parseExpr(config.setVisible),
-      UIStore.parseExpr(config.disable || options.disable || false), UIStore.parseExpr(config.setDisable),
+      UIStore.parseExpr(config.visible), UIStore.parseExpr(config.setVisible),
+      UIStore.parseExpr(config.disable), UIStore.parseExpr(config.setDisable),
       UIStore.parseExpr(config.align), UIStore.parseExpr(config.setAlign),
       UIStore.parseExpr(config.colSpan), UIStore.parseExpr(config.setColSpan),
       UIStore.parseExpr(config.dataIndex || config.value), UIStore.parseExpr(config.setDataIndex),

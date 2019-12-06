@@ -8,18 +8,3 @@ export UIStore from './UIStore';
 export UIRender from './components/UIRender';
 
 export feedback, {registerFeedback} from './feedback';
-
-// common
-export {Action as ActionModel} from './models/Action';
-export {Container as ContainerModel } from './models/Container';
-
-//  input
-export {Button as ButtonModel} from './models/Button';
-export {Input as InputModel } from './models/Input';
-export {EditTable as EditTableModel, EditColumn as EditColumnModel, EditCell as EditCellModel } from './models/EditTable';
-export {Form as FormModel, FormItem as FormItemModel, Rule as RuleModel } from './models/Form';
-
-// display
-export {Filter as FilterModel} from './models/Filter';
-export {Table as TableModel, Column as ColumnModel, Cell as CellModel} from './models/Table';
-export {Chart as ChartModel} from './models/Chart';

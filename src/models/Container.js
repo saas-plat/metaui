@@ -262,7 +262,7 @@ export class Container {
     this.allbtns.clear();
   }
 
-  static createSchema(config, options = {}) {
+  static createSchema(config) {
     console.log('parse %s container...', config.name || config.type)
     return new UISchema(Container,
       config.name,
@@ -275,8 +275,8 @@ export class Container {
       UIStore.parseExpr(config.layout || 'flow'), UIStore.parseExpr(config.setLayout),
       UIStore.parseExpr(config.span), UIStore.parseExpr(config.setSpan),
       UIStore.parseExpr(config.itemWidth || 'auto'), UIStore.parseExpr(config.setItemWidth),
-      (config.items || []).map(it => UIStore.createSchema(it, options)),
-      (config.btns || []).map(it => Button.createSchema(it, options))
+      (config.items || []).map(it => UIStore.createSchema(it)),
+      (config.btns || []).map(it => Button.createSchema(it))
     );
   }
 }

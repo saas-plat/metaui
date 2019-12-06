@@ -238,19 +238,19 @@ export class Rule {
     this.setDisableExpr = setDisableExpr;
   }
 
-  static createSchema(config, options = {}) {
+  static createSchema(config) {
     console.log('parse %s rule...', config.name || config.type)
     return new UISchema(Rule,
       config.name,
       UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
       UIStore.parseExpr(config.message), UIStore.parseExpr(config.setMessage),
-      UIStore.parseExpr(config.required || options.required), UIStore.parseExpr(config.setRequired || options.required),
-      UIStore.parseExpr(config.enum || options.enum), UIStore.parseExpr(config.setEnum || options.enum),
-      UIStore.parseExpr(config.len || options.len), UIStore.parseExpr(config.setLen || options.len),
-      UIStore.parseExpr(config.pattern || options.pattern), UIStore.parseExpr(config.setPattern || options.pattern),
-      UIStore.parseExpr(config.whitespace || options.whitespace), UIStore.parseExpr(config.setWhitespace || options.whitespace),
-      UIStore.parseExpr(config.min || options.min), UIStore.parseExpr(config.setMin || options.min),
-      UIStore.parseExpr(config.max || options.max), UIStore.parseExpr(config.setMax || options.max)
+      UIStore.parseExpr(config.required), UIStore.parseExpr(config.setRequired),
+      UIStore.parseExpr(config.enum), UIStore.parseExpr(config.setEnum),
+      UIStore.parseExpr(config.len), UIStore.parseExpr(config.setLen),
+      UIStore.parseExpr(config.pattern), UIStore.parseExpr(config.setPattern),
+      UIStore.parseExpr(config.whitespace), UIStore.parseExpr(config.setWhitespace),
+      UIStore.parseExpr(config.min), UIStore.parseExpr(config.setMin),
+      UIStore.parseExpr(config.max), UIStore.parseExpr(config.setMax)
     )
   }
 

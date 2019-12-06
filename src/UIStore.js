@@ -7,10 +7,70 @@ import Expression from 'saas-plat-expression';
 import _set from 'lodash/set';
 import UISchema from './UISchema';
 
+// common
+import {
+  Action as ActionModel
+} from './models/Action';
+import {
+  Container as ContainerModel
+} from './models/Container';
+
+//  input
+import {
+  Button as ButtonModel
+} from './models/Button';
+import {
+  Input as InputModel
+} from './models/Input';
+import {
+  EditTable as EditTableModel,
+  EditColumn as EditColumnModel,
+  EditCell as EditCellModel
+} from './models/EditTable';
+import {
+  Form as FormModel,
+  FormItem as FormItemModel,
+  Rule as RuleModel
+} from './models/Form';
+
+// display
+import {
+  Filter as FilterModel
+} from './models/Filter';
+import {
+  Table as TableModel,
+  Column as ColumnModel,
+  Cell as CellModel
+} from './models/Table';
+import {
+  Chart as ChartModel
+} from './models/Chart';
+
 let tProvider = txt => txt;
 
 export default class UIStore {
-  static models = new Map();
+  static models = new Map({
+    // common
+    ActionModel,
+    ContainerModel,
+
+    //  input
+    ButtonModel,
+    InputModel,
+    EditTableModel,
+    EditColumnModel,
+    EditCellModel,
+    FormModel,
+    FormItemModel,
+    RuleModel,
+
+    // display
+    FilterModel,
+    TableModel,
+    ColumnModel,
+    CellModel,
+    ChartModel,
+  });
   static components = new Map();
 
   // 数据级别的模型，前端的业务实体模型，包含状态和数据
@@ -23,33 +83,21 @@ export default class UIStore {
     this.setValuable = typeof this.viewModel.setValue === 'function';
   }
 
+  // 组件是由扩展注册的，模型是统一的，交互可以是各端不同的
   static register(...items) {
-    const registerOne = (type, Component, Model) => {
+    const registerOne = (type, Component) => {
       if (!type) {
         console.error('ui type not be null!', type);
-        return false;
-      }
-      if (!Model) {
-        console.error('model type not be null!', type);
         return false;
       }
       if (!Component) {
         console.error('component type not be null!', type);
         return false;
       }
-      if (typeof Model.createSchema !== 'function') {
-        console.error('model schema can not be create!');
-        return false;
-      }
-      if (UIStore.models.has(type.toLowerCase())) {
-        console.error('model type has registerd!', type.toLowerCase());
-        return false;
-      }
       if (UIStore.components.has(type.toLowerCase())) {
         console.error('component type has registerd!', type.toLowerCase());
         return false;
       }
-      UIStore.models.set(type.toLowerCase(), Model);
       UIStore.components.set(type.toLowerCase(), Component);
       return true;
     }
@@ -59,11 +107,8 @@ export default class UIStore {
       const keys = Object.keys(items[0]);
       let hasFaield = false;
       for (const key of keys) {
-        const {
-          component,
-          model
-        } = items[0][key];
-        if (!registerOne(key, component, model)) {
+        const component = items[0][key];
+        if (!registerOne(key, component)) {
           hasFaield = true;
         }
       }
@@ -71,7 +116,7 @@ export default class UIStore {
     } else {
       let hasFaield = false;
       for (const it of items) {
-        if (!registerOne(it.type || it.name, it.component, it.model)) {
+        if (!registerOne(it.type || it.name, it.component)) {
           hasFaield = true;
         }
       }
@@ -128,17 +173,16 @@ export default class UIStore {
     }
   }
 
-  static createSchema(obj = {}, options = {}) {
+  static createSchema(obj = {}) {
     // 把配置信息解析成一棵构造树
-    const type = (obj.type || '').toLowerCase();
-    const Model = UIStore.models.get(type);
+    const Model = UIStore.models.get(obj.model);
     if (!Model) {
       console.error('ui model not found!', obj);
       return null;
     }
-    const schema = Model.createSchema(obj, options);
+    const schema = Model.createSchema(obj);
     if (!schema) {
-      console.error('not support ui model type', type);
+      console.error('not support ui type', obj.type);
     }
     return schema;
   }
@@ -158,6 +202,5 @@ export default class UIStore {
     });
     return store;
   }
-
 
 }

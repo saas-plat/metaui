@@ -203,13 +203,13 @@ export class Column {
     this.allcolumns = columns;
   }
 
-  static createSchema(config = {}, options = {}) {
+  static createSchema(config = {}) {
     console.log('parse table column...')
     return new UISchema(Column,
       config.name,
       UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
-      UIStore.parseExpr(config.visible || options.visible || true), UIStore.parseExpr(config.setVisible),
-      UIStore.parseExpr(config.disabled || options.disabled || false), UIStore.parseExpr(config.setDisabled),
+      UIStore.parseExpr(config.visible), UIStore.parseExpr(config.setVisible),
+      UIStore.parseExpr(config.disabled), UIStore.parseExpr(config.setDisabled),
       UIStore.parseExpr(config.align), UIStore.parseExpr(config.setAlign),
       UIStore.parseExpr(config.colSpan), UIStore.parseExpr(config.setColSpan),
       UIStore.parseExpr(config.dataIndex || config.value), UIStore.parseExpr(config.setDataIndex),

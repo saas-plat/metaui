@@ -9,41 +9,46 @@ import UISchema from './UISchema';
 
 // common
 import {
-  Action as ActionModel
+  Action
 } from './models/Action';
 import {
-  Container as ContainerModel
+  Container
 } from './models/Container';
 
 //  input
 import {
-  Button as ButtonModel
+  Button
 } from './models/Button';
 import {
-  Input as InputModel
+  Input,
+  NumberInput,
+  Select,
+  TreeSelect,
+  TableInput,
+  RefInput
 } from './models/Input';
 import {
-  EditTable as EditTableModel,
-  EditColumn as EditColumnModel,
-  EditCell as EditCellModel
+  EditTable,
+  EditColumn,
+  EditCell
 } from './models/EditTable';
 import {
-  Form as FormModel,
-  FormItem as FormItemModel,
-  Rule as RuleModel
+  Form,
+  FormItem,
+  Rule
 } from './models/Form';
 
 // display
 import {
-  Filter as FilterModel
+  Filter
 } from './models/Filter';
 import {
-  Table as TableModel,
-  Column as ColumnModel,
-  Cell as CellModel
+  Table,
+  Column,
+  Cell
 } from './models/Table';
 import {
-  Chart as ChartModel
+  Chart
 } from './models/Chart';
 
 let tProvider = txt => txt;
@@ -51,25 +56,32 @@ let tProvider = txt => txt;
 export default class UIStore {
   static models = new Map({
     // common
-    ActionModel,
-    ContainerModel,
+    Action,
+    Container,
 
     //  input
-    ButtonModel,
-    InputModel,
-    EditTableModel,
-    EditColumnModel,
-    EditCellModel,
-    FormModel,
-    FormItemModel,
-    RuleModel,
+    Button,
+    Input,
+    NumberInput,
+    Select,
+    TreeSelect,
+    TableInput,
+    RefInput,
+    EditTable,
+    EditColumn,
+    EditCell,
+
+    // form
+    Form,
+    FormItem,
+    Rule,
 
     // display
-    FilterModel,
-    TableModel,
-    ColumnModel,
-    CellModel,
-    ChartModel,
+    Filter,
+    Table,
+    Column,
+    Cell,
+    Chart,
   });
   static components = new Map();
 
@@ -137,7 +149,7 @@ export default class UIStore {
     if (this.setValuable) {
       return this.viewModel.setValue(path, value);
     }
-    _set(this.viewModel, path, value);
+    _set(this.view, path, value);
   }
 
   static parseExpr(txt) {
@@ -173,9 +185,9 @@ export default class UIStore {
     }
   }
 
-  static createSchema(obj = {}) {
+  static createSchema({model, ...obj}) {
     // 把配置信息解析成一棵构造树
-    const Model = UIStore.models.get(obj.model);
+    const Model = UIStore.models.get(model);
     if (!Model) {
       console.error('ui model not found!', obj);
       return null;

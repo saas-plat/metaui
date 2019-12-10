@@ -1,6 +1,5 @@
 import {
   useStrict,
-  autorun,
   observable
 } from "mobx";
 const {
@@ -31,73 +30,63 @@ class NoneComponent {
 before(() => {
   UIStore.register({
     // common
-    view: {
-      component: NoneComponent,
-      model: Container
-    },
-    navbar: {
-      component: NoneComponent,
-      model: Container
-    },
+    view: NoneComponent,
+    navbar: NoneComponent,
     //  input
-    input: {
-      component: NoneComponent,
-      model: Input
-    },
-    decimal: {
-      component: NoneComponent,
-      model: Input
-    },
-    button: {
-      component: NoneComponent,
-      model: Button
-    },
-    voucher: {
-      component: NoneComponent,
-      model: Form
-    },
-    formitem: {
-      component: NoneComponent,
-      model: FormItem
-    },
-    list: {
-      component: NoneComponent,
-      model: Container
-    }
+    input: NoneComponent,
+    decimal: NoneComponent,
+    button: NoneComponent,
+    voucher: NoneComponent,
+    formitem: NoneComponent,
+    list: NoneComponent
   })
 })
 
-describe('视图模板', () => {
+describe('UI模板', () => {
 
   it('从Schema中加载视图模板', () => {
     const s = UIStore.createSchema({
+      model: 'Container',
       type: 'view',
       items: [{
+        model: 'Container',
         type: 'navbar',
         text: 'this is title',
         items: [{
+          model: 'Button',
           type: 'button',
           name: 'search',
           icon: 'search',
-          onClick: 'dosamething'
+          onClick: {
+            model: 'Action',
+            name: 'dosamething'
+          }
         }, {
+          model: 'Button',
           type: 'button',
           name: 'save',
           text: '保存'
         }]
       }, {
+        model: 'Form',
         type: 'voucher',
         items: [{
+          model: 'Container',
           type: 'list',
           layout: 'list',
           text: 'header 1',
           items: [{
+            model: 'FormItem',
             type: 'formitem',
             input: 'decimal',
             text: 'item1',
             value: '$item1',
-            onChange: 'action1'
+            onChange: {
+              model: 'Action',
+              name: 'action1'
+            }
           }, {
+            model: 'FormItem',
             type: 'formitem',
             input: 'decimal',
             text: 'item2',
@@ -105,13 +94,18 @@ describe('视图模板', () => {
           }]
         }],
         onLoad: {
+          model: 'Action',
           name: 'loadVoucher',
-          item1: 100,
-          item2: '$item1+1000'
+          args: {
+            item1: 100,
+            item2: '$item1+1000'
+          }
         },
         onLoaded: [{
+          model: 'Action',
           name: 'loaded1'
         }, {
+          model: 'Action',
           name: 'loaded2'
         }]
       }]
@@ -171,41 +165,6 @@ describe('视图模板', () => {
     expect(v.items[1].items[0].items[0].inputItem.onFocus).to.be.equal(null);
     expect(v.items[1].items[0].items[0].inputItem.onErrorClick).to.be.equal(null);
     expect(v.items[1].items[0].items[0].inputItem.onExtraClick).to.be.equal(null);
-
-  })
-
-  it('Schema支持jxon格式', () => {
-    const strxml = "<view>\
-      <navbar text='this is title'>\
-        <button name='search' icon='search' onClick='search'/>\
-        <button name='save' text='保存' icon='check' onClick='save1'/>\
-        <button name='action1' text='action 1' />\
-        <button name='action2' text='action 2'  />\
-      </navbar>\
-      <!--- 这是注释 -->\
-      <voucher state='$state' onLoaded='loadVoucher'>\
-        <list text='\"header \"+$state'>\
-          <formitem input='decimal' value='item1' text='item 1'/>\
-          <formitem input='decimal' value='item2' text='item 2'/>\
-        </list>\
-      </voucher>\
-    </view>";
-    let jx = UIStore.loadJxon(strxml)
-    //console.log(jx)
-    jx = jx.items;
-
-    expect(jx.length).to.be.equal(2);
-    expect(jx[0].type).to.be.equal('navbar');
-    expect(jx[0].text).to.be.equal('this is title');
-
-    expect(jx[0].items.length).to.be.equal(4);
-    expect(jx[0].items[1].name).to.be.equal('save');
-    expect(jx[0].items[1].text).to.be.equal('保存');
-    expect(jx[0].items[1].icon).to.be.equal('check');
-    expect(jx[0].items[1].onClick).to.be.equal('save1');
-
-    expect(jx[1].items.items[0].input).to.be.equal('decimal');
-    expect(jx[1].items.items[0].text).to.be.equal('item 1');
 
   })
 

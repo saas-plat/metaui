@@ -12,8 +12,8 @@ import {
   Action
 } from './models/Action';
 import {
-  Container
-} from './models/Container';
+  Layout
+} from './models/Layout';
 
 //  input
 import {
@@ -57,7 +57,7 @@ export default class UIStore {
   static models = new Map({
     // common
     Action,
-    Container,
+    Layout,
 
     //  input
     Button,

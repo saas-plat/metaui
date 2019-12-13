@@ -8,8 +8,8 @@ const {
 
 import UIStore from '../src/UIStore';
 import {
-  Container
-} from '../src/models/Container';
+  Layout
+} from '../src/models/Layout';
 import {
   Form,
   FormItem
@@ -46,10 +46,10 @@ describe('UI模板', () => {
 
   it('从Schema中加载视图模板', () => {
     const s = UIStore.createSchema({
-      model: 'Container',
+      model: 'Layout',
       type: 'view',
       items: [{
-        model: 'Container',
+        model: 'Layout',
         type: 'navbar',
         text: 'this is title',
         items: [{
@@ -71,7 +71,7 @@ describe('UI模板', () => {
         model: 'Form',
         type: 'voucher',
         items: [{
-          model: 'Container',
+          model: 'Layout',
           type: 'list',
           layout: 'list',
           text: 'header 1',
@@ -115,7 +115,7 @@ describe('UI模板', () => {
       item1: 1000.00
     }).ui;
     // navbar
-    expect(v.items[0]).to.be.a.instanceof(Container);
+    expect(v.items[0]).to.be.a.instanceof(Layout);
     expect(v.items[0].text).to.be.equal('this is title');
     expect(v.items[0].type).to.be.equal('navbar');
     expect(v.items[0].items.length).to.be.equal(2);
@@ -132,7 +132,7 @@ describe('UI模板', () => {
     expect(v.items[1].onAfterLoad[1].name).to.be.equal('loaded2');
 
     // container
-    expect(v.items[1].items[0]).to.be.a.instanceof(Container);
+    expect(v.items[1].items[0]).to.be.a.instanceof(Layout);
     expect(v.items[1].items[0].layout).to.be.equal('list');
     expect(v.items[1].items[0].text).to.be.equal('header 1');
 

@@ -42,8 +42,6 @@ export class Container {
 
   // 容器包含的输入项集合或子容器集合
   @observable allitems;
-  // 每个容器可以包含一组按钮行为
-  @observable allbtns;
 
   @computed get layout() {
     return this.store.execExpr(this.layoutExpr);
@@ -77,7 +75,7 @@ export class Container {
   }
 
   @computed get span() {
-    if (this.layout === 'list') {
+    if (this.layout === 'list' || this.layout === 'horizontal' || this.layout === 'vertical') {
       return 1;
     }
     const count = parseInt(this.store.execExpr(this.spanExpr));
@@ -99,9 +97,7 @@ export class Container {
     return this.allitems.filter(it => it.visible);
   }
 
-  @computed get btns() {
-    return this.allbtns.filter(it => it.visible);
-  }
+
 
   @computed get type() {
     return this.store.execExpr(this.typeExpr);
@@ -197,7 +193,7 @@ export class Container {
 
   constructor(store, name, typeExpr, setTypeExpr, textExpr, setTextExpr, descriptionExpr, setDescriptionExpr,
     iconExpr, setIconExpr, disableExpr, setDisableExpr, visibleExpr, setVisibleExpr, layoutExpr, setLayoutExpr,
-    spanExpr, setSpanExpr, itemWidthExpr, setItemWidthExpr, items, btns) {
+    spanExpr, setSpanExpr, itemWidthExpr, setItemWidthExpr, items) {
     this.key = assignId('Container');
     this.store = store;
     this.name = name || this.key;
@@ -213,8 +209,7 @@ export class Container {
     this.setDisableExpr = setDisableExpr;
     this.visibleExpr = visibleExpr;
     this.setVisibleExpr = setVisibleExpr;
-    this.allitems = items;
-    this.allbtns = btns;
+    this.allitems = items; 
 
     this.layoutExpr = layoutExpr;
     this.setLayoutExpr = setLayoutExpr;
@@ -243,24 +238,6 @@ export class Container {
     this.allitems.clear();
   }
 
-  @action addButton(...items) {
-    this.allbtns.push(...items);
-  }
-
-  @action removeButton(...names) {
-    for (const name of names) {
-      const reit = this.allbtns.find(it => it.name === name);
-      if (reit) {
-        this.allbtns.splice(this.allbtns.indexOf(reit), 1);
-      } else {
-        console.warn('sub container not exists!', name);
-      }
-    }
-  }
-
-  @action clearButtons() {
-    this.allbtns.clear();
-  }
 
   static createSchema(config) {
     console.log('parse %s container...', config.name || config.type)
@@ -275,8 +252,7 @@ export class Container {
       UIStore.parseExpr(config.layout || 'flow'), UIStore.parseExpr(config.setLayout),
       UIStore.parseExpr(config.span), UIStore.parseExpr(config.setSpan),
       UIStore.parseExpr(config.itemWidth || 'auto'), UIStore.parseExpr(config.setItemWidth),
-      (config.items || []).map(it => UIStore.createSchema(it)),
-      (config.btns || []).map(it => Button.createSchema(it))
+      (config.items || []).map(it => UIStore.createSchema(it))
     );
   }
 }

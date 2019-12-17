@@ -28,7 +28,8 @@
     "mobx": "^5.15.0",
     "mobx-react": "^6.1.4",
     "prop-types": "^15.6.2",
-    "react": "^16.6.3",
+    "react": "^16.6.3",    
+    "react-router-cache-route": "^1.8.3",
     "saas-plat-expression": "^1.0.1"
   },
   "devDependencies": {

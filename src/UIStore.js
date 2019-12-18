@@ -5,84 +5,13 @@ import {
 } from "mobx";
 import Expression from 'saas-plat-expression';
 import _set from 'lodash/set';
+import _get from 'lodash/get';
 import UISchema from './UISchema';
-
-// common
-import {
-  Action
-} from './models/Action';
-import {
-  Layout
-} from './models/Layout';
-
-//  input
-import {
-  Button
-} from './models/Button';
-import {
-  Input,
-  NumberInput,
-  Select,
-  TreeSelect,
-  TableInput,
-  RefInput
-} from './models/Input';
-import {
-  EditTable,
-  EditColumn,
-  EditCell
-} from './models/EditTable';
-import {
-  Form,
-  FormItem,
-  Rule
-} from './models/Form';
-
-// display
-import {
-  Filter
-} from './models/Filter';
-import {
-  Table,
-  Column,
-  Cell
-} from './models/Table';
-import {
-  Chart
-} from './models/Chart';
 
 let tProvider = txt => txt;
 
 export default class UIStore {
-  static models = new Map({
-    // common
-    Action,
-    Layout,
 
-    //  input
-    Button,
-    Input,
-    NumberInput,
-    Select,
-    TreeSelect,
-    TableInput,
-    RefInput,
-    EditTable,
-    EditColumn,
-    EditCell,
-
-    // form
-    Form,
-    FormItem,
-    Rule,
-
-    // display
-    Filter,
-    Table,
-    Column,
-    Cell,
-    Chart,
-  });
   static components = new Map();
 
   // 数据级别的模型，前端的业务实体模型，包含状态和数据
@@ -93,6 +22,7 @@ export default class UIStore {
   constructor(viewModel) {
     this.viewModel = viewModel;
     this.setValuable = typeof this.viewModel.setValue === 'function';
+    this.getValuable = typeof this.viewModel.getValue === 'function';
   }
 
   // 组件是由扩展注册的，模型是统一的，交互可以是各端不同的
@@ -149,7 +79,15 @@ export default class UIStore {
     if (this.setValuable) {
       return this.viewModel.setValue(path, value);
     }
-    _set(this.view, path, value);
+    _set(this.viewModel, path, value);
+  }
+
+  @action getViewModel(path ) {
+    console.log('get view model', path);
+    if (this.getValuable) {
+      return this.viewModel.getValue(path);
+    }
+    _get(this.viewModel, path);
   }
 
   static parseExpr(txt) {
@@ -176,8 +114,8 @@ export default class UIStore {
 
   build(node) {
     if (node instanceof UISchema) {
-      console.log('create %s...', node.type.name);
-      return new node.type(this, ...node.args.map(it => this.build(it)));
+      console.log('create %s...', node.type);
+      return node.createModel(this, it => this.build(it));
     } else if (Array.isArray(node)) {
       return node.map(it => this.build(it));
     } else {
@@ -185,16 +123,11 @@ export default class UIStore {
     }
   }
 
-  static createSchema({model, ...obj}) {
+  static createSchema(config) {
     // 把配置信息解析成一棵构造树
-    const Model = UIStore.models.get(model);
-    if (!Model) {
-      console.error('ui model not found!', obj);
-      return null;
-    }
-    const schema = Model.createSchema(obj);
+    const schema = UISchema.createSchema(config);
     if (!schema) {
-      console.error('not support ui type', obj.type);
+      console.error('not support ui type', config.type);
     }
     return schema;
   }

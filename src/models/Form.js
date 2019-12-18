@@ -480,67 +480,20 @@ export class FormItem {
     this.allrules.clear();
   }
 
-  static createSchema(config, options = {}) {
+  static createSchema(config) {
     console.log('parse %s form item...', config.name || config.type)
-    let labelSpan = config.labelSpan || options.labelSpan;
-    let labelText = config.labelText || config.label || config.text;
-    if (!labelSpan && !labelText) {
-      labelSpan = 0;
-    }
-    let rules = config.rules;
-    // formitem 和 inputitem 合并一起配置
-    if (!rules || rules.length <= 0) {
-      rules = [];
-      const rule = {};
-      // 规则type 和数据类型重复
-      // if ('type' in config) {
-      //   rule.type = config.type;
-      // }
-      if ('required' in config) {
-        rule.required = config.required;
-      }
-      if ('enum' in config) {
-        rule.enum = config.enum;
-      }
-      if ('len' in config) {
-        rule.len = config.len;
-      }
-      if ('pattern' in config) {
-        rule.pattern = config.pattern;
-      }
-      if ('min' in config) {
-        rule.min = config.min;
-      }
-      if ('max' in config) {
-        rule.max = config.max;
-      }
-      if (Object.keys(rule).length > 0) {
-        rules.push(rule);
-      }
-    }
-    const {
-      input,
-      type,
-      ...inputconfig
-    } = config;
     return new UISchema(FormItem,
       config.name,
-      UIStore.parseExpr(labelSpan || 6), UIStore.parseExpr(config.setLabelSpan),
-      UIStore.parseExpr(labelText || ''), UIStore.parseExpr(config.setLabelText),
-      UIStore.parseExpr(config.labelIcon || config.icon), UIStore.parseExpr(config.setLabelIcon),
-      UIStore.parseExpr(config.tipText || config.tip || ''), UIStore.parseExpr(config.setTipText),
+      UIStore.parseExpr(config.labelSpan  ), UIStore.parseExpr(config.setLabelSpan),
+      UIStore.parseExpr(config.labelText ), UIStore.parseExpr(config.setLabelText),
+      UIStore.parseExpr(config.labelIcon ), UIStore.parseExpr(config.setLabelIcon),
+      UIStore.parseExpr(config.tipText ), UIStore.parseExpr(config.setTipText),
       UIStore.parseExpr(config.extra), UIStore.parseExpr(config.setExtra),
-      UIStore.parseExpr(config.description || ''), UIStore.parseExpr(config.setDescription),
-      UIStore.createSchema({
-        ...inputconfig,
-        type: input || type
-      }),
+      UIStore.parseExpr(config.description ), UIStore.parseExpr(config.setDescription),
+      UIStore.createSchema(config.input),
       // 默认有一条规则config中尝试查找
-      rules.map(it => Rule.createSchema(it, {
-        ...config,
-        labelText
-      })),
-      (config.btns || []).map(it => Button.createSchema(it, options))
+      config.rules.map(it => Rule.createSchema(it)),
+      config.btns.map(it => Button.createSchema(it))
     )
   }
 }
@@ -686,75 +639,16 @@ export class Form {
 
   static createSchema(config = []) {
     console.log('parse %s form...', config.name || config.type)
-    let props = {};
-    if (Array.isArray(config)) {
-      props.items = config;
-    } else {
-      const {
-        items,
-        name,
-        type,
-        disable,
-        visible,
-        setType,
-        setDisable,
-        setVisible,
-        onChanging,
-        onChange,
-        onChanged,
-        onLoading,
-        onLoad,
-        onLoaded,
-        onValidating,
-        onValidate,
-        onValidatied,
-        onSaveing,
-        onSave,
-        onSaveed,
-        ...other
-      } = config;
-      props = {
-        items,
-        name,
-        type,
-        disable,
-        visible,
-        setType,
-        setDisable,
-        setVisible,
-        onChanging,
-        onChange,
-        onChanged,
-        onLoading,
-        onLoad,
-        onLoaded,
-        onValidating,
-        onValidate,
-        onValidatied,
-        onSaveing,
-        onSave,
-        onSaveed
-      }
-      if (!config.items) {
-        props.items = [other];
-        props.options = {};
-      } else {
-        props.options = other;
-      }
-    }
-    if (!Array.isArray(props.items)) {
-      props.items = [props.items];
-    }
     return new UISchema(Form,
-      props.name || props.type,
-      UIStore.parseExpr(props.type), UIStore.parseExpr(props.setType),
-      UIStore.parseExpr(props.disable || false), UIStore.parseExpr(props.setDisable),
-      UIStore.parseExpr(props.visible || true), UIStore.parseExpr(props.setDisable),
-      props.items.map(it => Container.createSchema(it, props.options)),
-      Action.createSchema(props.onChanging), Action.createSchema(props.onChange), Action.createSchema(props.onChanged),
-      Action.createSchema(props.onLoading), Action.createSchema(props.onLoad), Action.createSchema(props.onLoaded),
-      Action.createSchema(props.onValidating), Action.createSchema(props.onValidate), Action.createSchema(props.onValidatied),
-      Action.createSchema(props.onSaveing), Action.createSchema(props.onSave), Action.createSchema(props.onSaveed)
+      config.name  ,
+      UIStore.parseExpr(config.type), UIStore.parseExpr(config.setType),
+      UIStore.parseExpr(config.disable || false), UIStore.parseExpr(config.setDisable),
+      UIStore.parseExpr(config.visible || true), UIStore.parseExpr(config.setDisable),
+      config.items.map(it => Container.createSchema(it )),
+      Action.createSchema(config.onChanging), Action.createSchema(config.onChange), Action.createSchema(config.onChanged),
+      Action.createSchema(config.onLoading), Action.createSchema(config.onLoad), Action.createSchema(config.onLoaded),
+      Action.createSchema(config.onValidating), Action.createSchema(config.onValidate), Action.createSchema(config.onValidatied),
+      Action.createSchema(config.onSaveing), Action.createSchema(config.onSave), Action.createSchema(config.onSaveed)
     )
   }
 }

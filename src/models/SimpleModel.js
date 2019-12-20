@@ -1,17 +1,20 @@
 import {
-  extendObservable,
+  observable,
 } from 'mobx';
 import Model from './Model';
 
 // 一维模型
 export default class SimpleModel extends Model {
 
-  constructor(store, props) {
+  // 有个值对象
+  @observable value;
+
+  constructor(store, {
+    value,
+    ...props
+  }) {
     super(store, props);
-    delete props.name;
-    // 必须要有value
-    props.value = null;
-    extendObservable(this, props);
+    this.value = value;
   }
 
 }

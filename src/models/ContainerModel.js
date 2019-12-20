@@ -1,7 +1,7 @@
 import {
   computed,
   observable,
-  action,
+  action, 
 } from 'mobx';
 import {
   readonly

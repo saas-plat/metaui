@@ -1,6 +1,9 @@
 import {
   readonly
 } from 'core-decorators';
+import { 
+  extendObservable
+} from 'mobx';
 
 let gid = 0;
 // 分配全局id
@@ -17,12 +20,16 @@ export default class Model {
   @readonly name;
 
   constructor(store, {
-    name
+    name,
+    ...props
   }) {
     const key = assignId(name);
     this.store = store;
     this.key = key;
-    this.name = name || key
+    this.name = name || key;
+
+    // 可以定义容器属性
+    extendObservable(this, props);
   }
 
 }

@@ -13,27 +13,28 @@ let tProvider = txt => txt;
 export default class UIStore {
 
   static components = new Map();
+  static models = new Map();
 
   // 数据级别的模型，前端的业务实体模型，包含状态和数据
-  @observable viewModel;
-  // UI级别的模型，观察viewModel
+  @observable model;
+  // UI级别的模型，观察model
   @observable ui;
 
-  constructor(viewModel) {
-    this.viewModel = viewModel;
-    this.setValuable = typeof this.viewModel.setValue === 'function';
-    this.getValuable = typeof this.viewModel.getValue === 'function';
+  constructor(model) {
+    this.model = model;
+    this.setValuable = typeof this.model.setValue === 'function';
+    this.getValuable = typeof this.model.getValue === 'function';
   }
 
   // 组件是由扩展注册的，模型是统一的，交互可以是各端不同的
   static register(...items) {
-    const registerOne = (type, Component) => {
+    const registerOne = (type, Component, Model) => {
       if (!type) {
         console.error('ui type not be null!', type);
         return false;
       }
-      if (!Component) {
-        console.error('component type not be null!', type);
+      if (!Component || !Model) {
+        console.error('component model not be null!', type);
         return false;
       }
       if (UIStore.components.has(type.toLowerCase())) {
@@ -41,6 +42,7 @@ export default class UIStore {
         return false;
       }
       UIStore.components.set(type.toLowerCase(), Component);
+      UIStore.models.set(type.toLowerCase(), Model);
       return true;
     }
     if (typeof items[0] === 'string') {
@@ -49,16 +51,22 @@ export default class UIStore {
       const keys = Object.keys(items[0]);
       let hasFaield = false;
       for (const key of keys) {
-        const component = items[0][key];
-        if (!registerOne(key, component)) {
-          hasFaield = true;
+        const it = items[0][key];
+        if (Array.isArray(it)) {
+          if (!registerOne(key, it[0], it[1])) {
+            hasFaield = true;
+          }
+        } else {
+          if (!registerOne(key, it.component, it.model)) {
+            hasFaield = true;
+          }
         }
       }
       return hasFaield;
     } else {
       let hasFaield = false;
       for (const it of items) {
-        if (!registerOne(it.type || it.name, it.component)) {
+        if (!registerOne(it.type || it.name, it.component, it.model)) {
           hasFaield = true;
         }
       }
@@ -77,17 +85,17 @@ export default class UIStore {
   @action setViewModel(path, value) {
     console.log('set view model', path, value);
     if (this.setValuable) {
-      return this.viewModel.setValue(path, value);
+      return this.model.setValue(path, value);
     }
-    _set(this.viewModel, path, value);
+    _set(this.model, path, value);
   }
 
-  @action getViewModel(path ) {
+  @action getViewModel(path) {
     console.log('get view model', path);
     if (this.getValuable) {
-      return this.viewModel.getValue(path);
+      return this.model.getValue(path);
     }
-    _get(this.viewModel, path);
+    _get(this.model, path);
   }
 
   static parseExpr(txt) {
@@ -95,7 +103,7 @@ export default class UIStore {
   }
 
   execExpr(expr) {
-    return expr.exec(this.viewModel);
+    return expr.exec(this.model);
   }
 
   map(obj, mapping) {
@@ -147,5 +155,5 @@ export default class UIStore {
     });
     return store;
   }
-
+ 
 }

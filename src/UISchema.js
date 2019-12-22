@@ -53,6 +53,22 @@ export default class UISchema {
         return v
       }
     });
+
+// 暂时取消所有字段都是expr类型，必须type=expression才行
+    // 支持表达式
+    // props = _mapValues(props, (val) => {
+    //   let expr = UIStore.parseExpr(val);
+    //   Object.defineProperty(props, key, {
+    //     enumerable: true, // 这里必须是可枚举的要不observable不好使
+    //     get: () => {
+    //       return this.store.execExpr(expr);
+    //     },
+    //     set: (val) => {
+    //       expr = UIStore.parseExpr(val);
+    //     }
+    //   });
+    // })
+
     return new UISchema(type, bind, props);
   }
 }

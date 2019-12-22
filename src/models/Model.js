@@ -1,9 +1,10 @@
 import {
   readonly
 } from 'core-decorators';
-import { 
+import {
   extendObservable
 } from 'mobx';
+import _mapValues from 'lodash/mapValues';
 
 let gid = 0;
 // 分配全局id

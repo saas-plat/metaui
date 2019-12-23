@@ -17,13 +17,11 @@ export default class UIStore {
 
   // 数据级别的模型，前端的业务实体模型，包含状态和数据
   @observable model;
-  // UI级别的模型，观察model
+  // UI级别的模型，容器模型的树结构
   @observable ui;
 
   constructor(model) {
-    this.model = model;
-    this.setValuable = typeof this.model.setValue === 'function';
-    this.getValuable = typeof this.model.getValue === 'function';
+    this.setModel(model);
   }
 
   // 组件是由扩展注册的，模型是统一的，交互可以是各端不同的
@@ -120,6 +118,16 @@ export default class UIStore {
     }
   }
 
+  @action setModel(model) {
+    this.model = model;
+    this.setValuable = typeof this.model.setValue === 'function';
+    this.getValuable = typeof this.model.getValue === 'function';
+  }
+
+  @action setUI(view) {
+    this.ui = view;
+  }
+
   build(node) {
     if (node instanceof UISchema) {
       console.log('create %s...', node.type);
@@ -140,7 +148,9 @@ export default class UIStore {
     return schema;
   }
 
-  static create(schema, data) {
+  static create(schema, vm) {
+    // UI的schema和VM的schema是不一样的
+    // UISchema是模型的实例，UI是根据模型的实例渲染的UI组件
     if (!(schema instanceof UISchema)) {
       schema = schema ? UIStore.createSchema(schema) : null;
       if (!schema) {
@@ -148,7 +158,7 @@ export default class UIStore {
         return null;
       }
     }
-    const store = new UIStore(data);
+    const store = new UIStore(vm);
     const uiModel = store.build(schema);
     runInAction(() => {
       store.ui = uiModel;

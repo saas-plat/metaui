@@ -1,30 +1,24 @@
 import {
   computed,
   observable,
-  action, 
+  action,
 } from 'mobx';
-import {
-  readonly
-} from 'core-decorators';
 import Model from './Model';
 
 // 容器模型，一般就是视图模板
 export default class ContainerModel extends Model {
-  @readonly type;
   @observable allitems = [];
 
   constructor(store, {
     items = [],
-    type,
     ...props
   }) {
     super(store, props);
-    this.type = type;
     this.allitems = items;
   }
 
   @computed get items() {
-    return this.allitems.filter(it => it.visible)
+    return this.allitems.filter(it => it.visible !== false)
   }
 
   @action addItem(...items) {

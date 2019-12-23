@@ -1,5 +1,4 @@
 import _mapValues from 'lodash/mapValues';
-import _isPlanObject from 'lodash/isPlanObject';
 import _isArray from 'lodash/isArray';
 import UIStore from './UIStore';
 
@@ -16,14 +15,20 @@ export default class UISchema {
 
   createModel(store, reducer) {
     let vm;
+    // 这里不用考虑数组和对象情况，reducer里面处理啦
     const props = _mapValues(this.props, reducer);
+    // 这里要循环创建模型
     if (!this.bind) {
       const Model = UIStore.models.get(this.type);
+      if (!Model) {
+        throw new Error(this.type + ' Model not found!');
+      }
       vm = new Model(store, {
         type: this.type,
         ...props
       });
     } else {
+      // bind的字段需要从vm中查找
       vm = store.getViewModel(this.bind);
       vm.setValue({
         type: this.type,
@@ -35,39 +40,25 @@ export default class UISchema {
 
   static createSchema(obj) {
     let {
-      key, //  系统关键字
-      store, //  系统关键字
+      // key, //  系统关键字排除
+      // store, //  系统关键字
       type,
       bind,
       ...props
     } = obj;
+
     if (!type) {
       return obj;
     }
+
+    // 对所有属性都需要判断模型类型
     props = _mapValues(props, v => {
-      if (_isPlanObject(v)) {
-        return UISchema.createSchema(v);
-      } else if (_isArray(v)) {
+      if (_isArray(v)) {
         return v.map(UISchema.createSchema);
       } else {
-        return v
+        return UISchema.createSchema(v);
       }
     });
-
-// 暂时取消所有字段都是expr类型，必须type=expression才行
-    // 支持表达式
-    // props = _mapValues(props, (val) => {
-    //   let expr = UIStore.parseExpr(val);
-    //   Object.defineProperty(props, key, {
-    //     enumerable: true, // 这里必须是可枚举的要不observable不好使
-    //     get: () => {
-    //       return this.store.execExpr(expr);
-    //     },
-    //     set: (val) => {
-    //       expr = UIStore.parseExpr(val);
-    //     }
-    //   });
-    // })
 
     return new UISchema(type, bind, props);
   }

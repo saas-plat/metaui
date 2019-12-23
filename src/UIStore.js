@@ -21,7 +21,9 @@ export default class UIStore {
   @observable ui;
 
   constructor(model) {
-    this.setModel(model);
+    if (model) {
+      this.setModel(model);
+    }
   }
 
   // 组件是由扩展注册的，模型是统一的，交互可以是各端不同的
@@ -93,7 +95,7 @@ export default class UIStore {
     if (this.getValuable) {
       return this.model.getValue(path);
     }
-    _get(this.model, path);
+    return _get(this.model, path);
   }
 
   static parseExpr(txt) {

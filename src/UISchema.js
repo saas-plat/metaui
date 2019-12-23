@@ -21,7 +21,7 @@ export default class UISchema {
     if (!this.bind) {
       const Model = UIStore.models.get(this.type);
       if (!Model) {
-        throw new Error(this.type + ' Model not found!');
+        throw new Error(`"${this.type}" ui model not found!`);
       }
       vm = new Model(store, {
         type: this.type,
@@ -30,7 +30,13 @@ export default class UISchema {
     } else {
       // bind的字段需要从vm中查找
       vm = store.getViewModel(this.bind);
-      vm.setValue({
+      if (!vm) {
+        throw new Error(`"${this.bind}" view model not found!`);
+      }
+      if (typeof vm.setProps !== 'function'){
+        throw new Error(`"${this.bind}" object not view model!`);
+      }
+      vm.setProps({
         type: this.type,
         ...props
       });

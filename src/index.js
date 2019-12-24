@@ -14,6 +14,7 @@ export TreeModel from './models/TreeModel';
 export FilterModel from './models/FilterModel';
 export ReferModel from './models/ReferModel';
 export ContainerModel from './models/ContainerModel';
+export ReportModel from './models/ReportModel';
 // 通用的反馈机制
 export feedback, {
   registerFeedback

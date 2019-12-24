@@ -16,11 +16,11 @@ export default class TableModel extends Model {
 
   constructor(store, {columns = {}, data = [], ...props}) {
     super(store, props);
-    this.columns = _keys(columns).map(key => new SimpleModel({
+    this.columns = _keys(columns).map(key => new SimpleModel(store, {
       id: key,
       ...columns[key]
     }));
-    this.rows = data.map(it => new ListModel(it))
+    this.rows = data.map(it => new ListModel(store, it))
   }
 
   // 校验函数 合法性、必输项

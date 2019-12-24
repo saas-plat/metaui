@@ -4,7 +4,7 @@ import Model from './Model';
 export default class SimpleModel extends Model {
 
   constructor(store, {
-    value,
+    value = null,
     ...props
   }) {
     super(store, {

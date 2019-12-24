@@ -6,7 +6,7 @@ import {
 } from 'mobx';
 import _keys from 'lodash/keys';
 import Model from './Model';
-import ObjectModel from './ObjectModel';
+import SimpleModel from './SimpleModel';
 import ListModel from './ListModel';
 
 // 三维表模型
@@ -14,9 +14,9 @@ export default class TableModel extends Model {
   @observable columns = [];
   @observable rows = [];
 
-  constructor(columns = {}, data = []) {
-    super();
-    this.columns = _keys(columns).map(key => new ObjectModel({
+  constructor(store, {columns = {}, data = [], ...props}) {
+    super(store, props);
+    this.columns = _keys(columns).map(key => new SimpleModel({
       id: key,
       ...columns[key]
     }));

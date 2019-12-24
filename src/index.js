@@ -15,4 +15,14 @@ export FilterModel from './models/FilterModel';
 export ReferModel from './models/ReferModel';
 export ContainerModel from './models/ContainerModel';
 // 通用的反馈机制
-export feedback, {registerFeedback} from './feedback';
+export feedback, {
+  registerFeedback
+}
+from './feedback';
+// register route
+import UIStore from './UIStore';
+import ContainerModel from './models/ContainerModel';
+import SubView from './components/SubView';
+UIStore.register({
+  route: [SubView, ContainerModel],
+})

@@ -135,6 +135,20 @@ export default class Model {
 
     // 使用代理支持动态属性，减少模型的定义
     return new Proxy(this, {
+      ownKeys(target) {
+        return [...Object.keys(target), ...map.keys()];
+      },
+      deleteProperty(target, key) {
+        if (key in target) {
+          return delete target[key];
+        } else if (typeof key === 'string' && map.has(key)) {
+          return map.delete(key);
+        }
+        return false;
+      },
+      has(target, key) {
+        return key in target || map.has(key);
+      },
       get(target, key) {
         // If it exist, return original member or function.
         if (key in target) {
@@ -146,7 +160,6 @@ export default class Model {
             } :
             target[key];
         }
-
         // 动态创建没有的属性，但是mobx可能也创建了symbol字段
         if (typeof key === 'string' && !map.has(key)) {
           const newprops = {};

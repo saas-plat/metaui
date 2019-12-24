@@ -1,5 +1,6 @@
 import _mapValues from 'lodash/mapValues';
 import _isArray from 'lodash/isArray';
+import _forOwn from 'lodash/forOwn';
 import UIStore from './UIStore';
 
 export default class UISchema {
@@ -33,13 +34,12 @@ export default class UISchema {
       if (!vm) {
         throw new Error(`"${this.bind}" view model not found!`);
       }
-      if (typeof vm.setProps !== 'function'){
-        throw new Error(`"${this.bind}" object not view model!`);
-      }
-      vm.setProps({
+      _forOwn({
         type: this.type,
         ...props
-      });
+      }, (val, key) => {
+        vm[key] = val;
+      })
     }
     return vm;
   }

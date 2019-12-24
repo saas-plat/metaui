@@ -161,7 +161,7 @@ describe('UI模板', () => {
       onLoad: {
         name: 'loadVoucher',
         item1: 100,
-        item2: '$item1+1000'
+        item2: '$item1.value+1000'
       },
       onLoaded: [{
         name: 'loaded1'

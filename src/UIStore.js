@@ -150,7 +150,7 @@ export default class UIStore {
     return schema;
   }
 
-  static create(schema, vm) {
+  static create(schema, vm = {}) {
     // UI的schema和VM的schema是不一样的
     // UISchema是模型的实例，UI是根据模型的实例渲染的UI组件
     if (!(schema instanceof UISchema)) {

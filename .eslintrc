@@ -23,6 +23,7 @@
       "after": true,
       "it": true,
       "Symbol": true,
+      "Proxy": true,
       "test": true
     },
     "rules":{

@@ -106,7 +106,8 @@ const createProxy = (store, props, target = {}) => {
         const upkey = key.substr(0, 1).toUpperCase() + key.substr(1);
         const setkey = 'set' + upkey;
         if (map.has(setkey)) {
-          return store.setViewModel(map.get(setkey), value);
+          store.setViewModel(map.get(setkey), value);
+          return true;
         }
         if (map.has(key)) {
           let val = map.get(key);

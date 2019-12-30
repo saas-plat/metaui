@@ -4,12 +4,12 @@ import _forOwn from 'lodash/forOwn';
 import UIStore from './UIStore';
 
 export default class UISchema {
-  type;
+  model;
   bind;
   props;
 
-  constructor(type, bind, props) {
-    this.type = type;
+  constructor(model, bind, props) {
+    this.model = model;
     this.bind = bind;
     this.props = props;
   }
@@ -20,12 +20,8 @@ export default class UISchema {
     const props = _mapValues(this.props, reducer);
     // 这里要循环创建模型
     if (!this.bind) {
-      const Model = UIStore.models.get(this.type);
-      if (!Model) {
-        throw new Error(`"${this.type}" ui model not found!`);
-      }
+      const Model = this.model;
       vm = new Model(store, {
-        type: this.type,
         ...props
       });
     } else {
@@ -35,7 +31,6 @@ export default class UISchema {
         throw new Error(`"${this.bind}" view model not found!`);
       }
       _forOwn({
-        type: this.type,
         ...props
       }, (val, key) => {
         vm[key] = val;
@@ -57,15 +52,24 @@ export default class UISchema {
       return obj;
     }
 
-    // 对所有属性都需要判断模型类型
+    const Model = UIStore.models.get(type);
+    if (!Model) {
+      throw new Error(`"${type}" ui model not found!`);
+    }
+
     props = _mapValues(props, v => {
       if (_isArray(v)) {
         return v.map(UISchema.createSchema);
-      } else {
+      } else if (v) {
         return UISchema.createSchema(v);
+      } else {
+        return v;
       }
     });
 
-    return new UISchema(type, bind, props);
+    return new UISchema(Model, bind, {
+      type,
+      ...props
+    });
   }
 }

@@ -7,29 +7,31 @@ import Model from './Model';
 
 // 容器模型，一般就是视图模板
 export default class ContainerModel extends Model {
-  @observable allitems = [];
+
+  @observable allitems;
 
   constructor(store, {
-    items = [],
+    items,
     ...props
   }) {
     super(store, props);
-    this.allitems = items;
+    this.allitems = Model.createProp(store, items);
   }
 
   @computed get items() {
-    return this.allitems.filter(it => it.visible !== false)
+    return Model.getProp(this.store, this.allitems).filter(it => it.visible !== false)
   }
 
   @action addItem(...items) {
-    this.allitems.push(...items);
+    Model.getProp(this.store, this.allitems).push(...items);
   }
 
   @action removeItem(...names) {
     for (const name of names) {
-      const reit = this.allitems.find(it => it.name === name);
+      const allitems = Model.getProp(this.store, this.allitems);
+      const reit = allitems.find(it => it.name === name);
       if (reit) {
-        this.allitems.splice(this.allitems.indexOf(reit), 1);
+        allitems.splice(allitems.indexOf(reit), 1);
       } else {
         console.warn('uimodel items not exists!', name);
       }
@@ -37,6 +39,7 @@ export default class ContainerModel extends Model {
   }
 
   @action clearItems() {
-    this.allitems.clear();
+    Model.getProp(this.store, this.allitems).clear();
   }
+
 }

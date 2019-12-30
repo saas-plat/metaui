@@ -1,13 +1,14 @@
 import Model from './Model';
+import UISchema from '../UISchema';
 
 // 一维模型
 export default class SimpleModel extends Model {
 
-  constructor(store, {
+  static parseProps({
     value = null,
     ...props
   }) {
-    super(store, {
+    return UISchema.parseProps({
       value,
       ...props
     });

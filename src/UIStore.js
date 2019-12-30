@@ -132,7 +132,7 @@ export default class UIStore {
 
   build(node) {
     if (node instanceof UISchema) {
-      console.log('create %s...', node.type);
+      console.log('create %s...', node.model.name);
       return node.createModel(this, it => this.build(it));
     } else if (Array.isArray(node)) {
       return node.map(it => this.build(it));

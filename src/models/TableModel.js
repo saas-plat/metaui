@@ -4,23 +4,21 @@ import {
   runInAction,
   action,
 } from 'mobx';
-import _keys from 'lodash/keys';
 import Model from './Model';
-import SimpleModel from './SimpleModel';
-import ListModel from './ListModel';
 
 // 三维表模型
 export default class TableModel extends Model {
   @observable columns = [];
   @observable rows = [];
 
-  constructor(store, {columns = {}, data = [], ...props}) {
+  constructor(store, {
+    columns = [],
+    data = [],
+    ...props
+  }) {
     super(store, props);
-    this.columns = _keys(columns).map(key => new SimpleModel(store, {
-      id: key,
-      ...columns[key]
-    }));
-    this.rows = data.map(it => new ListModel(store, it))
+    this.columns = Model.createProp(store, columns || []);
+    this.rows = Model.createProp(store, data || []);
   }
 
   // 校验函数 合法性、必输项
@@ -235,6 +233,5 @@ export default class TableModel extends Model {
   getRow(rowIndex) {}
   // 根据行号获取行数据
   // rowIndex 单个行号
-
 
 }

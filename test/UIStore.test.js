@@ -8,6 +8,7 @@ const {
 import UIStore from '../src/UIStore';
 import ContainerModel from '../src/models/ContainerModel';
 import SimpleModel from '../src/models/SimpleModel';
+import ListModel from '../src/models/ListModel';
 
 configure({
   enforceActions: 'observed'
@@ -27,12 +28,14 @@ before(() => {
     input: [NoneComponent, SimpleModel],
     decimal: [NoneComponent, SimpleModel],
     button: [NoneComponent, SimpleModel],
+    select: [NoneComponent, ListModel]
   })
 })
 
 describe('UI模板', () => {
 
   it('从Schema中加载视图模板', () => {
+    const store = new UIStore();
     const s = UIStore.createSchema({
       type: 'view',
       items: [{
@@ -67,6 +70,11 @@ describe('UI模板', () => {
             type: 'decimal',
             text: 'item2',
             value: '$item1'
+          }, {
+            type: 'select',
+            text: 'item2',
+            value: '$item1',
+            data: '$data'
           }]
         }],
         onLoad: {
@@ -84,9 +92,15 @@ describe('UI模板', () => {
       }]
     });
     //console.log(JSON.stringify(s,null,2));
-    const v = UIStore.create(s, {
-      item1: 1000.00
-    }).ui;
+    const vm = {
+      item1: 1000.00,
+      data: [1, 2, 3].map(v => new SimpleModel(store, {
+        value: v,
+        text:'"'+v.toString()+'"'
+      }))
+    }
+    store.setModel(vm);
+    const v = store.build(UIStore.createSchema(s))
     //console.log(v.items[0])
     // navbar
     expect(v.items[0]).to.be.a.instanceof(ContainerModel);
@@ -112,7 +126,7 @@ describe('UI模板', () => {
 
     // formitem
     //console.log(v.items[1].items[0].items)
-    expect(v.items[1].items[0].items.length).to.be.equal(2);
+    expect(v.items[1].items[0].items.length).to.be.equal(3);
 
     // input
     expect(v.items[1].items[0].items[0]).to.be.a.instanceof(SimpleModel);
@@ -137,6 +151,16 @@ describe('UI模板', () => {
     // expect(v.items[1].items[0].items[0].onFocus).to.be.equal(null);
     // expect(v.items[1].items[0].items[0].onErrorClick).to.be.equal(null);
     // expect(v.items[1].items[0].items[0].onExtraClick).to.be.equal(null);
+
+    //console.log(v.items[1].items[0].items[2].data)
+    expect(v.items[1].items[0].items[2]).to.be.a.instanceof(ListModel);
+    expect(v.items[1].items[0].items[2].data.length).to.be.equal(3);
+    expect(v.items[1].items[0].items[2].data[0]).to.be.instanceof(SimpleModel);
+    expect(v.items[1].items[0].items[2].data[1]).to.be.instanceof(SimpleModel);
+    expect(v.items[1].items[0].items[2].data[2]).to.be.instanceof(SimpleModel);
+
+    expect(v.items[1].items[0].items[2].data[2].value).to.be.equal(3);
+    expect(v.items[1].items[0].items[2].data[2].text).to.be.equal('3');
 
   })
 

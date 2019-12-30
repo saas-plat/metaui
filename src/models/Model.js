@@ -1,5 +1,6 @@
 import {
-  readonly
+  readonly,
+  nonenumerable
 } from 'core-decorators';
 import {
   observable,
@@ -103,10 +104,22 @@ export default class Model {
           const isFunction = typeof fn === "function";
           return isFunction ?
             function (...args) {
-              return fn(...args);
+              const ret = fn.call(target, ...args);
+              if (key === 'toJSON') {
+                //console.log(ret)
+                return {
+                  ...ret,
+                  ..._mapValues(map.toJSON(), (...args) => JSON.stringify(Model.getProp(store, ...args))),
+                }
+              }
+              return ret;
             } :
             target[key];
         }
+        if (key === 'toJSON') {
+          return () => _mapValues(map.toJSON(), (...args) => JSON.stringify(Model.getProp(store, ...args)))
+        }
+
         // 动态创建没有的属性，但是mobx可能也创建了symbol字段
         if (typeof key === 'string') {
           const upkey = key.substr(0, 1).toUpperCase() + key.substr(1);
@@ -167,8 +180,10 @@ export default class Model {
     this.name = name || props.type || key;
     this.type = type;
 
-    readonly(this, 'type');
     readonly(this, 'store');
+    nonenumerable(this, 'store'); // toJSON排除
+
+    readonly(this, 'type');
     readonly(this, 'key');
     readonly(this, 'name');
 
@@ -177,4 +192,11 @@ export default class Model {
     return Model.createProxy(store, props, this);
   }
 
+  toJSON() {
+    return {
+      key: this.key,
+      name: this.name,
+      type: this.type
+    }
+  }
 }

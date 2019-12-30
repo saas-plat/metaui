@@ -34,6 +34,8 @@ before(() => {
 
 describe('UI模板', () => {
 
+  let gvm;
+
   it('从Schema中加载视图模板', () => {
     const store = new UIStore();
     const s = UIStore.createSchema({
@@ -96,10 +98,11 @@ describe('UI模板', () => {
       item1: 1000.00,
       data: [1, 2, 3].map(v => new SimpleModel(store, {
         value: v,
-        text:'"'+v.toString()+'"'
+        text: '"' + v.toString() + '"'
       }))
     }
     store.setModel(vm);
+    gvm = vm;
     const v = store.build(UIStore.createSchema(s))
     //console.log(v.items[0])
     // navbar
@@ -217,5 +220,31 @@ describe('UI模板', () => {
     expect(vm.item1.value).to.be.equal(2000)
     expect(vm.item1.visible).to.be.false;
 
+  })
+
+  it('Model支持序列化JSON', () => {
+    const json = JSON.stringify(gvm, null, 2);
+    expect(JSON.parse(json)).to.be.eql({
+      "item1": 1000,
+      "data": [{
+          "value": "1",
+          "text": "\"1\"",
+          "key": "2",
+          "name": "2"
+        },
+        {
+          "value": "2",
+          "text": "\"2\"",
+          "key": "3",
+          "name": "3"
+        },
+        {
+          "value": "3",
+          "text": "\"3\"",
+          "key": "4",
+          "name": "4"
+        }
+      ]
+    })
   })
 })

@@ -20,7 +20,7 @@ export default class UIComponent extends React.Component {
 
   t = (...args)=>{
     if (this.context.t){
-      this.context.t(...args);
+      return this.context.t(...args);
     }
     return args[0];
   }

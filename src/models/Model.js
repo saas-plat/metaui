@@ -174,6 +174,8 @@ export default class Model {
     type,
     ...props
   }) {
+    // 不允许自定义key
+    delete props.key;
     const key = assignId(props.type);
     this.store = store;
     this.key = key;

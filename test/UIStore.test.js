@@ -247,4 +247,28 @@ describe('UI模板', () => {
       ]
     })
   })
+
+  it('Model的ownkeys问题', () => {
+    const store = new UIStore();
+    const model = new SimpleModel(store, {
+      key: 'a',
+      title: 'Root',
+      value: 100,
+      children: [new SimpleModel(store, {
+        key: 'a-1',
+        title: 'a-1',
+        value: 10
+      }), new SimpleModel(store, {
+        key: 'a-2',
+        title: 'a-2',
+        b: 200
+      }), new SimpleModel(store, {
+        key: 'a-1-1',
+        title: 'a-1-1',
+        value: 90
+      })]
+    })
+
+    expect(Object.keys(model).filter(k=>k=='key').length).to.be.eql(1);
+  })
 })

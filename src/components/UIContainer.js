@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import {
   Inflectors
 } from "en-inflectors";
+import {
+  nano
+}
+from '../utils';
 
 const none = () => {}
 
@@ -19,7 +23,7 @@ export default class UIContainer extends React.Component {
   static defaultProps = {
     onAction: none,
     onEvent: none,
-    t: txt => txt
+    t: nano
   }
 
   static childContextTypes = {

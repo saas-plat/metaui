@@ -18,11 +18,11 @@ export default class UIComponent extends React.Component {
     }
   }
 
-  t = (txt)=>{
+  t = (...args)=>{
     if (this.context.t){
-      this.context.t(txt);
+      this.context.t(...args);
     }
-    return txt;
+    return args[0];
   }
 
   state = {}

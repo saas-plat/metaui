@@ -221,54 +221,5 @@ describe('UI模板', () => {
     expect(vm.item1.visible).to.be.false;
 
   })
-
-  it('Model支持序列化JSON', () => {
-    const json = JSON.stringify(gvm, null, 2);
-    expect(JSON.parse(json)).to.be.eql({
-      "item1": 1000,
-      "data": [{
-          "value": "1",
-          "text": "\"1\"",
-          "key": "2",
-          "name": "2"
-        },
-        {
-          "value": "2",
-          "text": "\"2\"",
-          "key": "3",
-          "name": "3"
-        },
-        {
-          "value": "3",
-          "text": "\"3\"",
-          "key": "4",
-          "name": "4"
-        }
-      ]
-    })
-  })
-
-  it('Model的ownkeys问题', () => {
-    const store = new UIStore();
-    const model = new SimpleModel(store, {
-      key: 'a',
-      title: 'Root',
-      value: 100,
-      children: [new SimpleModel(store, {
-        key: 'a-1',
-        title: 'a-1',
-        value: 10
-      }), new SimpleModel(store, {
-        key: 'a-2',
-        title: 'a-2',
-        b: 200
-      }), new SimpleModel(store, {
-        key: 'a-1-1',
-        title: 'a-1-1',
-        value: 90
-      })]
-    })
-
-    expect(Object.keys(model).filter(k=>k=='key').length).to.be.eql(1);
-  })
+ 
 })

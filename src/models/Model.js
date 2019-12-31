@@ -29,8 +29,6 @@ class SubModel {
   }
 }
 
-const DynProp = '_DynProp_';
-
 // 视图模型基类
 export default class Model {
   store;
@@ -83,25 +81,27 @@ export default class Model {
   static createProxy(store, props, target = {}) {
     props = Model.createProps(store, props);
     // 必须给target设置属性，要不ownKeys会过滤掉不存在的key
-    Object.keys(props).forEach(key => target[key] = DynProp);
+    Object.keys(props).forEach(key => target[key] = props[key]);
     const map = observable.map(props);
     // 使用代理支持动态属性，减少模型的定义
     return new Proxy(target, {
-      // ownKeys(target) {
-      //   const keys = [...Object.keys(target), ...map.keys()];
-      //   console.log(keys)
-      //   return keys;
-      // },
+      ownKeys(target) {
+        // 这里必须调用map保证观察性
+        const mapkeys = [...map.keys()];
+        return Object.keys(target).filter(key => mapkeys.indexOf(key) === -1).concat(mapkeys);
+      },
       deleteProperty(target, key) {
-        if (key in target) {
-          return delete target[key];
-        } else if (typeof key === 'string' && map.has(key)) {
+        if (typeof key === 'string' && map.has(key)) {
+          delete target[key];
           return map.delete(key);
+        } else if (key in target) {
+          return delete target[key];
         }
         return false;
       },
       has(target, key) {
-        return key in target || map.has(key);
+        // 这里必须调用map保证观察性
+        return map.has(key) || key in target;
       },
       get(target, key) {
         // If it exist, return original member or function.
@@ -146,28 +146,37 @@ export default class Model {
         }
       },
       set(target, key, value) {
-        const upkey = key.substr(0, 1).toUpperCase() + key.substr(1);
-        const setkey = 'set' + upkey;
-        if (map.has(setkey)) {
-          store.setViewModel(map.get(setkey), value);
-          return true;
-        }
-        if (map.has(key)) {
-          let val = map.get(key);
-          val = Model.setProp(store, value, val);
-          if (!val) {
+        if (typeof key === 'string') {
+          const upkey = key.substr(0, 1).toUpperCase() + key.substr(1);
+          const setkey = 'set' + upkey;
+          if (map.has(setkey)) {
+            store.setViewModel(map.get(setkey), value);
             return true;
           }
-          runInAction(() => {
-            map.set(key, val);
-          })
-        } else if (!(key in target)) {
-          map.set(key, Model.createProp(store, value));
-          target[key] = DynProp;
-        } else if (key in target) {
-          target[key] = value;
+          if (map.has(key)) {
+            let val = map.get(key);
+            val = Model.setProp(store, value, val);
+            if (!val) {
+              return true;
+            }
+            runInAction(() => {
+              map.set(key, val);
+            })
+          } else if (!(key in target)) {
+            const prop = Model.createProp(store, value);
+            target[key] = prop;
+            runInAction(() => {
+              map.set(key, prop);
+            });
+          } else {
+            target[key] = value;
+          }
         } else {
-          return false;
+          if (key in target) {
+            target[key] = value;
+          } else {
+            return false;
+          }
         }
         return true;
       }
@@ -193,10 +202,11 @@ export default class Model {
     readonly(this, 'key');
     readonly(this, 'name');
 
-    // 删除自定义的key
+    // 系统key
     Object.keys(this).forEach(key => {
       if (key in props) {
-        console.warn('model prop skip', key);
+        this[key] = props[key];
+        //console.warn('model prop skip', key);
         delete props[key];
       }
     })

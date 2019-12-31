@@ -1,4 +1,5 @@
 import {
+  reaction,
   configure,
 } from "mobx";
 const {
@@ -33,8 +34,6 @@ before(() => {
 })
 
 describe('UI模板', () => {
-
-  let gvm;
 
   it('从Schema中加载视图模板', () => {
     const store = new UIStore();
@@ -102,7 +101,6 @@ describe('UI模板', () => {
       }))
     }
     store.setModel(vm);
-    gvm = vm;
     const v = store.build(UIStore.createSchema(s))
     //console.log(v.items[0])
     // navbar
@@ -220,6 +218,28 @@ describe('UI模板', () => {
     expect(vm.item1.value).to.be.equal(2000)
     expect(vm.item1.visible).to.be.false;
 
+    // 动态属性也可以观察到
+    let rev;
+    let ree;
+    let reks;
+    reaction(() => Object.keys(uiitem1), e => reks = e)
+    reaction(() => 'newprop' in uiitem1, e => ree = e)
+    reaction(() => uiitem1.newprop, v => rev = v)
+    uiitem1.newprop = 'aaa'
+    expect(rev).to.be.equal('aaa')
+    expect(ree).to.be.equal(true)
+
+    //console.log(Object.keys(uiitem1))
+    expect(reks).to.be.eql(['store',
+      'key',
+      'name',
+      'type',
+      'visible',
+      'value',
+      'text',
+      'onChange',
+      'newprop'
+    ])
   })
- 
+
 })

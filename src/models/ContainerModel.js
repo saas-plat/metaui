@@ -11,24 +11,26 @@ export default class ContainerModel extends Model {
   @observable allitems;
 
   constructor(store, {
-    items,
+    items=[],
     ...props
   }) {
-    super(store, props);
-    this.allitems = Model.createProp(store, items);
+    super(store, {
+      allitems:items,
+      ...props
+    });
   }
 
   @computed get items() {
-    return Model.getProp(this.store, this.allitems).filter(it => it.visible !== false)
+    return this.allitems.filter(it => it.visible !== false)
   }
 
   @action addItem(...items) {
-    Model.getProp(this.store, this.allitems).push(...items);
+    this.allitems.push(...items);
   }
 
   @action removeItem(...names) {
     for (const name of names) {
-      const allitems = Model.getProp(this.store, this.allitems);
+      const allitems = this.allitems;
       const reit = allitems.find(it => it.name === name);
       if (reit) {
         allitems.splice(allitems.indexOf(reit), 1);
@@ -39,7 +41,7 @@ export default class ContainerModel extends Model {
   }
 
   @action clearItems() {
-    Model.getProp(this.store, this.allitems).clear();
+    this.allitems.clear();
   }
 
 }

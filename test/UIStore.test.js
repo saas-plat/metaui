@@ -10,6 +10,7 @@ import UIStore from '../src/UIStore';
 import ContainerModel from '../src/models/ContainerModel';
 import SimpleModel from '../src/models/SimpleModel';
 import ListModel from '../src/models/ListModel';
+import ReferModel from '../src/models/ReferModel';
 
 configure({
   enforceActions: 'observed'
@@ -29,7 +30,8 @@ before(() => {
     input: [NoneComponent, SimpleModel],
     decimal: [NoneComponent, SimpleModel],
     button: [NoneComponent, SimpleModel],
-    select: [NoneComponent, ListModel]
+    select: [NoneComponent, ListModel],
+    refer: [NoneComponent, ReferModel],
   })
 })
 
@@ -242,4 +244,40 @@ describe('UI模板', () => {
     ])
   })
 
+  it('UI模型读取和修改ViewModel', () => {
+    const v = UIStore.create({
+      name: 'item2',
+      type: 'refer',
+      displayField: 'f1',
+      value: '$obj',
+      setValue: 'obj',
+      dropdownStyle: 'list',
+      multiple: false,
+      showSearch: true,
+      dataSource: '$refobjs',
+      onFocus: {
+        name: 'query',
+        query: '=obj1{a,b,c,d,e}',
+        variables: '{pid:$id}', // 去掉查询变量一次取出全部
+        idField: 'id',
+        pidField: 'pid',
+        sortField: 'f1', // 树形全部取回来需要按照树结构排序
+        mapping: '={f1:$a,f2:$b,f3:$c}',
+        pageSize: 200
+      }
+    }, {
+      obj: {
+        f1: 'BBBBBBBB',
+        date: new Date(),
+        f3: 1000000.55,
+      },
+      refobjs: [{
+        a: 1
+      }, {
+        a: 20.11
+      }],
+    }).ui;
+    expect(v.store.model.obj.f1).to.be.eql('BBBBBBBB')
+    expect(v.displayValue.label).to.be.eql('BBBBBBBB')
+  })
 })

@@ -83,7 +83,7 @@ export default class UIStore {
   }
 
   @action setViewModel(path, value) {
-    console.log('set view model', path, value);
+    console.log('set view model', path);
     if (this.setValuable) {
       return this.model.setValue(path, value);
     }

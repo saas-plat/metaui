@@ -13,12 +13,12 @@ export default class TableModel extends Model {
 
   constructor(store, {
     columns = [],
-    data = [],
+    dataSource = [],
     ...props
   }) {
     super(store, props);
     this.columns = Model.createProp(store, columns || []);
-    this.rows = Model.createProp(store, data || []);
+    this.rows = Model.createProp(store, dataSource || []);
   }
 
   // 校验函数 合法性、必输项

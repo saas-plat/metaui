@@ -4,11 +4,11 @@ import Model from './Model';
 export default class ListModel extends Model {
 
   constructor(store, {
-    data = [],
+    dataSource = [],
     ...props
   }) {
     super(store, {
-      data,
+      dataSource,
       ...props
     });
   }

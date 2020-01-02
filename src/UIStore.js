@@ -7,8 +7,12 @@ import Expression from 'saas-plat-expression';
 import _set from 'lodash/set';
 import _get from 'lodash/get';
 import UISchema from './UISchema';
+import {
+  nano
+}
+from './utils';
 
-let tProvider = txt => txt;
+let tProvider = nano;
 
 export default class UIStore {
 

@@ -110,7 +110,8 @@ export default class Model {
           const isFunction = typeof fn === "function";
           return isFunction ?
             function (...args) {
-              const ret = fn.call(target, ...args);
+              // 不能传target，导致函数里this无法获取动态属性
+              const ret = fn.call(this, ...args);
               if (key === 'toJSON') {
                 //console.log(ret)
                 return {

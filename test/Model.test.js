@@ -73,4 +73,23 @@ describe('UI模板', () => {
       ]
     })
   })
+
+  it('SubModel可以合并赋值', () => {
+    const store = new UIStore();
+    const model = new SimpleModel(store, {
+      sub: {
+        a: 1,
+        b: 2
+      }
+    })
+    debugger
+    model.sub = {
+      a: 2,
+      b: 1
+    }
+    const s = model.sub;
+    expect(s.a).to.be.eql(2);
+    expect(model.sub.b).to.be.eql(1);
+
+  })
 })

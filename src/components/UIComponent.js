@@ -27,8 +27,8 @@ export default class UIComponent extends React.Component {
 
   state = {}
 
-  renderItem(config) {
-    return <UIRender key={config.key} ui={config}/>
+  renderItem(config, props={}) {
+    return <UIRender key={config.key} ui={config} {...props}/>
   }
 
 }

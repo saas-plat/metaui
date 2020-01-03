@@ -57,21 +57,20 @@ export default class Model {
     }
   }
 
-  static setProp(store, value, val) {
+  static setProp(store, value, oldval) {
     if (_isPlainObject(value)) {
-      if (val instanceof Proxy) {
+      if (oldval instanceof SubModel) {
         // 默认对象是合并操作
-        _forOwn(value, (subval, subkey) => val[subkey] = subval);
+        _forOwn(value, (subval, subkey) => oldval[subkey] = subval);
         return null;
       } else {
-        val = Model.createProxy(store, value);
+        return new SubModel(store, value);
       }
     } else if (_isArray(value)) {
-      val = value;
+      return value;
     } else {
-      val = UIStore.parseExpr(value);
+      return UIStore.parseExpr(value);
     }
-    return val;
   }
 
   static createProps(store, props) {
@@ -116,7 +115,10 @@ export default class Model {
                 //console.log(ret)
                 return {
                   ...ret,
-                  ..._mapValues(map.toJSON(), (...args) => JSON.stringify(Model.getProp(store, ...args))),
+                  ..._mapValues(map.toJSON(), (...props) => {
+                    const v = Model.getProp(store, ...props);
+                    return JSON.stringify(v, ...args.slice(1));
+                  })
                 }
               }
               return ret;

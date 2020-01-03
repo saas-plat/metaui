@@ -82,7 +82,6 @@ describe('UI模板', () => {
         b: 2
       }
     })
-    debugger
     model.sub = {
       a: 2,
       b: 1
@@ -91,5 +90,14 @@ describe('UI模板', () => {
     expect(s.a).to.be.eql(2);
     expect(model.sub.b).to.be.eql(1);
 
+    // 创建没有的属性
+    model.newprop = {
+      c: 1
+    }
+    debugger
+    model.newprop = {
+      c: 2
+    }
+    expect(model.newprop.c).to.be.eql(2);
   })
 })

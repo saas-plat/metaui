@@ -77,9 +77,13 @@ export default class TableModel extends Model {
   }
 
   @action deleteRow(index) {
+    if (index > this.dataSource.length) {
+      return false;
+    }
     this.cellState.splice(index, 1);
     this.rowState.splice(index, 1);
     this.dataSource.splice(index, 1);
+    return true;
   }
 
   @action addRow(newData = {}) {
@@ -92,6 +96,19 @@ export default class TableModel extends Model {
     this.rowState.splice(index, 0, {});
   }
 
+  @action moveRow(fromIndex, toIndex) {
+    if (fromIndex > this.dataSource.length || toIndex === undefined || toIndex === null) {
+      return false;
+    }
+    const data = this.dataSource.splice(fromIndex, 1);
+    const cell = this.cellState.splice(fromIndex, 1);
+    const row = this.rowState.splice(fromIndex, 1);
+    this.dataSource.splice(toIndex, 0, data);
+    this.cellState.splice(toIndex, 0, cell);
+    this.rowState.splice(toIndex, 0, row);
+    return true;
+  }
+
   @action addColumns(...column) {
     this.columns.push(...column);
   }
@@ -101,7 +118,7 @@ export default class TableModel extends Model {
   }
 
   @action enterRow(index) {
-    if (this.isEmptyRow(index)) {
+    for (let i = this.dataSource.length; i < index; i++) {
       // 自动添加行
       this.addRow();
     }

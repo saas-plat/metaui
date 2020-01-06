@@ -48,11 +48,8 @@ export default class Model {
   static getProp(store, val) {
     if (val instanceof Expression) {
       return store.execExpr(val);
-      // } else if (isObservableMap(val)) {
-      //   return val.toJSON();
-    } else if (isObservableArray(val)) {
-      return val.slice();
     } else {
+      // 直接返回可观察对象
       return val;
     }
   }
@@ -79,11 +76,9 @@ export default class Model {
 
   static createProxy(store, props, target = {}) {
     props = Model.createProps(store, props);
-    // 必须给target设置属性，要不ownKeys会过滤掉不存在的key
-    Object.keys(props).forEach(key => target[key] = props[key]);
     const map = observable.map(props);
     // 使用代理支持动态属性，减少模型的定义
-    return new Proxy(target, {
+    const proxy = new Proxy(target, {
       ownKeys(target) {
         // 这里必须调用map保证观察性
         const mapkeys = [...map.keys()];
@@ -122,8 +117,7 @@ export default class Model {
                 }
               }
               return ret;
-            } :
-            target[key];
+            } : fn;
         }
         if (key === 'toJSON') {
           return () => _mapValues(map.toJSON(), (...args) => JSON.stringify(Model.getProp(store, ...args)))
@@ -184,6 +178,22 @@ export default class Model {
         return true;
       }
     });
+    // 必须给target设置属性，要不ownKeys会过滤掉不存在的key
+    Object.keys(props).forEach(key => {
+      // 不能直接赋值，要不计算表达式内this.xx不是动态属性值
+      // target[key] = props[key]
+      Object.defineProperty(target, key, {
+        configrable: true,
+        enumerable : true,
+        get: function () {
+          return proxy[key];
+        },
+        set: function (val) {
+          proxy[key] = val
+        }
+      })
+    });
+    return proxy;
   }
 
   constructor(store, {

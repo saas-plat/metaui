@@ -1,14 +1,11 @@
 import {
   computed,
-  observable,
   action,
 } from 'mobx';
 import Model from './Model';
 
 // 容器模型，一般就是视图模板
 export default class ContainerModel extends Model {
-
-  @observable allitems;
 
   constructor(store, {
     items=[],

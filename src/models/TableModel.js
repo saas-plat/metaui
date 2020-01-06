@@ -1,17 +1,19 @@
 import {
   computed,
-  observable,
-  runInAction,
   action,
 } from 'mobx';
+import _keys from 'lodash/keys';
+import _mapValues from 'lodash/mapValues';
 import Model from './Model';
+
+const CODE_LENGTH = 7;
 
 // 三维表模型
 export default class TableModel extends Model {
 
   constructor(store, {
     checkDisableds = {},
-    emptyRows = 10,
+    emptyRows = 1,
     columns = [],
     dataSource = [],
     ...props
@@ -21,6 +23,8 @@ export default class TableModel extends Model {
       emptyRows,
       columns,
       dataSource,
+      rowState: [], // 行状态
+      cellState: [], // 单元格状态
       ...props
     });
   }
@@ -29,12 +33,23 @@ export default class TableModel extends Model {
     const emptyRows = [];
     if (this.emptyRows) {
       for (let i = 0; i < this.emptyRows; i++) {
-        emptyRows.push({
-          key: 'empty_'+i,
-        })
+        emptyRows.push({})
       }
     }
-    return this.dataSource.concat(emptyRows);
+    return this.dataSource.concat(emptyRows).map((obj, rowIndex) => {
+      const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : null;;
+      const ret = _mapValues(obj, (value, key) => ({
+        ...cellState[this.getColumnIndexByDataIndex(key)],
+        value,
+      }));
+      const key = (Array(CODE_LENGTH).join('0') + rowIndex).slice(-CODE_LENGTH);
+      const rowState = this.cellState.length > rowIndex ? this.rowState[rowIndex] : null;
+      return {
+        ...rowState,
+        key,
+        value: ret
+      };
+    });
   }
 
   isRowCheckable(index) {
@@ -42,38 +57,39 @@ export default class TableModel extends Model {
   }
 
   isEmptyRow(index) {
-    return index > this.dataSource.length;
+    return index >= this.dataSource.length;
   }
 
-  @action setRow(index, key) {
-    return (value) => {
-      const dataSource = [...this.state.dataSource];
-      dataSource[index][key] = value;
-      this.dataSource = dataSource;
-    };
+  @action setRow(rowIndex, {
+    value,
+    ...state
+  }) {
+    this.dataSource[rowIndex] = value;
+    this.cellState.splice(rowIndex, 1);
+    const row = this.cellState.length > rowIndex ? this.rowState[rowIndex] : null;
+    if (!row) {
+      this.rowState[rowIndex] = state;
+    } else {
+      _keys(state).forEach(key => {
+        row[key] = state[key];
+      })
+    }
   }
 
   @action deleteRow(index) {
-    const dataSource = [...this.dataSource];
-    dataSource.splice(index, 1);
-    this.dataSource = dataSource;
+    this.cellState.splice(index, 1);
+    this.rowState.splice(index, 1);
+    this.dataSource.splice(index, 1);
   }
 
-  @action addRow() {
-    const {
-      count,
-      dataSource
-    } = this;
-    const newData = {
-      key: count,
-      name: `Edward King ${count}`,
-      age: 32,
-      address: `London, Park Lane no. ${count}`
-    };
-    this.dataSource = [
-      ...dataSource,
-      newData
-    ];
+  @action addRow(newData = {}) {
+    this.dataSource.push(newData);
+  }
+
+  @action insertRow(index, newData = {}) {
+    this.dataSource.splice(index, 0, newData);
+    this.cellState.splice(index, 0, []);
+    this.rowState.splice(index, 0, {});
   }
 
   @action addColumns(...column) {
@@ -85,6 +101,10 @@ export default class TableModel extends Model {
   }
 
   @action enterRow(index) {
+    if (this.isEmptyRow(index)) {
+      // 自动添加行
+      this.addRow();
+    }
     this.rowIndex = index;
   }
 
@@ -92,20 +112,40 @@ export default class TableModel extends Model {
     return this.editable && this.editable.rowIndex === rowIndex && this.editable.columnIndex === columnIndex;
   }
 
-  @action startEdit(rowIndex, columnIndex) {
+  @action startEdit(rowIndex = 0, columnIndex = 0) {
     this.editable = {
       rowIndex,
       columnIndex
     }
   }
+
   @action endEdit() {
     this.editable = null;
   }
-  @action setCell(rowIndex, columnIndex, value) {
+
+  @action setCell(rowIndex, columnIndex, {
+    value,
+    ...state
+  }) {
     const row = this.dataSource[rowIndex];
+    const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : null;
     const col = this.getColumn(columnIndex);
     if (row && col) {
       row[col.dataIndex] = value;
+      if (!cellState) {
+        const cellState = [];
+        cellState[columnIndex] = state;
+        this.cellState[rowIndex] = cellState;
+      } else {
+        const cellState = cellState[columnIndex];
+        if (!cellState) {
+          cellState[columnIndex] = state;
+        } else {
+          _keys(state).forEach(key => {
+            cellState[key] = state[key];
+          })
+        }
+      }
     }
   }
 
@@ -124,6 +164,33 @@ export default class TableModel extends Model {
         }
       }
     }
+  }
+
+  getColumnIndexByDataIndex(dataIndex, columns = this.columns, counter = {
+    i: 0
+  }) {
+    for (const column of columns) {
+      if (column.dataIndex === dataIndex) {
+        return counter.i;
+      }
+      counter.i += 1;
+      if (column.children) {
+        const ret = this.getColumnIndexByDataIndex(dataIndex, column.children, counter);
+        if (ret) {
+          return ret;
+        }
+      }
+    }
+  }
+
+  @action setColumn(index, state) {
+    const col = this.getColumn(index);
+    if (!col) {
+      return;
+    }
+    _keys(state).forEach(key => {
+      col[key] = state[key];
+    })
   }
 
   // 校验函数 合法性、必输项

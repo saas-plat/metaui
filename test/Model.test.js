@@ -1,5 +1,6 @@
 import {
   configure,
+  reaction
 } from "mobx";
 const {
   expect
@@ -7,6 +8,7 @@ const {
 
 import UIStore from '../src/UIStore';
 import SimpleModel from '../src/models/SimpleModel';
+import TableModel from '../src/models/TableModel';
 
 configure({
   enforceActions: 'observed'
@@ -94,10 +96,23 @@ describe('UI模板', () => {
     model.newprop = {
       c: 1
     }
-    debugger
     model.newprop = {
       c: 2
     }
     expect(model.newprop.c).to.be.eql(2);
+  })
+
+  it('模型计算属性调用this也是proxy', () => {
+    const store = new UIStore();
+    const model = new TableModel(store, {
+      dataSource: []
+    })
+    debugger
+    let ds;
+    reaction(() => model.data, data => {
+      ds = data;
+    })
+    model.addRow();
+    expect(ds).to.be.eql(model.data);
   })
 })

@@ -37,17 +37,17 @@ export default class TableModel extends Model {
       }
     }
     return this.dataSource.concat(emptyRows).map((obj, rowIndex) => {
-      const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : null;;
-      const ret = _mapValues(obj, (value, key) => ({
+      const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : [];
+      const value = _mapValues(obj, (value, key) => ({
         ...cellState[this.getColumnIndexByDataIndex(key)],
         value,
       }));
       const key = (Array(CODE_LENGTH).join('0') + rowIndex).slice(-CODE_LENGTH);
-      const rowState = this.cellState.length > rowIndex ? this.rowState[rowIndex] : null;
+      const rowState = this.rowState.length > rowIndex ? this.rowState[rowIndex] : null;
       return {
         ...rowState,
         key,
-        value: ret
+        value
       };
     });
   }
@@ -118,7 +118,7 @@ export default class TableModel extends Model {
   }
 
   @action enterRow(index) {
-    for (let i = this.dataSource.length; i < index; i++) {
+    for (let i = this.dataSource.length; i < index + 1; i++) {
       // 自动添加行
       this.addRow();
     }
@@ -130,6 +130,9 @@ export default class TableModel extends Model {
   }
 
   @action startEdit(rowIndex = 0, columnIndex = 0) {
+    if (this.editable && (this.editable.rowIndex !== rowIndex || this.editable.columnIndex !== columnIndex)){
+      this.endEdit();
+    }
     this.editable = {
       rowIndex,
       columnIndex
@@ -154,12 +157,12 @@ export default class TableModel extends Model {
         cellState[columnIndex] = state;
         this.cellState[rowIndex] = cellState;
       } else {
-        const cellState = cellState[columnIndex];
-        if (!cellState) {
-          cellState[columnIndex] = state;
+        const cell = cellState.length > 0 ? cellState[columnIndex] : null;
+        if (!cell) {
+          cell[columnIndex] = state;
         } else {
           _keys(state).forEach(key => {
-            cellState[key] = state[key];
+            cell[key] = state[key];
           })
         }
       }

@@ -4,7 +4,7 @@ import {
   Inflectors
 } from "en-inflectors";
 import {
-  nano,
+  t,
   none
 }
 from '../utils';
@@ -22,7 +22,7 @@ export default class UIContainer extends React.Component {
   static defaultProps = {
     onAction: none,
     onEvent: none,
-    t: nano
+    t: t
   }
 
   static childContextTypes = {

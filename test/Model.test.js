@@ -107,12 +107,30 @@ describe('UI模板', () => {
     const model = new TableModel(store, {
       dataSource: []
     })
-    debugger
     let ds;
     reaction(() => model.data, data => {
       ds = data;
     })
     model.addRow();
     expect(ds).to.be.eql(model.data);
+  })
+
+  it('支持校验规则', async () => {
+    const store = new UIStore();
+
+    const simple = new SimpleModel(store, {
+
+    })
+
+    await simple.validate();
+
+    const model = new TableModel(store, {
+      columns: [{
+
+      }]
+    })
+
+    model.addRow();
+    await model.validate();
   })
 })

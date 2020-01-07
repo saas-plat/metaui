@@ -5,8 +5,11 @@ import {
 import _keys from 'lodash/keys';
 import _mapValues from 'lodash/mapValues';
 import Model from './Model';
-
-const CODE_LENGTH = 7;
+import {
+  createValidator,
+  t
+} from '../utils';
+//const CODE_LENGTH = 7;
 
 // 三维表模型
 export default class TableModel extends Model {
@@ -42,10 +45,15 @@ export default class TableModel extends Model {
         ...cellState[this.getColumnIndexByDataIndex(key)],
         value,
       }));
-      const key = (Array(CODE_LENGTH).join('0') + rowIndex).slice(-CODE_LENGTH);
-      const rowState = this.rowState.length > rowIndex ? this.rowState[rowIndex] : null;
+      const key = (rowIndex + 1).toString(); //(Array(CODE_LENGTH).join('0') + rowIndex).slice(-CODE_LENGTH);
+      const {
+        error,
+        ...rowState
+      } = this.rowState.length > rowIndex ? this.rowState[rowIndex] : {};
       return {
         ...rowState,
+        // 把单元格错误合并到行上显示
+        error: error || cellState.map(cell => cell.error).join(','),
         key,
         value
       };
@@ -64,7 +72,10 @@ export default class TableModel extends Model {
     value,
     ...state
   }) {
-    this.dataSource[rowIndex] = value;
+    if (value !== undefined) {
+      this.dataSource[rowIndex] = value;
+    }
+    // 行更新需要清空列状态
     this.cellState.splice(rowIndex, 1);
     const row = this.cellState.length > rowIndex ? this.rowState[rowIndex] : null;
     if (!row) {
@@ -130,7 +141,7 @@ export default class TableModel extends Model {
   }
 
   @action startEdit(rowIndex = 0, columnIndex = 0) {
-    if (this.editable && (this.editable.rowIndex !== rowIndex || this.editable.columnIndex !== columnIndex)){
+    if (this.editable && (this.editable.rowIndex !== rowIndex || this.editable.columnIndex !== columnIndex)) {
       this.endEdit();
     }
     this.editable = {
@@ -140,6 +151,7 @@ export default class TableModel extends Model {
   }
 
   @action endEdit() {
+    this.validate(this.editable.rowIndex, this.editable.columnIndex);
     this.editable = null;
   }
 
@@ -151,7 +163,9 @@ export default class TableModel extends Model {
     const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : null;
     const col = this.getColumn(columnIndex);
     if (row && col) {
-      row[col.dataIndex] = value;
+      if (value !== undefined) {
+        row[col.dataIndex] = value;
+      }
       if (!cellState) {
         const cellState = [];
         cellState[columnIndex] = state;
@@ -213,9 +227,51 @@ export default class TableModel extends Model {
     })
   }
 
-  // 校验函数 合法性、必输项
-  validate() {
+  @computed get validator() {
+    return createValidator(...this.columns);
+  }
 
+  // 校验函数 合法性、必输项
+  @action async validate(rowIndex, columnIndex) {
+    if (rowIndex === 0 || rowIndex > 0) {
+      if (columnIndex === 0 || columnIndex > 0) {
+        const row = this.dataSource[rowIndex];
+        const column = this.columns[columnIndex];
+        try {
+          await this.validator.validate(row, {
+            first: true,
+            firstFields: [column.dataIndex]
+          });
+          this.clearError(rowIndex, columnIndex);
+        } catch ({
+          errors
+        }) {
+          this.setCell(rowIndex, columnIndex, {
+            error: errors[0].message || t('{{title}}数据无效', column)
+          });
+        }
+      } else {
+        const row = this.dataSource[rowIndex];
+        try {
+          await this.validator.validate(row);
+          this.clearError(rowIndex);
+        } catch ({
+          errors
+        }) {
+          for (const error of errors) {
+            const columnIndex = this.getColumnIndexByDataIndex(error.field);
+            const column = this.columns[columnIndex];
+            this.setCell(rowIndex, columnIndex, {
+              error: error.message || t('{{title}}数据无效', column)
+            });
+          }
+        }
+      }
+    } else {
+      this.dataSource.forEach((v, rowIndex) => {
+        this.validate(rowIndex);
+      });
+    }
   }
 
   clear() {
@@ -231,17 +287,47 @@ export default class TableModel extends Model {
   }
 
   // 设置grid取消选中的行
-  unselect(rowKeys) {
+  @action unselect(rowKeys) {
     this.selectedKeys = this.selectedKeys.filter(key => rowKeys.indexOf(key) === -1);
   }
 
   // 选中所有行
-  selectAll() {
+  @action selectAll() {
     this.selectedKeys = this.dataSource.map(it => it.key).filter(key => key);
   }
 
   // 取消选中所有行
-  unselectAll() {
+  @action unselectAll() {
     this.selectedKeys = [];
+  }
+
+  @action setError(rowIndex, error) {
+    this.setRow(rowIndex, {
+      error
+    });
+  }
+
+  @action clearError(rowIndex, columnIndex) {
+    if (rowIndex === 0 || rowIndex > 0) {
+      if (columnIndex === 0 || columnIndex > 0) {
+        const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : [];
+        const cell = cellState.length > columnIndex ? cellState[columnIndex] : null;
+        if (cell) {
+          cell.error = null;
+        }
+      } else {
+        this.setRow(rowIndex, {
+          error: null
+        });
+        const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : [];
+        for (const cell of cellState) {
+          cell.error = null;
+        }
+      }
+    } else {
+      this.dataSource.forEach((v, rowIndex) => {
+        this.clearError(rowIndex);
+      })
+    }
   }
 }

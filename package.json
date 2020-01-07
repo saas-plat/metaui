@@ -24,6 +24,7 @@
   "author": "saas-plat",
   "license": "ISC",
   "dependencies": {
+    "async-validator": "^3.2.3",
     "core-decorators": "^0.20.0",
     "en-inflectors": "^1.0.12",
     "lodash": "^4.17.15",

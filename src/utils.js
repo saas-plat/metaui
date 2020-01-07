@@ -1,4 +1,6 @@
-export function nano(template, data) {
+import schema from 'async-validator';
+
+export function t(template, data) {
   return template.replace(/\{\{([\w\.]*)\}\}/g, function (str, key) {
     var keys = key.split("."),
       v = data[keys.shift()];
@@ -8,3 +10,34 @@ export function nano(template, data) {
 }
 
 export const none = () => {}
+
+export const createValidator = (...fields) => {
+  var descriptor = fields.reduce((obj, {
+    dataIndex,
+    type,
+    required,
+    message,
+    len,
+    pattern,
+    whitespace,
+    min,
+    max,
+    ...other, // enum
+  }) => {
+    return {
+      ...obj,
+      [dataIndex]: {
+        type,
+        required,
+        message,
+        len,
+        pattern,
+        whitespace,
+        min,
+        max,
+        enum: other.enum
+      }
+    }
+  }, {})
+  return new schema(descriptor);
+}

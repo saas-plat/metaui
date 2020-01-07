@@ -4,11 +4,10 @@ import {
   Inflectors
 } from "en-inflectors";
 import {
-  nano
+  nano,
+  none
 }
 from '../utils';
-
-const none = () => {}
 
 // 组件容器，渲染子组件提供统一的上下文环境
 export default class UIContainer extends React.Component {

@@ -219,7 +219,11 @@ export default class TableModel extends Model {
   }
 
   clear() {
-    this.dataSource = [];
+    // 不能直接赋值[]，有可能是表达式
+    this.dataSource.clear();
+    this.rowState = [];
+    this.cellState = [];
+    this.checkDisableds = {};
   }
 
   @action selectRows(...keys) {

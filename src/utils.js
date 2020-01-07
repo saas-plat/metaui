@@ -6,3 +6,5 @@ export function nano(template, data) {
     return (typeof v !== "undefined" && v !== null) ? v : "";
   });
 }
+
+export const none = () => {}

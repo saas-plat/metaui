@@ -5,7 +5,6 @@ import {
 import {
   observable,
   runInAction,
-  isObservableArray
 } from 'mobx';
 import Expression from 'saas-plat-expression';
 import _isPlainObject from 'lodash/isPlainObject';

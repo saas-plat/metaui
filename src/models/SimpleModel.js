@@ -5,9 +5,7 @@ import {
 import Model from './Model';
 import {
   createValidator,
-  t
 } from '../utils';
-
 
 // 一维模型
 export default class SimpleModel extends Model {
@@ -16,17 +14,17 @@ export default class SimpleModel extends Model {
     super(store, props);
   }
 
-  @computed get validator(){
-    return createValidator(...this.columns);
+  @computed get createValidator(){
+    return createValidator(this);
   }
 
   @action async validate() {
     try {
-      await this.validator.validate(this);
-    } catch ({
-      errors
-    }) {
-      this.error = errors[0].message || t('数据无效')
+      await this.createValidator.validate({value:this.value});
+      return true;
+    } catch ({errors}) {
+      this.error = errors[0].message
+      return false;
     }
   }
 }

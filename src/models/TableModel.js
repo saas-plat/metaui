@@ -30,6 +30,9 @@ export default class TableModel extends Model {
       cellState: [], // 单元格状态
       ...props
     });
+    // 同步数据和状态对象，要不mobx直接插入会报错
+    this.rowState = new Array(this.dataSource.length);
+    this.cellState = new Array(this.dataSource.length);
   }
 
   @computed get data() {
@@ -40,7 +43,8 @@ export default class TableModel extends Model {
       }
     }
     return this.dataSource.concat(emptyRows).map((obj, rowIndex) => {
-      const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : [];
+      // 状态都可能是未初始化
+      const cellState = (this.cellState.length > rowIndex ? this.cellState[rowIndex] : null) || [];
       const value = _mapValues(obj, (value, key) => ({
         ...cellState[this.getColumnIndexByDataIndex(key)],
         value,
@@ -49,11 +53,11 @@ export default class TableModel extends Model {
       const {
         error,
         ...rowState
-      } = this.rowState.length > rowIndex ? this.rowState[rowIndex] : {};
+      } = (this.rowState.length > rowIndex ? this.rowState[rowIndex] : null) || {};
       return {
         ...rowState,
         // 把单元格错误合并到行上显示
-        error: error || cellState.map(cell => cell.error).join(','),
+        error: error || cellState.filter(cell => cell).map(cell => cell.error).join(','),
         key,
         value
       };
@@ -76,7 +80,7 @@ export default class TableModel extends Model {
       this.dataSource[rowIndex] = value;
     }
     // 行更新需要清空列状态
-    this.cellState.splice(rowIndex, 1);
+    //this.cellState.splice(rowIndex, 1, new Array(this.columns.length));
     const row = this.cellState.length > rowIndex ? this.rowState[rowIndex] : null;
     if (!row) {
       this.rowState[rowIndex] = state;
@@ -99,6 +103,8 @@ export default class TableModel extends Model {
 
   @action addRow(newData = {}) {
     this.dataSource.push(newData);
+    this.cellState.push([]);
+    this.rowState.push({});
   }
 
   @action insertRow(index, newData = {}) {
@@ -140,9 +146,9 @@ export default class TableModel extends Model {
     return this.editable && this.editable.rowIndex === rowIndex && this.editable.columnIndex === columnIndex;
   }
 
-  @action startEdit(rowIndex = 0, columnIndex = 0) {
+  @action async startEdit(rowIndex = 0, columnIndex = 0) {
     if (this.editable && (this.editable.rowIndex !== rowIndex || this.editable.columnIndex !== columnIndex)) {
-      this.endEdit();
+      await this.endEdit();
     }
     this.editable = {
       rowIndex,
@@ -150,8 +156,8 @@ export default class TableModel extends Model {
     }
   }
 
-  @action endEdit() {
-    this.validate(this.editable.rowIndex, this.editable.columnIndex);
+  @action async endEdit() {
+    await this.validate(this.editable.rowIndex, this.editable.columnIndex);
     this.editable = null;
   }
 
@@ -227,7 +233,7 @@ export default class TableModel extends Model {
     })
   }
 
-  @computed get validator() {
+  @computed get createValidator() {
     return createValidator(...this.columns);
   }
 
@@ -238,47 +244,50 @@ export default class TableModel extends Model {
         const row = this.dataSource[rowIndex];
         const column = this.columns[columnIndex];
         try {
-          await this.validator.validate(row, {
+          await this.createValidator.validate(row, {
             first: true,
             firstFields: [column.dataIndex]
           });
           this.clearError(rowIndex, columnIndex);
-        } catch ({
-          errors
-        }) {
+          return true;
+        } catch (e) {
           this.setCell(rowIndex, columnIndex, {
-            error: errors[0].message || t('{{title}}数据无效', column)
+            error: e.errors[0].message || t('{{title}}数据无效', column)
           });
+          return false;
         }
       } else {
         const row = this.dataSource[rowIndex];
         try {
-          await this.validator.validate(row);
+          await this.createValidator.validate(row);
           this.clearError(rowIndex);
-        } catch ({
-          errors
-        }) {
-          for (const error of errors) {
+          return true;
+        } catch (e) {
+          for (const error of e.errors) {
             const columnIndex = this.getColumnIndexByDataIndex(error.field);
             const column = this.columns[columnIndex];
             this.setCell(rowIndex, columnIndex, {
               error: error.message || t('{{title}}数据无效', column)
             });
           }
+          return false;
         }
       }
     } else {
-      this.dataSource.forEach((v, rowIndex) => {
-        this.validate(rowIndex);
-      });
+      for (let rowIndex = 0, l = this.dataSource.length; rowIndex < l; rowIndex++) {
+        if (!await this.validate(rowIndex)) {
+          return false;
+        }
+      }
+      return true;
     }
   }
 
   clear() {
     // 不能直接赋值[]，有可能是表达式
     this.dataSource.clear();
-    this.rowState = [];
-    this.cellState = [];
+    this.rowState.clear();
+    this.cellState.clear();
     this.checkDisableds = {};
   }
 
@@ -319,9 +328,11 @@ export default class TableModel extends Model {
         this.setRow(rowIndex, {
           error: null
         });
-        const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : [];
-        for (const cell of cellState) {
-          cell.error = null;
+        const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : null;
+        if (cellState) {
+          for (const cell of cellState) {
+            cell.error = null;
+          }
         }
       }
     } else {

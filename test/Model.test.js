@@ -116,21 +116,67 @@ describe('UI模板', () => {
   })
 
   it('支持校验规则', async () => {
-    const store = new UIStore();
+    const store = new UIStore({
+      table: [{
+        name: 'aaa',
+        code: '0001',
+        age: 22
+      }, {
+        name: 'bbb',
+        code: '0002',
+        age: 33
+      }, {
+        name: 'ccc',
+        code: '0003',
+        age: 111
+      }]
+    });
 
     const simple = new SimpleModel(store, {
-
+      value: 'xxxxxxxx',
+      type: 'string',
+      required: true,
+      //message,
+      //len,
+      //pattern,
+      //whitespace,
+      min: 0,
+      max: 100,
+      //defaultField, //  数组元素类型
+      //fields,
+      //transform,
+      //validator,
     })
 
-    await simple.validate();
+    expect(await simple.validate()).to.be.true;
+
+    simple.type = 'number';
+    expect(await simple.validate()).to.be.false;
+    expect(simple.error).to.be.eql('value is not a number');
+
 
     const model = new TableModel(store, {
+      dataSource: '$table',
       columns: [{
-
+        type: 'string',
+        dataIndex: 'name',
+        required: true,
+      }, {
+        type: 'string',
+        dataIndex: 'code',
+        required: true,
+      }, {
+        type: 'number',
+        dataIndex: 'age',
+        min: 0,
+        max: 100,
+        message: 'age err'
       }]
     })
+    model.addRow(); 
+    expect(await model.validate()).to.be.false;
 
-    model.addRow();
-    await model.validate();
+    expect(model.data[2].error).to.be.eql('age err');
+    expect(model.data[2].value.age.error).to.be.eql('age err');
   })
 })

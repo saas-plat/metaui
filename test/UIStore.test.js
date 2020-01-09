@@ -204,8 +204,9 @@ describe('UI模板', () => {
         value: 1000.00
       })
     }
-    console.log(Object.keys(vm.item1))
+   // console.log(Object.keys(vm.item1))
     store.setModel(vm);
+   // console.log(Object.keys(vm.item1))
     const ui = store.build(s);
 
     const uiitem1 = ui.items[0].items[0];
@@ -225,7 +226,6 @@ describe('UI模板', () => {
     let rev;
     let ree;
     let reks;
-    debugger
     reaction(() => Object.keys(uiitem1), e => reks = e)
     reaction(() => 'newprop' in uiitem1, e => ree = e)
     reaction(() => uiitem1.newprop, v => rev = v)

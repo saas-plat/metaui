@@ -1,6 +1,7 @@
 import {
   configure,
-  reaction
+  reaction,
+  observable
 } from "mobx";
 const {
   expect
@@ -9,6 +10,7 @@ const {
 import UIStore from '../src/UIStore';
 import SimpleModel from '../src/models/SimpleModel';
 import TableModel from '../src/models/TableModel';
+import { computed } from "mobx";
 
 configure({
   enforceActions: 'observed'
@@ -148,12 +150,18 @@ describe('UI模板', () => {
       //validator,
     })
 
+    // 保证这里不报错
+    // configure({
+    //   computedConfigurable: true
+    // })
+    const obj = observable(simple)
+    console.log(Object.keys(obj))
+
     expect(await simple.validate()).to.be.true;
 
     simple.type = 'number';
     expect(await simple.validate()).to.be.false;
     expect(simple.error).to.be.eql('value is not a number');
-
 
     const model = new TableModel(store, {
       dataSource: '$table',
@@ -173,7 +181,7 @@ describe('UI模板', () => {
         message: 'age err'
       }]
     })
-    model.addRow(); 
+    model.addRow();
     expect(await model.validate()).to.be.false;
 
     expect(model.data[2].error).to.be.eql('age err');

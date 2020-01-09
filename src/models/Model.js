@@ -5,6 +5,7 @@ import {
 import {
   observable,
   runInAction,
+  configure
 } from 'mobx';
 import Expression from 'saas-plat-expression';
 import _isPlainObject from 'lodash/isPlainObject';
@@ -13,6 +14,12 @@ import _isArray from 'lodash/isArray';
 import _mapValues from 'lodash/mapValues';
 import _isSymbol from 'lodash/isSymbol';
 import UIStore from '../UIStore';
+
+// 计算属性会导致proxy的ownKeys没有返回报错
+// proxy 约束：结果列表必须包含目标对象的所有不可配置（non-configurable ）、自有（own）属性的key.
+configure({
+  computedConfigurable: true
+})
 
 let gid = 0;
 // 分配全局id
@@ -168,11 +175,11 @@ export default class Model {
             target[key] = value;
           }
         } else {
-          if (key in target) {
+          // if (key in target) {
             target[key] = value;
-          } else {
-            return false;
-          }
+          // } else {
+          //   return false;
+          // }
         }
         return true;
       }

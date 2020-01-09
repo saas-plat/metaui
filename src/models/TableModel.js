@@ -319,8 +319,8 @@ export default class TableModel extends Model {
   @action clearError(rowIndex, columnIndex) {
     if (rowIndex === 0 || rowIndex > 0) {
       if (columnIndex === 0 || columnIndex > 0) {
-        const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : [];
-        const cell = cellState.length > columnIndex ? cellState[columnIndex] : null;
+        const cellState = this.cellState.length > rowIndex ? this.cellState[rowIndex] : null;
+        const cell = cellState && cellState.length > columnIndex ? cellState[columnIndex] : null;
         if (cell) {
           cell.error = null;
         }

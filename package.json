@@ -11,6 +11,8 @@
     "pub": "node node_modules/saas-plat-clientTools/bin/publish",
     "lpub": "npm run build && npm publish --registry https://npm.saas-plat.com",
     "dev": "cross-env DISTPATH=../saas-plat-metauiweb/node_modules/saas-plat-metaui/dist npm run build",
+    "dev_m": "cross-env DISTPATH=../saas-plat-metauimobile/node_modules/saas-plat-metaui/dist npm run build",
+    "dev_t": "cross-env DISTPATH=../saas-plat-metauitouch/node_modules/saas-plat-metaui/dist npm run build",
     "watch": "cross-env DEBUG=saas-plat:*,-not_this mocha --watch",
     "test": "cross-env DEBUG=saas-plat:*,-not_this mocha"
   },

@@ -30,15 +30,26 @@
     "core-decorators": "^0.20.0",
     "en-inflectors": "^1.0.12",
     "lodash": "^4.17.15",
+  },
+  "peerDependencies": {
+    "mobx": ">=5.0.0",
+    "mobx-react": ">=6.0.0",
+    "react": ">=16.0.0",
+    "prop-types": ">=15.6.0",
+    "react-dom": ">=16.0.0",
+    "react-router": ">=5.0.0",
+    "react-router-dom": ">=5.0.0",
+    "react-router-cache-route": ">=1.8.3",
+    "saas-plat-expression": ">=1.0.0"
+  },
+  "devDependencies": {
     "mobx": "^5.15.0",
     "mobx-react": "^6.1.4",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
     "react-router-cache-route": "^1.8.3",
     "react-router-dom": "^5.1.2",
-    "saas-plat-expression": "^1.0.1"
-  },
-  "devDependencies": {
+    "saas-plat-expression": "^1.0.1",
     "babel-eslint": "^10.0.3",
     "cross-env": "^6.0.3",
     "eslint": "^4.13.1",

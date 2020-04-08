@@ -11,11 +11,12 @@
   ],
   "plugins": [
     ["@babel/proposal-decorators", {
-      "legacy": true 
+      "legacy": true
     }],
     ["@babel/proposal-class-properties", {
       "loose": true
     }],
+    "@babel/transform-runtime",
     "@babel/proposal-export-default-from"
   ]
 }

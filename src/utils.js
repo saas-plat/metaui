@@ -1,5 +1,5 @@
 import schema from 'async-validator';
-import Expression from 'saas-plat-expression';
+import Expression from '@saas-plat/expression';
 import _omitBy from 'lodash/omitBy';
 import _isUndefined from 'lodash/isUndefined';
 

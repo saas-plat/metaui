@@ -15,8 +15,6 @@
     },
     "globals": {
       "Promise": true,
-      "__DEV__": true,
-      "__VERSION__": true,
       "expect": true,
       "describe": true,
       "before": true,

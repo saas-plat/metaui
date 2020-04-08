@@ -5,17 +5,17 @@
   "productName": "saas-plat",
   "main": "dist/index.js",
   "scripts": {
-    "pub": "gulp",
+    "build": "rm -rf dist && babel src --out-dir dist --source-maps",
     "test": "cross-env NODE_ENV=test mocha",
     "watch": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha --watch",
     "test_d": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha",
-    "dev": "cross-env COPYTO= ../saas-plat-metauiweb/node_modules/saas-plat-metaui/dist gulp copy",
-    "dev_m": "cross-env COPYTO= ../saas-plat-metauimobile/node_modules/saas-plat-metaui/dist gulp copy",
-    "dev_t": "cross-env COPYTO= ../saas-plat-metauitouch/node_modules/saas-plat-metaui/dist gulp copy"
+    "dev": "babel src --out-dir ../saas-plat-metauiweb/node_modules/saas-plat-metaui/dist --source-maps",
+    "dev_m": "babel src --out-dir ../saas-plat-metauimobile/node_modules/saas-plat-metaui/dist --source-maps",
+    "dev_t": "babel src --out-dir ../saas-plat-metauitouch/node_modules/saas-plat-metaui/dist --source-maps"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/saas-plat/metaui"
+    "url": "git@github.com:saas-plat/metaui.git"
   },
   "keywords": [
     "metaui"
@@ -33,30 +33,29 @@
     "mobx-react": ">=6.0.0",
     "react": ">=16.0.0",
     "prop-types": ">=15.6.0",
-    "react-dom": ">=16.0.0",
     "react-router": ">=5.0.0",
-    "react-router-dom": ">=5.0.0",
     "react-router-cache-route": ">=1.8.3",
-    "saas-plat-expression": ">=1.0.0"
+    "@saas-plat/expression": ">=1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-decorators": "^7.8.3",
+    "@babel/plugin-proposal-export-default-from": "^7.8.3",
     "@babel/preset-env": "^7.9.0",
-    "babel-eslint": "^10.0.3",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/register": "^7.9.0",
+    "@saas-plat/expression": "^1.0.1",
+    "babel-eslint": "^8.0.3",
     "cross-env": "^6.0.3",
-    "eslint": "^4.13.1",
+    "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.17.0",
-    "gitane": "^0.3.2",
-    "gulp": "^3.9.1",
     "mobx": "^5.15.0",
     "mobx-react": "^6.1.4",
     "mocha": "^4.0.1",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
-    "react-router-cache-route": "^1.8.3",
-    "react-router-dom": "^5.1.2",
-    "run-sequence": "^2.2.1",
-    "saas-plat-expression": "^1.0.1"
+    "react-router-cache-route": "^1.8.3"
   }
 }

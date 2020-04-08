@@ -1,5 +1,5 @@
 --recursive
 --bail
 --timeout 50000
---require babel-core/register
+--require @babel/register
 test/Model.test.js test/**/*.test.js

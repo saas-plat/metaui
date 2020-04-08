@@ -3,7 +3,7 @@ import {
   observable,
   runInAction
 } from "mobx";
-import Expression from 'saas-plat-expression';
+import Expression from '@saas-plat/expression';
 import _set from 'lodash/set';
 import _get from 'lodash/get';
 import UISchema from './UISchema';

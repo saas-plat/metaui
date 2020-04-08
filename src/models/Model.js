@@ -7,7 +7,7 @@ import {
   runInAction,
   configure
 } from 'mobx';
-import Expression from 'saas-plat-expression';
+import Expression from '@saas-plat/expression';
 import _isPlainObject from 'lodash/isPlainObject';
 import _forOwn from 'lodash/forOwn';
 import _isArray from 'lodash/isArray';

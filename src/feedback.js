@@ -12,7 +12,11 @@ export function registerFeedback({
   // 安全确认，需要输入安全码
   secure,
   // 提醒，不阻塞操作
-  notification
+  notification,
+  // 加载
+  loading,
+  // 阻塞等待, 不能任何操作
+  blocking
 }) {
   // 规范接口
   feedback.message = (content, duration = 3, type = 'success', onClose = none) => {
@@ -65,6 +69,16 @@ export function registerFeedback({
       key,
       type
     })), () => onClose(), (key) => onClick(key));
+    return () => dispose();
+  }
+
+  feedback.loading = (content, duration = -1, onClose = none) => {
+    const dispose = loading(content, duration, () => onClose());
+    return () => dispose();
+  }
+
+  feedback.blocking = (content, duration = -1, onClose = none) => {
+    const dispose = blocking(content, duration, () => onClose());
     return () => dispose();
   }
 }

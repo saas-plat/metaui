@@ -21,7 +21,7 @@ export feedback, {
 }
 from './feedback';
 // register route
-import UIStore from './UIStore';
+import UIStore from './stores/UIStore';
 import ContainerModel from './models/ContainerModel';
 import SubView from './components/SubView';
 UIStore.register({
@@ -30,3 +30,4 @@ UIStore.register({
 // 业务模型
 export BaseStore from './stores/BaseStore';
 export BizStore from './stores/BizStore';
+export i18n from './i18n';

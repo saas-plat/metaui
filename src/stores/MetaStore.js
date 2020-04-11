@@ -1,11 +1,21 @@
-import BaseStore from './BaseStore';
+import {
+  observable,
+  computed,
+  action,
+} from 'mobx';
 
-class EmptyStore extends BaseStore {
+export class EmptyStore extends MetaStore {
 
 }
 
 // 业务模型管理
-export default class BizStore {
+export default class MetaStore {
+
+  @observable viewModel;
+
+  constructor(viewModel) {
+    this.viewModel = viewModel;
+  }
 
   static storeTypes = new Map();
 
@@ -19,7 +29,7 @@ export default class BizStore {
     return new Store(viewModel);
   }
 
-  static registerModel(Stores) {
+  static registerStores(Stores) {
     const keys = Object.keys(Stores);
     for (const name of keys) {
       if (!name) {

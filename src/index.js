@@ -28,6 +28,6 @@ UIStore.register({
   route: [SubView, ContainerModel],
 })
 // 业务模型
-export BaseStore from './stores/BaseStore';
-export BizStore from './stores/BizStore';
+export MetaStore from './stores/MetaStore';
 export i18n from './i18n';
+export const registerStores = MetaStore.registerStores;

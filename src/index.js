@@ -28,6 +28,8 @@ UIStore.register({
   route: [SubView, ContainerModel],
 })
 // 业务模型
-export MetaStore from './stores/MetaStore';
+import MetaStore2 from './stores/MetaStore';
 export i18n from './i18n';
-export const registerStores = MetaStore.registerStores;
+export api from './api';
+export const registerStores = MetaStore2.registerStores;
+export const MetaStore = MetaStore2;

@@ -5,7 +5,7 @@ import {
   reaction
 } from 'mobx';
 
-import UIStore from '../src/UIStore';
+import UIStore from '../src/stores/UIStore';
 import Model from '../src/models/Model';
 
 describe('模型', () => {

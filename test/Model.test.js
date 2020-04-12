@@ -7,7 +7,7 @@ const {
   expect
 } = require('chai');
 
-import UIStore from '../src/UIStore';
+import UIStore from '../src/stores/UIStore';
 import SimpleModel from '../src/models/SimpleModel';
 import TableModel from '../src/models/TableModel';
 import { computed } from "mobx";

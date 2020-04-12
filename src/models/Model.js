@@ -13,7 +13,7 @@ import _forOwn from 'lodash/forOwn';
 import _isArray from 'lodash/isArray';
 import _mapValues from 'lodash/mapValues';
 import _isSymbol from 'lodash/isSymbol';
-import UIStore from '../UIStore';
+import UIStore from '../stores/UIStore';
 
 // 计算属性会导致proxy的ownKeys没有返回报错
 // proxy 约束：结果列表必须包含目标对象的所有不可配置（non-configurable ）、自有（own）属性的key.

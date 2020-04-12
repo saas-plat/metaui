@@ -6,7 +6,7 @@ const {
   expect
 } = require('chai');
 
-import UIStore from '../src/UIStore';
+import UIStore from '../src/stores/UIStore';
 import ContainerModel from '../src/models/ContainerModel';
 import SimpleModel from '../src/models/SimpleModel';
 import ListModel from '../src/models/ListModel';

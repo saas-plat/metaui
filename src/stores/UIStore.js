@@ -10,7 +10,7 @@ import UISchema from './UISchema';
 import {
   nano
 }
-from './utils';
+from '../utils';
 
 let tProvider = nano;
 

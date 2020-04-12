@@ -1,6 +1,6 @@
 {
   "name": "@saas-plat/metaui",
-  "version": "1.1.40",
+  "version": "1.1.41",
   "description": "ui metadata",
   "productName": "saas-plat",
   "main": "dist/index.js",
@@ -9,9 +9,9 @@
     "test": "cross-env NODE_ENV=test mocha",
     "watch": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha --watch",
     "test_d": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha",
-    "dev": "babel src --out-dir ../saas-plat-metauiweb/node_modules/saas-plat-metaui/dist --source-maps",
-    "dev_m": "babel src --out-dir ../saas-plat-metauimobile/node_modules/saas-plat-metaui/dist --source-maps",
-    "dev_t": "babel src --out-dir ../saas-plat-metauitouch/node_modules/saas-plat-metaui/dist --source-maps"
+    "dev": "babel src --out-dir ../metaui-web/node_modules/@saas-plat/metaui/dist --source-maps",
+    "dev_m": "babel src --out-dir ../metaui-mobile/node_modules/@saas-plat/metaui/dist --source-maps",
+    "dev_t": "babel src --out-dir ../metaui-touch/node_modules/@saas-plat/metaui/dist --source-maps"
   },
   "repository": {
     "type": "git",

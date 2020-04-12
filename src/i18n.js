@@ -30,6 +30,4 @@ i18n
     preload: ['zh'], // must know what languages to use
     fallbackLng: 'zh'
   })
-const oldt = (i18n.t).bind(i18n);
 module.exports = i18n;
-module.exports.t = (...args) => oldt(...args);

@@ -4,10 +4,6 @@ import {
   action,
 } from 'mobx';
 
-export class EmptyStore extends MetaStore {
-
-}
-
 // 业务模型管理
 export default class MetaStore {
 
@@ -44,5 +40,9 @@ export default class MetaStore {
       this.storeTypes.set(type, Stores[name]);
     }
   }
+
+}
+
+export class EmptyStore extends MetaStore {
 
 }

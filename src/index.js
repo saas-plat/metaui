@@ -3,7 +3,8 @@ export UIComponent from './components/UIComponent';
 // 组件容器
 export UIContainer from './components/UIContainer';
 // 组件类型管理器
-export UIStore from './UIStore';
+export UIStore from './stores/UIStore';
+export MetaStore from './stores/MetaStore';
 // ui模型渲染器
 export UIRender from './components/UIRender';
 // 视图模型类型
@@ -20,6 +21,11 @@ export feedback, {
   registerFeedback
 }
 from './feedback';
+// 业务模型
+import MetaStore from './stores/MetaStore';
+export i18n from './i18n';
+export api from './api';
+export const registerStores = MetaStore.registerStores;
 // register route
 import UIStore from './stores/UIStore';
 import ContainerModel from './models/ContainerModel';
@@ -27,9 +33,3 @@ import SubView from './components/SubView';
 UIStore.register({
   route: [SubView, ContainerModel],
 })
-// 业务模型
-import MetaStore2 from './stores/MetaStore';
-export i18n from './i18n';
-export api from './api';
-export const registerStores = MetaStore2.registerStores;
-export const MetaStore = MetaStore2;

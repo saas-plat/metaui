@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import UIStore from '../UIStore';
+import UIStore from '../stores/UIStore';
 
 // 模板视图，根据模板配置生成一个子视图界面
 export default class UIRender extends React.Component {

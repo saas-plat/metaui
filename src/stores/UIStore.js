@@ -6,7 +6,7 @@ import {
 import Expression from '@saas-plat/expression';
 import _set from 'lodash/set';
 import _get from 'lodash/get';
-import UISchema from './UISchema';
+import UISchema from '../views';
 import {
   nano
 }

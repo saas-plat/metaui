@@ -24,8 +24,7 @@ from './feedback';
 // 业务模型
 import MetaStore from './stores/MetaStore';
 export i18n from './i18n';
-export api from './api';
-export const registerStores = MetaStore.registerStores;
+export api from './api'; 
 // register route
 import UIStore from './stores/UIStore';
 import ContainerModel from './models/ContainerModel';
@@ -33,3 +32,5 @@ import SubView from './components/SubView';
 UIStore.register({
   route: [SubView, ContainerModel],
 })
+import stores from './stores';
+MetaStore.registerStores(stores);

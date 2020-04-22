@@ -3,8 +3,8 @@ export UIComponent from './components/UIComponent';
 // 组件容器
 export UIContainer from './components/UIContainer';
 // 组件类型管理器
-export UIStore from './stores/UIStore';
-export MetaStore from './stores/MetaStore';
+export UIStore from './UIStore';
+export MetaStore from './MetaStore';
 // ui模型渲染器
 export UIRender from './components/UIRender';
 // 视图模型类型
@@ -24,7 +24,7 @@ from './feedback';
 // 业务模型
 import MetaStore from './stores/MetaStore';
 export i18n from './i18n';
-export api from './api'; 
+export api from './api';
 // register route
 import UIStore from './stores/UIStore';
 import ContainerModel from './models/ContainerModel';

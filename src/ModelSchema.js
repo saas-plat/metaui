@@ -313,7 +313,7 @@ const toJson = (fields) => {
   }, {});
 }
 
- export const loadJson = (template, defaultTpl = {}) => {
+export const loadJson = (template, defaultTpl = {}) => {
   const defFields = loadFields(defaultTpl);
   if (template) {
     let customFields = loadFields(template);
@@ -338,4 +338,28 @@ const toJson = (fields) => {
     return toJson(customFields);
   }
   return toJson(defFields);
+}
+
+export default class ModelSchema {
+  fields;
+
+  constructor(fields = []) {
+    this.fields = fields;
+  }
+
+  static create(obj) {
+    // 服务端已经loadJson解析后的schema字段
+    const fields = [];
+    obj && Object.keys(obj).forEach(key => {
+      fields.push({
+        key,
+        ...obj[key],
+        fields: ModelSchema.create(obj[key].fields)
+      });
+    });
+    if (fields.length <= 0) {
+      console.log('model not has specific fields!');
+    }
+    return new ModelSchema(fields);
+  }
 }

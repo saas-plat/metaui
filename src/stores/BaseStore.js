@@ -1,6 +1,3 @@
-import {
-  MetaStore
-} from '@saas-plat/metaui';
+import MetaStore from '../MetaStore';
 
-export default class BaseStore extends MetaStore {
-}
+export default class BaseStore extends MetaStore {}

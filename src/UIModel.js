@@ -6,18 +6,11 @@ import {
 import Expression from '@saas-plat/expression';
 import _set from 'lodash/set';
 import _get from 'lodash/get';
+import _forOwn from 'lodash/forOwn';
+import _mapValues from 'lodash/mapValues';
 import UISchema from '../views';
-import {
-  nano
-}
-from '../utils';
 
-let tProvider = nano;
-
-export default class UIStore {
-
-  static components = new Map();
-  static models = new Map();
+export default class UIModel {
 
   // 数据级别的模型，前端的业务实体模型，包含状态和数据
   @observable model;
@@ -28,62 +21,6 @@ export default class UIStore {
     if (model) {
       this.setModel(model);
     }
-  }
-
-  // 组件是由扩展注册的，模型是统一的，交互可以是各端不同的
-  static register(...items) {
-    const registerOne = (type, Component, Model) => {
-      if (!type) {
-        console.error('ui type not be null!', type);
-        return false;
-      }
-      if (!Component || !Model) {
-        console.error('component model not be null!', type);
-        return false;
-      }
-      if (UIStore.components.has(type.toLowerCase())) {
-        console.error('component type has registerd!', type.toLowerCase());
-        return false;
-      }
-      UIStore.components.set(type.toLowerCase(), Component);
-      UIStore.models.set(type.toLowerCase(), Model);
-      return true;
-    }
-    if (typeof items[0] === 'string') {
-      return registerOne(...items);
-    } else if (typeof items[0] === 'object') {
-      const keys = Object.keys(items[0]);
-      let hasFaield = false;
-      for (const key of keys) {
-        const it = items[0][key];
-        if (Array.isArray(it)) {
-          if (!registerOne(key, it[0], it[1])) {
-            hasFaield = true;
-          }
-        } else {
-          if (!registerOne(key, it.component, it.model)) {
-            hasFaield = true;
-          }
-        }
-      }
-      return hasFaield;
-    } else {
-      let hasFaield = false;
-      for (const it of items) {
-        if (!registerOne(it.type || it.name, it.component, it.model)) {
-          hasFaield = true;
-        }
-      }
-      return hasFaield;
-    }
-  }
-
-  static registerT(provider) {
-    tProvider = provider;
-  }
-
-  t(txt) {
-    return tProvider(txt);
   }
 
   @action setViewModel(path, value) {
@@ -134,10 +71,35 @@ export default class UIStore {
     this.ui = view;
   }
 
+  createModel(store, schema, reducer) {
+    let vm;
+    // 这里不用考虑数组和对象情况，reducer里面处理啦
+    const props = _mapValues(schema.props, reducer);
+    // 这里要循环创建模型
+    if (!schema.bind) {
+      const Model = schema.model;
+      vm = new Model(store, {
+        ...props
+      });
+    } else {
+      // bind的字段需要从vm中查找
+      vm = store.getViewModel(schema.bind);
+      if (!vm) {
+        throw new Error(`"${schema.bind}" view model not found!`);
+      }
+      _forOwn({
+        ...props
+      }, (val, key) => {
+        vm[key] = val;
+      })
+    }
+    return vm;
+  }
+
   build(node) {
     if (node instanceof UISchema) {
       console.log('create %s...', node.model.name);
-      return node.createModel(this, it => this.build(it));
+      return this.createModel(this, node, it => this.build(it));
     } else if (Array.isArray(node)) {
       return node.map(it => this.build(it));
     } else {
@@ -158,13 +120,13 @@ export default class UIStore {
     // UI的schema和VM的schema是不一样的
     // UISchema是模型的实例，UI是根据模型的实例渲染的UI组件
     if (!(schema instanceof UISchema)) {
-      schema = schema ? UIStore.createSchema(schema) : null;
+      schema = schema ? UIModel.createSchema(schema) : null;
       if (!schema) {
         console.error('not support ui schema', schema);
         return null;
       }
     }
-    const store = new UIStore(vm);
+    const store = new UIModel(vm);
     const uiModel = store.build(schema);
     runInAction(() => {
       store.ui = uiModel;

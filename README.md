@@ -2,7 +2,7 @@
 
 提供全端的统一UI建模，和各端的独立渲染组件
 
-## 模型
+## UI
 
 模型提供了统一的UI描述类型，多端通用协议
 
@@ -30,10 +30,12 @@ ColumnModel
 CellModel
 ChartModel
 
-## 组件
+## ViewModel
+
+## Components
 
 提供web、mobile、touch等多端组件，组件需要根据模型进行渲染
 
-# 反馈API
+# Feedback API
 
 提供跨端的常用反馈，比如操作结果的消息、警告、确认、提示、授权等标准形式

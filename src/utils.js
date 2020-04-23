@@ -10,9 +10,6 @@ import {
 } from 'mobx';
 import _isPlainObject from 'lodash/isPlainObject';
 import _keys from 'lodash/keys';
-import _isArray from 'lodash/isArray';
-import _toArray from 'lodash/toArray';
-import _toPlainObject from 'lodash/toPlainObject';
 import _camelCase from 'lodash/camelCase';
 import {
   SimpleModel,
@@ -532,6 +529,31 @@ const getFieldMapings = exports.getFieldMapings = (fields = [], defFields = []) 
     }
     return maps;
   }, {});
+}
+
+exports.noenumerable = function (target, ...keys) {
+  keys.forEach(key => {
+    Object.defineProperty(target, key, {
+      enumerable: false,
+      writable: true,
+      configurable: false
+    });
+  })
+}
+
+exports.readonly = function readonly(target, key, initValue, enumerable = false) {
+  // 修改函数的name需要先改成writable
+  Object.defineProperty(target, key, {
+    writable: true
+  });
+  if (initValue !== undefined) {
+    target[key] = initValue;
+  }
+  Object.defineProperty(target, key, {
+    writable: false,
+    //enumerable: enumerable,
+    configurable: false
+  });
 }
 
 export function readonlyDeep(target, key, initValue, enumerable = false) {

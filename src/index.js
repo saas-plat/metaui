@@ -1,13 +1,15 @@
-// UI组件的基类
+vmodels // UI组件的基类
 export UIComponent from './components/UIComponent';
 // 组件容器
 export UIContainer from './components/UIContainer';
 // 组件类型管理器
 export UIStore from './UIStore';
-export MetaStore from './MetaStore';
+export BizModel from './vmodels/BizModel';
+export EventModel from './EventModel';
+export MetaModel from './MetaModel';
 // ui模型渲染器
 export UIRender from './components/UIRender';
-// 视图模型类型
+// ui模型类型
 export SimpleModel from './models/SimpleModel';
 export ListModel from './models/ListModel';
 export TableModel from './models/TableModel';
@@ -22,15 +24,17 @@ export feedback, {
 }
 from './feedback';
 // 业务模型
-import MetaStore from './stores/MetaStore';
-export i18n from './i18n';
-export api from './api';
+import MetaModel from './MetaModel';
+export api, {
+  registerApi
+}
+from './api';
 // register route
-import UIStore from './stores/UIStore';
+import UIStore from './UIStore';
 import ContainerModel from './models/ContainerModel';
 import SubView from './components/SubView';
 UIStore.register({
   route: [SubView, ContainerModel],
 })
-import stores from './stores';
-MetaStore.registerStores(stores);
+import vmodels from './vmodels';
+MetaModel.register(vmodels);

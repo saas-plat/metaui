@@ -12,52 +12,61 @@ let command,
   // 用户接口
   user,
   // 页面参数接口
-  url;
+  params,
+  // 多语言接口
+  i18n;
 
 // 接口文档可以到开发者社区查看
 // https://dev.saas-plat.com/help/api/metaview
 export default {
   get command() {
     if (!command) {
-      console.warn('command not support!');
+      console.warn('command not support! forget to register API?');
       return null;
     }
     return command;
   },
   get query() {
     if (!query) {
-      console.warn('query not support!');
+      console.warn('query not support! forget to register API?');
       return null;
     }
     return query;
   },
   get portal() {
     if (!portal) {
-      console.warn('portal not support!');
+      console.warn('portal not support! forget to register API?');
       return null;
     }
     return portal;
   },
   get permission() {
     if (!permission) {
-      console.warn('permission not support!');
+      console.warn('permission not support! forget to register API?');
       return null;
     }
     return permission;
   },
   get user() {
     if (!user) {
-      console.warn('user not support!');
+      console.warn('user not support! forget to register API?');
       return null;
     }
     return user;
   },
-  get url() {
-    if (!url) {
-      console.warn('url not support!');
+  get params() {
+    if (!params) {
+      console.warn('params not support! forget to register API?');
       return null;
     }
-    return url;
+    return params;
+  },
+  get i18n() {
+    if (!i18n) {
+      console.warn('i18n not support! forget to register API?');
+      return null;
+    }
+    return i18n;
   }
 };
 
@@ -78,7 +87,10 @@ export function registerApi(provider) {
   if ('user' in provider) {
     user = provider.user;
   }
-  if ('url' in provider) {
-    url = provider.url;
+  if ('params' in provider) {
+    params = provider.params;
+  }
+  if ('i18n' in provider) {
+    i18n = provider.i18n;
   }
 }

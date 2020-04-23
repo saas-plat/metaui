@@ -7,9 +7,9 @@ import {
 import {
   socket,
 } from 'saas-plat-clientfx';
-import BaseStore from './BaseStore';
+import BizModel from './BizModel';
 
-export default class VoucherListStore extends BaseStore {
+export default class VoucherListStore extends BizModel {
 
   @computed get vouchers (){
     return this.viewModel.vouchers;

@@ -3,14 +3,12 @@ import {
   runInAction,
   action,
 } from 'mobx';
-import {
-  i18n,
-  api,
-  feedback
-} from '@saas-plat/metaui';
-import BaseStore from './BaseStore';
+import i18n from '../i18n';
+import api from '../api';
+import feedback from '../feedback';
+import BizModel from './BizModel';
 
-export default class Voucher extends BaseStore {
+export default class Voucher extends BizModel {
 
   @action async load(query, variables, mapping) {
     const data = await api.query(query, {

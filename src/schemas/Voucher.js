@@ -1,6 +1,5 @@
-import {
-  i18n
-} from '@saas-plat/metaui';
+import api from '../api';
+const t = api.i18n.getFixedT(null, 'metaui');
 
 module.exports = {
 
@@ -15,7 +14,7 @@ module.exports = {
     fields: {
       lable: {
         type: 'string',
-        value: i18n.t('ID')
+        value: t('ID')
       },
       value: 'string',
       visible: {
@@ -28,7 +27,7 @@ module.exports = {
       },
       message: {
         type: 'string',
-        value: i18n.t('ID字段无效')
+        value: t('ID字段无效')
       },
       required: {
         type: 'boolean',
@@ -65,7 +64,7 @@ module.exports = {
     fields: {
       lable: {
         type: 'string',
-        value: i18n.t('编码')
+        value: t('编码')
       },
       value: 'string',
       visible: {
@@ -78,7 +77,7 @@ module.exports = {
       },
       message: {
         type: 'string',
-        value: i18n.t('Code字段无效')
+        value: t('Code字段无效')
       },
       required: {
         type: 'boolean',
@@ -115,7 +114,7 @@ module.exports = {
     fields: {
       lable: {
         type: 'string',
-        value: i18n.t('名称')
+        value: t('名称')
       },
       value: 'string',
       visible: {
@@ -128,7 +127,7 @@ module.exports = {
       },
       message: {
         type: 'string',
-        value: i18n.t('名称字段无效')
+        value: t('名称字段无效')
       },
       required: {
         type: 'boolean',
@@ -167,7 +166,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('上一张')
+        value: t('上一张')
       },
       visible: {
         type: 'boolean',
@@ -187,7 +186,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('下一张')
+        value: t('下一张')
       },
       visible: {
         type: 'boolean',
@@ -207,7 +206,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('首张')
+        value: t('首张')
       },
       visible: {
         type: 'boolean',
@@ -227,7 +226,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('末张')
+        value: t('末张')
       },
       visible: {
         type: 'boolean',
@@ -248,7 +247,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('设置')
+        value: t('设置')
       },
       visible: {
         type: 'boolean',
@@ -268,7 +267,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('查找')
+        value: t('查找')
       },
       visible: {
         type: 'boolean',
@@ -288,7 +287,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('查找')
+        value: t('查找')
       },
       visible: {
         type: 'boolean',
@@ -308,7 +307,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('关闭')
+        value: t('关闭')
       },
       visible: {
         type: 'boolean',
@@ -326,7 +325,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('新增')
+        value: t('新增')
       },
       visible: {
         type: 'boolean',
@@ -346,7 +345,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('修改')
+        value: t('修改')
       },
       visible: {
         type: 'boolean',
@@ -366,7 +365,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('刷新')
+        value: t('刷新')
       },
       visible: {
         type: 'boolean',
@@ -386,7 +385,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('保存')
+        value: t('保存')
       },
       visible: {
         type: 'boolean',
@@ -406,7 +405,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('保存新增')
+        value: t('保存新增')
       },
       visible: {
         type: 'boolean',
@@ -426,7 +425,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('删除')
+        value: t('删除')
       },
       visible: {
         type: 'boolean',
@@ -446,7 +445,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('拷贝')
+        value: t('拷贝')
       },
       visible: {
         type: 'boolean',
@@ -466,7 +465,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('放弃')
+        value: t('放弃')
       },
       visible: {
         type: 'boolean',
@@ -486,7 +485,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('提交')
+        value: t('提交')
       },
       visible: {
         type: 'boolean',
@@ -506,7 +505,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('撤回')
+        value: t('撤回')
       },
       visible: {
         type: 'boolean',
@@ -527,7 +526,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('草稿')
+        value: t('草稿')
       },
       visible: {
         type: 'boolean',
@@ -547,7 +546,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('保存草稿')
+        value: t('保存草稿')
       },
       visible: {
         type: 'boolean',
@@ -568,7 +567,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('审核')
+        value: t('审核')
       },
       visible: {
         type: 'boolean',
@@ -588,7 +587,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('弃审')
+        value: t('弃审')
       },
       visible: {
         type: 'boolean',
@@ -608,7 +607,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('变更')
+        value: t('变更')
       },
       visible: {
         type: 'boolean',
@@ -629,7 +628,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('打印')
+        value: t('打印')
       },
       visible: {
         type: 'boolean',
@@ -649,7 +648,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('快速打印')
+        value: t('快速打印')
       },
       visible: {
         type: 'boolean',
@@ -669,7 +668,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('打印预览')
+        value: t('打印预览')
       },
       visible: {
         type: 'boolean',
@@ -689,7 +688,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('打印明细标签')
+        value: t('打印明细标签')
       },
       visible: {
         type: 'boolean',
@@ -709,7 +708,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('打印设计')
+        value: t('打印设计')
       },
       visible: {
         type: 'boolean',
@@ -724,12 +723,12 @@ module.exports = {
       //}
     }
   },
-  printDetailBtn: {
+  printInfoBtn: {
     type: 'SimpleModel',
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('打印情况')
+        value: t('打印情况')
       },
       visible: {
         type: 'boolean',
@@ -750,7 +749,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('查找')
+        value: t('查找')
       },
       visible: {
         type: 'boolean',
@@ -770,7 +769,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('导入')
+        value: t('导入')
       },
       visible: {
         type: 'boolean',
@@ -790,7 +789,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('下载导入模板')
+        value: t('下载导入模板')
       },
       visible: {
         type: 'boolean',
@@ -811,7 +810,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('附件')
+        value: t('附件')
       },
       visible: {
         type: 'boolean',
@@ -833,7 +832,7 @@ module.exports = {
     fields: {
       text: {
         type: 'string',
-        value: i18n.t('消息')
+        value: t('消息')
       },
       visible: {
         type: 'boolean',

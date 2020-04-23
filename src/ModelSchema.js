@@ -4,7 +4,7 @@ import _isPlainObject from 'lodash/isPlainObject';
 import _assign from 'lodash/assign';
 import _omitBy from 'lodash/omitBy';
 import _isArray from 'lodash/isArray';
-import i18n from '../i18n';
+import i18n from './i18n';
 
 const types = ["string", "object", "boolean", "array", "number", "expression", "date", 'reference'];
 

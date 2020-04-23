@@ -3,7 +3,7 @@ import _isArray from 'lodash/isArray';
 import _mapKeys from 'lodash/mapKeys';
 import _trimStart from 'lodash/trimStart';
 import _isString from 'lodash/isString';
-import _isPlanObject from 'lodash/isPlanObject';
+import _isPlainObject from 'lodash/isPlainObject';
 import jxon from 'jxon';
 // const Ajv = require('ajv');
 import UIStore from './UIStore';
@@ -37,7 +37,7 @@ const loadReduce = ({
           name: val,
           args: {}
         }
-      } else if (_isPlanObject(val)) {
+      } else if (_isPlainObject(val)) {
         const {
           type,
           name,

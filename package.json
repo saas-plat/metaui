@@ -11,7 +11,8 @@
     "test_d": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha",
     "dev": "babel src --out-dir ../metaui-web/node_modules/@saas-plat/metaui/dist --source-maps",
     "dev_m": "babel src --out-dir ../metaui-mobile/node_modules/@saas-plat/metaui/dist --source-maps",
-    "dev_t": "babel src --out-dir ../metaui-touch/node_modules/@saas-plat/metaui/dist --source-maps"
+    "dev_t": "babel src --out-dir ../metaui-touch/node_modules/@saas-plat/metaui/dist --source-maps",
+    "dev_s": "babel src --out-dir ../saas-plat-metasrv/node_modules/@saas-plat/metaui/dist --source-maps"
   },
   "repository": {
     "type": "git",
@@ -27,8 +28,6 @@
     "async-validator": "^3.2.3",
     "core-decorators": "^0.20.0",
     "en-inflectors": "^1.0.12",
-    "i18next": "^10.2.2",
-    "i18next-xhr-backend": "^3.0.0",
     "jxon": "^2.0.0-beta.5",
     "lodash": "^4.17.15",
     "nools": "^0.4.4",
@@ -38,7 +37,8 @@
   "peerDependencies": {
     "mobx": ">=5.0.0",
     "mobx-react": ">=6.0.0",
-    "react": ">=16.0.0"
+    "react": ">=16.0.0",
+    "react-i18next": ">=11.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -60,6 +60,7 @@
     "mobx-react": "^6.1.4",
     "mocha": "^7.1.1",
     "react": "^16.6.3",
+    "react-i18next": "^11.3.5",
     "react-router-dom": "^5.1.2"
   }
 }

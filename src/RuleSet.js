@@ -1,4 +1,9 @@
 import nools from 'nools';
+import api from './api';
+import feedback from './feedback';
+import i18n from './i18n';
+import EventModel from './EventModel';
+import ViewModel from './ViewModel';
 
 let gid = 0;
 
@@ -13,11 +18,23 @@ export default class RuleSet {
   flow;
   name;
 
-  constructor(noolsSource = [], define, scope) {
-    this.name = 'RuleSet' + assignId();
+  constructor(name, noolsSource = [], define, scope) {
+    name = name || assignId();
+    this.name = 'RuleSet' + name;
     this.flow = nools.compile(noolsSource.join('\n'), {
-      define,
-      scope,
+      define: {
+        // UIModel, // 禁用，都应该用业务模型控制
+        EventModel,
+        // 业务模型
+        ViewModel, // store是从vm继承的所以vm就是store
+        ...define
+      },
+      scope: {
+        t: i18n.getFixedT(null, 'domains/' + name),
+        ...api,
+        ...feedback,
+        ...scope
+      },
       name: this.name
     });
   }

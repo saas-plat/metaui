@@ -4,15 +4,15 @@ import {
   Inflectors
 } from "en-inflectors";
 import {
-  t,
   none
 }
 from '../utils';
+import { I18nextProvider } from 'react-i18next';
+import api from '../api';
 
 // 组件容器，渲染子组件提供统一的上下文环境
 export default class UIContainer extends React.Component {
   static propTypes = {
-    t: PropTypes.func,
     context: PropTypes.object,
     onEvent: PropTypes.func,
     onAction: PropTypes.func, // action 和 event是有区别的，action是event配置的默认行为，就算不配置也可以有view的默认行为
@@ -22,12 +22,10 @@ export default class UIContainer extends React.Component {
   static defaultProps = {
     onAction: none,
     onEvent: none,
-    t: t
   }
 
   static childContextTypes = {
     onEvent: PropTypes.func,
-    t: PropTypes.func,
   }
 
   handleEvent = (target, evtName, args, defaultAction = null) => {
@@ -141,11 +139,12 @@ export default class UIContainer extends React.Component {
   getChildContext() {
     return {
       onEvent: this.handleEvent,
-      t: this.props.t
     };
   }
 
   render() {
-    return this.props.children;
+    return (<I18nextProvider i18n={api.i18n}>
+        {this.props.children}
+      </I18nextProvider>);
   }
 }

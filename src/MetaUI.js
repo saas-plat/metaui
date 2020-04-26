@@ -8,14 +8,65 @@ import _set from 'lodash/set';
 import _get from 'lodash/get';
 import _forOwn from 'lodash/forOwn';
 import _mapValues from 'lodash/mapValues';
-import UISchema from '../views';
+import UISchema from './UISchema';
 
-export default class UIModel {
+export default class MetaUI {
+
+  static components = new Map();
+  static models = new Map();
 
   // 数据级别的模型，前端的业务实体模型，包含状态和数据
   @observable model;
   // UI级别的模型，容器模型的树结构
   @observable ui;
+
+  // 组件是由扩展注册的，模型是统一的，交互可以是各端不同的
+  static register(...items) {
+    const registerOne = (type, Component, Model) => {
+      if (!type) {
+        console.error('ui type not be null!', type);
+        return false;
+      }
+      if (!Component || !Model) {
+        console.error('component model not be null!', type);
+        return false;
+      }
+      if (MetaUI.components.has(type.toLowerCase())) {
+        console.error('component type has registerd!', type.toLowerCase());
+        return false;
+      }
+      MetaUI.components.set(type.toLowerCase(), Component);
+      MetaUI.models.set(type.toLowerCase(), Model);
+      return true;
+    }
+    if (typeof items[0] === 'string') {
+      return registerOne(...items);
+    } else if (typeof items[0] === 'object') {
+      const keys = Object.keys(items[0]);
+      let hasFaield = false;
+      for (const key of keys) {
+        const it = items[0][key];
+        if (Array.isArray(it)) {
+          if (!registerOne(key, it[0], it[1])) {
+            hasFaield = true;
+          }
+        } else {
+          if (!registerOne(key, it.component, it.model)) {
+            hasFaield = true;
+          }
+        }
+      }
+      return hasFaield;
+    } else {
+      let hasFaield = false;
+      for (const it of items) {
+        if (!registerOne(it.type || it.name, it.component, it.model)) {
+          hasFaield = true;
+        }
+      }
+      return hasFaield;
+    }
+  }
 
   constructor(model) {
     if (model) {
@@ -120,13 +171,13 @@ export default class UIModel {
     // UI的schema和VM的schema是不一样的
     // UISchema是模型的实例，UI是根据模型的实例渲染的UI组件
     if (!(schema instanceof UISchema)) {
-      schema = schema ? UIModel.createSchema(schema) : null;
+      schema = schema ? MetaUI.createSchema(schema) : null;
       if (!schema) {
         console.error('not support ui schema', schema);
         return null;
       }
     }
-    const store = new UIModel(vm);
+    const store = new MetaUI(vm);
     const uiModel = store.build(schema);
     runInAction(() => {
       store.ui = uiModel;

@@ -26,6 +26,7 @@
   "dependencies": {
     "@saas-plat/expression": "^1.0.3",
     "async-validator": "^3.2.3",
+    "automapper": "^1.0.0",
     "core-decorators": "^0.20.0",
     "en-inflectors": "^1.0.12",
     "jxon": "^2.0.0-beta.5",

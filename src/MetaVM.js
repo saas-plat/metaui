@@ -1,25 +1,30 @@
 import {
-  reaction,
-}
-from 'mobx';
+  autorun,
+  action,
+  toJS
+} from "mobx";
 import Schema from 'async-validator';
 import feedback from './feedback';
 import {
   createObject,
-  readonly,
+  createMapping,
+  createProxy,
+  maptoDto,
+  maptoVM,
+  readonly
 } from './util';
-import Model from './models/Model';
 import ModelSchema from './ModelSchema';
 import EventModel from './EventModel';
 import RuleSet from './RuleSet';
 
 // 单据的容器级别的视图模型
 // 和metaui的组件级别视图模型不是一个级别
-export default class MetaModel extends Model {
-  static bziModels = new Map();
+// 主要区别就是需要根据schema创建字段的类型, 而不是submodel
+export default class MetaVM {
+  static vmodels = new Map();
 
   static getType(type) {
-    const Model = this.bziModels.get(type) || MetaModel;
+    const Model = this.vmodels.get(type) || MetaVM;
     return Model;
   }
 
@@ -35,26 +40,28 @@ export default class MetaModel extends Model {
       let type = name;
       // 首字母大写
       type = type[0].toUpperCase() + type.substr(1);
-      this.bziModels.set(type, Models[name]);
+      this.vmodels.set(type, Models[name]);
     }
   }
 
   static createType(BaseType, name, schema, rules, opts = {}) {
     schema = schema instanceof ModelSchema ? schema : ModelSchema.create(schema);
-    const init = createObject({}, schema.fields);
+    createMapping(schema.fields, name);
+    const init = createObject(schema.fields);
     const validator = new Schema(schema.fields);
     const ruleset = new RuleSet(name, rules);
     const SpecificModel = class extends BaseType {
-      constructor(data) {
-        super(data || init);
+      constructor() {
+        super(init, schema);
+        // 创建一个代理, 赋值和获取值都根据schema控制
+        const proxy = createProxy(init, this, schema.fields, name);
         // 数据改变规则
-        this.disposer = reaction(() => this.toJS(),
-          () => {
-            console.log('execute data rule...');
-            ruleset.execute([this]);
-            console.log('execute data complated');
-          }
-        );
+        this.dispose = autorun(() => {
+          console.log('execute data rule...');
+          ruleset.execute([this]);
+          console.log('execute data complated');
+        });
+        return proxy;
       }
 
       async onAction(action, data, ...objs) {
@@ -91,13 +98,39 @@ export default class MetaModel extends Model {
           });
         });
       }
+
+      @action merge(dto) {
+        // map必须直接到this需要固定的结构
+        maptoVM(name, dto, this);
+      }
+
+      @action restore(data) {
+        this.merge(data || init);
+      }
+
+      @action new() {
+        this.restore();
+      }
+
+      cutJS() {
+        // 裁减掉ui状态字段, 只保留数据字段, 适合向后端传送数据
+        // 引用类型数据结构只保留ID
+        const dto = createObject(schema.fields, true);
+        maptoDto(name, this.toJS(), dto);
+        //debug(this.toJS(), '=>', dto);
+        return dto;
+      }
+
+      toJS() {
+        return toJS(this);
+      }
     }
+
     readonly(SpecificModel, 'name', name);
-    readonly(SpecificModel, 'fields', schema.fields);
     return SpecificModel;
   }
 
-  static create(Type){
+  static create(Type) {
     return new Type();
   }
 

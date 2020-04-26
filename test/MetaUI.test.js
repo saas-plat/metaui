@@ -5,8 +5,8 @@ import {
 const {
   expect
 } = require('chai');
-
-import UIStore from '../src/stores/UIStore';
+ 
+import MetaUI from '../src/MetaUI';
 import ContainerModel from '../src/models/ContainerModel';
 import SimpleModel from '../src/models/SimpleModel';
 import ListModel from '../src/models/ListModel';
@@ -21,7 +21,7 @@ class NoneComponent {
 }
 
 before(() => {
-  UIStore.register({
+  MetaUI.register({
     // common
     view: [NoneComponent, ContainerModel],
     list: [NoneComponent, ContainerModel],
@@ -38,8 +38,8 @@ before(() => {
 describe('UI模板', () => {
 
   it('从Schema中加载视图模板', () => {
-    const store = new UIStore();
-    const s = UIStore.createSchema({
+    const store = new MetaUI();
+    const s = MetaUI.createSchema({
       type: 'view',
       items: [{
         type: 'navbar',
@@ -103,7 +103,7 @@ describe('UI模板', () => {
       }))
     }
     store.setModel(vm);
-    const v = store.build(UIStore.createSchema(s))
+    const v = store.build(MetaUI.createSchema(s))
     //console.log(v.items[0])
     // navbar
     expect(v.items[0]).to.be.a.instanceof(ContainerModel);
@@ -168,7 +168,7 @@ describe('UI模板', () => {
   })
 
   it('UI模型读取和修改ViewModel', () => {
-    const s = UIStore.createSchema({
+    const s = MetaUI.createSchema({
       type: 'view',
       items: [{
         type: 'list',
@@ -197,7 +197,7 @@ describe('UI模板', () => {
       }]
     });
     //console.log(JSON.stringify(s,null,2));
-    const store = new UIStore();
+    const store = new MetaUI();
     const vm = {
       item1: new SimpleModel(store, {
         visible: true,
@@ -247,7 +247,7 @@ describe('UI模板', () => {
   })
 
   it('UI模型读取和修改ViewModel', () => {
-    const v = UIStore.create({
+    const v = MetaUI.create({
       name: 'item2',
       type: 'refer',
       displayField: 'f1',

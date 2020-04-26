@@ -6,17 +6,15 @@ import moment from 'moment';
 import mapper from 'automapper';
 import {
   observable,
-  extendObservable,
+  runInAction,
 } from 'mobx';
 import _isPlainObject from 'lodash/isPlainObject';
 import _keys from 'lodash/keys';
 import _camelCase from 'lodash/camelCase';
-import {
-  SimpleModel,
-  ListModel,
-  TableModel,
-  FilterModel
-} from './models';
+import SimpleModel from './models/SimpleModel';
+import ListModel from './models/ListModel';
+import TableModel from './models/TableModel';
+import FilterModel from './models/FilterModel';
 
 export function t(template, data) {
   return template.replace(/\{\{([\w\.]*)\}\}/g, function (str, key) {
@@ -146,7 +144,6 @@ export const createValidator = (...fields) => {
   return new schema(descriptor);
 }
 
-
 //const types = ["string", "object", "boolean", "array", "number", "expr", "date", 'reference'];
 const vmtypes = ['SimpleModel', 'ListModel', 'TableModel', 'FilterModel'];
 
@@ -179,17 +176,11 @@ export const findFields = (fields, path, i = 0) => {
   return sub.fields;
 }
 
-export const createObject = (defineObj = {}, fields, cutRef = false) => {
+export const createObject = (fields, cutRef = false, defineObj = {}) => {
   (fields || []).forEach(it => {
     switch (it.type) {
     case 'array':
-      if (cutRef) {
-        defineObj[it.key] = it.defValue || [];
-      } else {
-        extendObservable(defineObj, {
-          [it.key]: it.defValue || []
-        });
-      }
+      defineObj[it.key] = it.defValue || [];
       break;
     case 'SimpleModel':
     case 'ListModel':
@@ -207,125 +198,70 @@ export const createObject = (defineObj = {}, fields, cutRef = false) => {
           defineObj[it.key] = {};
         }
       } else {
-        let props = createObject({}, it.fields, cutRef);
+        let props = createObject(it.fields, cutRef);
         if (vmtypes.indexOf(it.type) > -1) {
           // 视图模型是一种特殊的对象类型
-          const VMModel = it.type === 'FilterModel' ? FilterModel :
+          const VMModel =
+            it.type === 'FilterModel' ? FilterModel :
             it.type === 'ListModel' ? ListModel :
-            it.type === 'TableModel' ? TableModel : SimpleModel;
+            it.type === 'TableModel' ? TableModel :
+            SimpleModel;
           props = new VMModel(props);
         }
         // debug(defineObj,{
         //   [it.key]: props
         // },subDecs)
-        extendObservable(defineObj, {
-          [it.key]: it.type === 'reference' ? observable.ref(props) : props
-        });
+        defineObj[it.key] = it.type === 'reference' ? observable.ref(props) : createProxy(props, {}, it.fields, name + '_' + it.key)
       }
-
       break;
     case 'string':
-      if (cutRef) {
-        defineObj[it.key] = it.defValue !== undefined ? String(it.defValue || '') : null;
-      } else {
-        extendObservable(defineObj, {
-          [it.key]: it.defValue !== undefined ? String(it.defValue || '') : null
-        });
-      }
+      defineObj[it.key] = it.defValue !== undefined ? String(it.defValue || '') : null
       break;
     case 'number':
-      if (cutRef) {
-        defineObj[it.key] = it.defValue !== undefined ? Number(it.defValue || 0) : null;
-      } else {
-        extendObservable(defineObj, {
-          [it.key]: it.defValue !== undefined ? Number(it.defValue || 0) : null
-        });
-      }
+      defineObj[it.key] = it.defValue !== undefined ? Number(it.defValue || 0) : null
       break;
     case 'boolean':
-      if (cutRef) {
-        defineObj[it.key] = it.defValue !== undefined ? Boolean(it.defValue || false) : null;
-      } else {
-        extendObservable(defineObj, {
-          [it.key]: it.defValue !== undefined ? Boolean(it.defValue || false) : null
-        });
-      }
+      defineObj[it.key] = it.defValue !== undefined ? Boolean(it.defValue || false) : null;
       break;
     case 'date':
       if (it.defValue === 'now') {
-        if (cutRef) {
-          defineObj[it.key] = Date.now;
-        } else {
-          extendObservable(defineObj, {
-            [it.key]: Date.now
-          });
-        }
+        defineObj[it.key] = Date.now;
       } else {
-        if (cutRef) {
-          defineObj[it.key] = it.defValue !== undefined ? moment(it.defValue).toDate() : null;
-        } else {
-          extendObservable(defineObj, {
-            [it.key]: it.defValue !== undefined ? moment(it.defValue).toDate() : null
-          });
+        defineObj[it.key] = it.defValue !== undefined ? moment(it.defValue).toDate() : null;
+      }
+      break;
+    case 'expression': {
+      let texpr = new Expression(it.expr);
+      // getter setter 自动转成计算属性
+      Object.defineProperty(defineObj, it.key, {
+        enumerable: true, // 这里必须是可枚举的要不extendObservable不好使
+        get: () => {
+          return texpr.exec(this);
+        },
+        set: (expr) => {
+          texpr = new Expression(expr);
         }
-      }
-      break;
-    case 'expression':
-      {
-        let texpr = new Expression(it.expr);
-        // getter setter 自动转成计算属性
-        Object.defineProperty(defineObj, it.key, {
-          enumerable: true, // 这里必须是可枚举的要不extendObservable不好使
-          get: () => {
-            return texpr.exec(this);
-          },
-          set: (expr) => {
-            texpr = new Expression(expr);
-          }
-        });
-      }
-      break;
-    case 'mapping':
-      {
-        // getter setter 自动转成计算属性
-        Object.defineProperty(defineObj, it.key, {
-          enumerable: true, // 这里必须是可枚举的要不extendObservable不好使
-          get: () => {
-            return this[it.mapping]
-          },
-          set: (val) => {
-            this[it.mapping] = val;
-          }
-        });
-      }
-      break;
+      });
+    }
+    break;
+    case 'mapping': {
+      // getter setter 自动转成计算属性
+      Object.defineProperty(defineObj, it.key, {
+        enumerable: true, // 这里必须是可枚举的要不extendObservable不好使
+        get: () => {
+          return this[it.mapping]
+        },
+        set: (val) => {
+          this[it.mapping] = val;
+        }
+      });
+    }
+    break;
     default:
-      if (cutRef) {
-        defineObj[it.key] = it.defValue || null;
-      } else {
-        extendObservable(defineObj, {
-          [it.key]: it.defValue || null
-        });
-      }
+      defineObj[it.key] = it.defValue || null;
     }
   });
   return defineObj;
-}
-
-export const createValue = (id, fields, key, value) => {
-  fields = findFields(fields, key.split('.'));
-  let subObj;
-  if (fields) {
-    subObj = createObject({}, fields);
-    const paths = [id, ...key.split('.')].map(key => key.endsWith(']') ? key.substr(0, key.indexOf('[')) : key);
-    //debug('pushValue', key);
-    mapper.map('dto', paths.join('_'), value, subObj);
-  } else {
-    // TODO 这里还需要类型转换
-    // 比如value是string，但是type是date，需要转换成Date
-    subObj = value;
-  }
-  return subObj;
 }
 
 export const createMapping = (fields, name) => {
@@ -334,11 +270,6 @@ export const createMapping = (fields, name) => {
   //console.log('Type', name, fields);
   (fields || []).forEach(it => {
     switch (it.type) {
-    case 'ListModel':
-    case 'TableModel':
-    case 'FilterModel':
-      // TODO 这三种不能进行简单的object装换
-      break;
     case 'array':
       createMapping(it.fields, name + '_' + it.key);
       dtom.forMember(it.key, function () {
@@ -352,7 +283,7 @@ export const createMapping = (fields, name) => {
               // map前必须定义结构
               if (destinationValue.length <= i || !destinationValue[i]) {
                 createMapping(it.fields, name + '_' + it.key);
-                destinationValue[i] = createObject({}, it.fields);
+                destinationValue[i] = createObject(it.fields);
               }
               mapper.map('dto', name + '_' + it.key, sourceValue[i], destinationValue[i]);
             } else {
@@ -364,7 +295,7 @@ export const createMapping = (fields, name) => {
           destinationValue.length = 0;
           if (it.fields && it.fields.length > 0) {
             createMapping(it.fields, name + '_obj' + it.key);
-            destinationValue[0] = createObject({}, it.fields);
+            destinationValue[0] = createObject(it.fields);
             mapper.map('dto', name + '_obj' + it.key, sourceValue, destinationValue[0]);
           } else {
             destinationValue[0] = sourceValue;
@@ -379,7 +310,7 @@ export const createMapping = (fields, name) => {
             if (it.fields && it.fields.length > 0) {
               if (!destinationValue[i]) {
                 createMapping(it.fields, name + '_' + it.key, {});
-                destinationValue[i] = createObject({}, it.fields, true);
+                destinationValue[i] = createObject(it.fields, true);
               }
               mapper.map(name + '_' + it.key, 'dto', sourceValue[i], destinationValue[i]);
             } else {
@@ -391,6 +322,9 @@ export const createMapping = (fields, name) => {
         }
       });
       break;
+    case 'ListModel':
+    case 'TableModel':
+    case 'FilterModel':
     case 'SimpleModel':
     case 'reference':
     case 'object':
@@ -421,7 +355,7 @@ export const createMapping = (fields, name) => {
           //debug(name + '_' + it.key, '=', flatValue)
           if (it.type === 'reference') {
             // destinationValue对象结构不是定义的结构导致map时获取props不对
-            const refVal = createObject({}, it.fields);
+            const refVal = createObject(it.fields);
             //debug(refVal)
             mapper.map('dto', name + '_' + it.key, flatValue, refVal);
             this.__destinationValue[it.key] = refVal;
@@ -529,6 +463,80 @@ const getFieldMapings = exports.getFieldMapings = (fields = [], defFields = []) 
     }
     return maps;
   }, {});
+}
+
+const createProxy = exports.createProxy = (data, target, fields, name) => {
+  const map = observable.map(data);
+  // 使用代理支持动态属性，减少模型的定义
+  const proxy = new Proxy(target, {
+    ownKeys(target) {
+      // 这里必须调用map保证观察性
+      const mapkeys = [...map.keys()];
+      return Object.keys(target).filter(key => mapkeys.indexOf(key) === -1).concat(mapkeys);
+    },
+    deleteProperty(target, key) {
+      if (fields.some(it => it.key === key)) {
+        delete target[key];
+        return map.delete(key);
+      } else if (key in target) {
+        return delete target[key];
+      }
+      return false;
+    },
+    has(target, key) {
+      // 这里必须调用map保证观察性
+      return fields.some(it => it.key === key) || key in target;
+    },
+    get(target, key) {
+      if (fields.some(it => it.key === key)) {
+        return map.get(key);
+      } else {
+        // If it exist, return original member or function.
+        const fn = target[key];
+        const isFunction = typeof fn === "function";
+        return isFunction ?
+          function (...args) {
+            // 不能传target，导致函数里this无法获取动态属性
+            return fn.call(this, ...args);
+          } : fn;
+      }
+    },
+    set(target, key, value) {
+      if (fields.some(it => it.key === key)) {
+        // 这里不需要再mapto了,赋值可能已经有子对象map赋值过了
+        // const vm = map.has(key) ? map.get(key) : createObject(fields);
+        // // mapto中创建代理
+        // maptoVM(name, value, vm);
+        runInAction(() => {
+          map.set(key, value);
+        });
+        // 要不ownKeys会过滤掉不存在的key
+        target[key] = value ;
+        return true;
+      } else if (key in target) {
+        target[key] = value;
+        return true;
+      }
+      // 不能动态添加字段
+      return false;
+    }
+  });
+  // 必须给target设置属性，要不ownKeys会过滤掉不存在的key
+  Object.keys(data).forEach(key => {
+    // 不能直接赋值，要不计算表达式内this.xx不是动态属性值
+    // target[key] = props[key]
+    Object.defineProperty(target, key, {
+      configrable: true,
+      enumerable: true,
+      get: function () {
+        return proxy[key];
+      },
+      set: function (val) {
+        proxy[key] = val
+      }
+    })
+  });
+  return proxy;
 }
 
 exports.noenumerable = function (target, ...keys) {

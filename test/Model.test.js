@@ -7,19 +7,54 @@ const {
   expect
 } = require('chai');
 
-import UIStore from '../src/stores/UIStore';
+import MetaUI from '../src/MetaUI';
+import Model from '../src/models/Model';
 import SimpleModel from '../src/models/SimpleModel';
 import TableModel from '../src/models/TableModel';
-import { computed } from "mobx";
 
 configure({
   enforceActions: 'observed'
 })
 
-describe('UI模板', () => {
+describe('基础模型', () => {
+
+  it('模型支持动态属性', () => {
+    const store = new MetaUI();
+    const model = new Model(store, {
+      name: 'n001',
+      type: 'view',
+      value: 100,
+      subobj: {
+        a: 10,
+        b: 'bbbb'
+      }
+    });
+
+    console.log(model)
+    expect(model.name).to.be.eql('n001');
+    expect(model.value).to.be.eql(100);
+    expect(model.subobj.a).to.be.eql(10);
+    expect(model.subobj.b).to.be.eql('bbbb');
+
+    // 动态属性
+    let a;
+    reaction(() => model.visible, v => a = v);
+
+    expect(model.visible).to.be.eql(undefined);
+    expect(model.subobj.c).to.be.eql(undefined);
+
+    model.visible = true;
+    model.subobj.c = 'ccc';
+
+    expect(model.visible).to.be.eql(true);
+    expect(model.subobj.c).to.be.eql('ccc');
+
+    // 动态属性也是可以观察的
+    expect(a).to.be.eql(true)
+  })
 
   it('Model的ownkeys问题', () => {
-    const store = new UIStore();
+    const store = new MetaUI();
     const model = new SimpleModel(store, {
       key: 'a',
       title: 'Root',
@@ -45,7 +80,7 @@ describe('UI模板', () => {
   })
 
   it('Model支持序列化JSON', () => {
-    const store = new UIStore();
+    const store = new MetaUI();
     const gvm = {
       item1: 1000.00,
       data: [1, 2, 3].map(v => new SimpleModel(store, {
@@ -59,27 +94,27 @@ describe('UI模板', () => {
       "data": [{
           "value": "1",
           "text": "\"1\"",
-          "key": "vm5",
-          "name": "vm5"
-        },
-        {
-          "value": "2",
-          "text": "\"2\"",
           "key": "vm6",
           "name": "vm6"
         },
         {
-          "value": "3",
-          "text": "\"3\"",
+          "value": "2",
+          "text": "\"2\"",
           "key": "vm7",
           "name": "vm7"
+        },
+        {
+          "value": "3",
+          "text": "\"3\"",
+          "key": "vm8",
+          "name": "vm8"
         }
       ]
     })
   })
 
   it('SubModel可以合并赋值', () => {
-    const store = new UIStore();
+    const store = new MetaUI();
     const model = new SimpleModel(store, {
       sub: {
         a: 1,
@@ -105,7 +140,7 @@ describe('UI模板', () => {
   })
 
   it('模型计算属性调用this也是proxy', () => {
-    const store = new UIStore();
+    const store = new MetaUI();
     const model = new TableModel(store, {
       dataSource: []
     })
@@ -118,7 +153,7 @@ describe('UI模板', () => {
   })
 
   it('支持校验规则', async () => {
-    const store = new UIStore({
+    const store = new MetaUI({
       table: [{
         name: 'aaa',
         code: '0001',
@@ -155,7 +190,7 @@ describe('UI模板', () => {
     //   computedConfigurable: true
     // })
     const obj = observable(simple)
-    console.log(Object.keys(obj))
+    console.log(Object.keys(obj), obj.value)
 
     expect(await simple.validate()).to.be.true;
 

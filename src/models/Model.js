@@ -13,7 +13,7 @@ import _forOwn from 'lodash/forOwn';
 import _isArray from 'lodash/isArray';
 import _mapValues from 'lodash/mapValues';
 import _isSymbol from 'lodash/isSymbol';
-import UIStore from '../stores/UIStore';
+import MetaUI from '../MetaUI';
 
 // 计算属性会导致proxy的ownKeys没有返回报错
 // proxy 约束：结果列表必须包含目标对象的所有不可配置（non-configurable ）、自有（own）属性的key.
@@ -47,7 +47,7 @@ export default class Model {
     } else if (_isArray(defval)) {
       return defval;
     } else {
-      return UIStore.parseExpr(defval);
+      return MetaUI.parseExpr(defval);
     }
   }
 
@@ -72,7 +72,7 @@ export default class Model {
     } else if (_isArray(value)) {
       return value;
     } else {
-      return UIStore.parseExpr(value);
+      return MetaUI.parseExpr(value);
     }
   }
 

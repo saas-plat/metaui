@@ -1,11 +1,11 @@
 const chai = require('chai');
 const expect = chai.expect;
-const views = require('../lib/UISchema');
+const UISchema = require('../src/UISchema');
 
-describe('UI模板', () => {
+describe('UI Schema', () => {
 
   it('可以自定义UI模板', () => {
-    const v = views.loadJson({
+    const v = UISchema.loadJson({
       type: 'view',
       layout: 'topbottom',
       items: [{
@@ -95,7 +95,7 @@ describe('UI模板', () => {
         </list>
       </voucher>
     </view>`;
-    let jx = views.loadJxon(strxml)
+    let jx = UISchema.loadJxon(strxml)
     //console.log(jx)
     jx = jx.items;
 

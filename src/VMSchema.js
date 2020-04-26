@@ -4,9 +4,10 @@ import _isPlainObject from 'lodash/isPlainObject';
 import _assign from 'lodash/assign';
 import _omitBy from 'lodash/omitBy';
 import _isArray from 'lodash/isArray';
-import i18n from './i18n';
+import api from './api';
 
 const types = ["string", "object", "boolean", "array", "number", "expression", "date", 'reference'];
+const syskeywords = ['new', 'restart', 'merge', 'cut', 'toJS', 'toJSON', 'validate', 'onAction', 'setValue', 'pushValue', 'insertValue']
 
 const isViewModelType = (type) => {
   return type && type.endsWith('Model');
@@ -137,7 +138,7 @@ const loadFields = exports.loadFields = (obj) => {
   const fields = [];
   _isPlainObject(obj) && _keys(obj).forEach(key => {
     // 不允许$和_开头的key，系统字段
-    if (key.startsWith('$') || key.startsWith('_')) {
+    if (key.startsWith('$') || key.startsWith('_') ) {  // || syskeywords.indexOf(key)>-1
       console.log(key + ' skip!!');
       return;
     }
@@ -325,7 +326,7 @@ export const loadJson = (template, defaultTpl = {}) => {
     } = checkRequiredFieldMap(defFields, mappings, customFields);
     if (errFields.length > 0) {
       //debug(customFields)
-      throw new Error(i18n.t('视图模型缺少必要字段{{fields}}，或者{{checkKeys}}字段配置信息冲突', {
+      throw new Error(api.i18n.t('视图模型缺少必要字段{{fields}}，或者{{checkKeys}}字段配置信息冲突', {
         fields: getKeyPaths(errFields).join(','),
         checkKeys: checkKeys.join(',')
       }));

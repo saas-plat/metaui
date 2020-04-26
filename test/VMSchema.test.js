@@ -1,12 +1,12 @@
 const chai = require('chai');
 const expect = chai.expect;
-const vms = require('../src/ModelSchema');
+const VMSchema = require('../src/VMSchema');
 
-describe('视图模型', () => {
+describe('视图 Schema', () => {
 
   it('可以自定义视图模型', () => {
     // 所有字段，包括实体、过滤、按钮等都是字段
-    const json = vms.loadJson({
+    const json = VMSchema.loadJson({
       code: {
         type: 'SimpleModel',
         fields: {

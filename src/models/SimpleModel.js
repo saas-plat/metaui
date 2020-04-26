@@ -1,4 +1,5 @@
 import {
+  toJS,
   computed,
   action,
 } from 'mobx';
@@ -14,15 +15,20 @@ export default class SimpleModel extends Model {
     super(store, props);
   }
 
-  @computed get createValidator(){
+  @computed get createValidator() {
     return createValidator(this);
   }
 
   @action async validate() {
     try {
-      await this.createValidator.validate({value:this.value});
+      await this.createValidator.validate({
+        value: this.value
+      });
       return true;
-    } catch ({errors}) {
+    } catch ({
+      errors
+    }) {
+      console.debug(errors)
       this.error = errors[0].message
       return false;
     }

@@ -3,7 +3,7 @@ export UIComponent from './components/UIComponent';
 // 组件容器
 export UIContainer from './components/UIContainer';
 // 组件类型管理器
-export UIStore from './UIStore';
+export MetaUI from './MetaUI';
 export BizModel from './vmodels/BizModel';
 export EventModel from './EventModel';
 export MetaModel from './MetaModel';
@@ -30,10 +30,10 @@ export api, {
 }
 from './api';
 // register route
-import UIStore from './UIStore';
+import MetaUI from './MetaUI';
 import ContainerModel from './models/ContainerModel';
 import SubView from './components/SubView';
-UIStore.register({
+MetaUI.register({
   route: [SubView, ContainerModel],
 })
 import vmodels from './vmodels';

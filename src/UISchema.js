@@ -6,7 +6,7 @@ import _isString from 'lodash/isString';
 import _isPlainObject from 'lodash/isPlainObject';
 import jxon from 'jxon';
 // const Ajv = require('ajv');
-import UIStore from './UIStore';
+import MetaUI from './MetaUI';
 
 const loadReduce = ({
   type,
@@ -139,7 +139,7 @@ export default class UISchema {
       return obj;
     }
 
-    const Model = UIStore.models.get(type);
+    const Model = MetaUI.models.get(type);
     if (!Model) {
       throw new Error(`"${type}" ui model not found!`);
     }

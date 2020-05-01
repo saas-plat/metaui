@@ -17,7 +17,7 @@ export default class MetaUI {
 
   // 数据级别的模型，前端的业务实体模型，包含状态和数据
   @observable model;
-  // UI级别的模型，容器模型的树结构
+  // UI级别的模型，容器模型的树结构, 直接由树结构创建没有schema只有一个实例
   @observable ui;
 
   // 组件是由扩展注册的，模型是统一的，交互可以是各端不同的

@@ -27,20 +27,6 @@ export function t(template, data) {
 
 export const none = () => {}
 
-export const mapobj = (obj, mapping) => {
-  if (!mapping) {
-    return obj;
-  }
-  const expr = new Expression(mapping);
-  // 这里是有个问题，要是调用了异步函数，这里需要await
-  // 异步函数表达式还没有支持
-  if (expr.tree) {
-    return expr.exec(obj);
-  } else {
-    return {};
-  }
-}
-
 export const createValidator = (...fields) => {
   // https://github.com/yiminghe/async-validator
   var descriptor = fields.reduce((obj, {
@@ -132,7 +118,7 @@ export const createValidator = (...fields) => {
         fields,
         message,
         transform(value) {
-          return map(value, transform);
+          return mapobj(value, transform);
         },
         // validator(rule, value, callback) {
         //   callback(validator === false ? new Error(t('校验失败')) : undefined)
@@ -147,7 +133,7 @@ export const createValidator = (...fields) => {
 //const types = ["string", "object", "boolean", "array", "number", "expr", "date", 'reference'];
 const vmtypes = ['SimpleModel', 'ListModel', 'TableModel', 'FilterModel'];
 
-export const map = async (obj, mapping) => {
+export const mapobj = (obj, mapping) => {
   if (!mapping) {
     return obj;
   }
@@ -511,7 +497,7 @@ const createProxy = exports.createProxy = (data, target, fields, name) => {
           map.set(key, value);
         });
         // 要不ownKeys会过滤掉不存在的key
-        target[key] = value ;
+        target[key] = value;
         return true;
       } else if (key in target) {
         target[key] = value;

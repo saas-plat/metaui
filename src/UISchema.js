@@ -6,7 +6,6 @@ import _isString from 'lodash/isString';
 import _isPlainObject from 'lodash/isPlainObject';
 import jxon from 'jxon';
 // const Ajv = require('ajv');
-import MetaUI from './MetaUI';
 
 const loadReduce = ({
   type,
@@ -23,6 +22,10 @@ const loadReduce = ({
   if (bind) {
     const subSchema = modelSchema[bind];
     if (!subSchema) {
+      if (process.env.NODE_ENV === 'test') {
+        console.log(modelSchema)
+        throw new Error('bind ' + bind + ' not found!')
+      }
       console.log('bind %s not found!', bind);
       bind = null;
     }
@@ -120,6 +123,8 @@ export default class UISchema {
   bind;
   props;
 
+  static findModel;
+
   constructor(model, bind, props) {
     this.model = model;
     this.bind = bind;
@@ -139,7 +144,7 @@ export default class UISchema {
       return obj;
     }
 
-    const Model = MetaUI.models.get(type);
+    const Model = UISchema.findModel(type);
     if (!Model) {
       throw new Error(`"${type}" ui model not found!`);
     }

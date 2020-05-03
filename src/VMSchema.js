@@ -188,7 +188,7 @@ const checkRequiredFieldMap = (fields, mappings, mapFields) => {
   fields.forEach(it => {
     // 不在mapping里自动补充
     if (it.type === 'object' || it.subtype === 'object' || isViewModelType(it.type) || isViewModelType(it.subtype)) {
-      const rfm = checkRequiredFieldMap(it.fields || [], mappings[it.key] || {}, mapFields.find(it => it.key === mappings[it.key]));
+      const rfm = checkRequiredFieldMap(it.fields || [], mappings[it.key] || {}, mapFields.find(it => it.key === mappings[it.key]) || []);
       defectFields.push({
         ...it,
         fields: rfm.defectFields
@@ -319,6 +319,7 @@ export const loadJson = (template, defaultTpl = {}) => {
   if (template) {
     let customFields = loadFields(template);
     const mappings = getFieldMapings(customFields, defFields);
+    console.debug(mappings)
     // 检查是否有字段缺失
     const {
       defectFields,

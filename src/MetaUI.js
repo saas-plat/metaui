@@ -186,3 +186,5 @@ export default class MetaUI {
   }
 
 }
+
+UISchema.findModel = (...args) => MetaUI.models.get(...args);

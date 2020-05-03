@@ -1,5 +1,5 @@
 import Voucher from './Voucher';
 
-export default {
+export {
   Voucher
 }

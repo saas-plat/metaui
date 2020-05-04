@@ -5,8 +5,8 @@ import {
 const {
   expect
 } = require('chai');
- 
-import MetaUI from '../src/MetaUI';
+
+import {MetaUI} from '../src';
 import ContainerModel from '../src/models/ContainerModel';
 import SimpleModel from '../src/models/SimpleModel';
 import ListModel from '../src/models/ListModel';

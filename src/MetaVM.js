@@ -12,8 +12,8 @@ import {
   maptoDto,
   maptoVM,
   readonly
-} from './util';
-import ModelSchema from './ModelSchema';
+} from './utils';
+import ModelSchema from './VMSchema';
 import EventModel from './EventModel';
 import RuleSet from './RuleSet';
 

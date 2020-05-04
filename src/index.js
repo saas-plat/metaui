@@ -6,7 +6,7 @@ export UIContainer from './components/UIContainer';
 export MetaUI from './MetaUI';
 export BizModel from './vmodels/BizModel';
 export EventModel from './EventModel';
-export MetaModel from './MetaModel';
+export MetaVM from './MetaVM';
 // ui模型渲染器
 export UIRender from './components/UIRender';
 // ui模型类型
@@ -24,7 +24,7 @@ export feedback, {
 }
 from './feedback';
 // 业务模型
-import MetaModel from './MetaModel';
+import MetaVM from './MetaVM';
 export api, {
   registerApi
 }
@@ -37,4 +37,4 @@ MetaUI.register({
   route: [SubView, ContainerModel],
 })
 import vmodels from './vmodels';
-MetaModel.register(vmodels);
+MetaVM.register(vmodels);

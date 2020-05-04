@@ -1,6 +1,6 @@
 {
   "name": "@saas-plat/metaui",
-  "version": "1.1.45",
+  "version": "1.1.46",
   "description": "ui metadata",
   "productName": "saas-plat",
   "main": "dist/index.js",

@@ -1,9 +1,8 @@
 import nools from 'nools';
 import api from './api';
 import feedback from './feedback';
-import i18n from './i18n';
 import EventModel from './EventModel';
-import ViewModel from './ViewModel';
+import ViewModel from './MetaVM';
 
 let gid = 0;
 
@@ -30,7 +29,7 @@ export default class RuleSet {
         ...define
       },
       scope: {
-        t: i18n.getFixedT(null, 'domains/' + name),
+        t: api.i18n.getFixedT(null, 'domains/' + name),
         ...api,
         ...feedback,
         ...scope

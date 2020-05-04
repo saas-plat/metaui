@@ -4,9 +4,7 @@ import {
   runInAction,
   action,
 } from 'mobx';
-import {
-  socket,
-} from 'saas-plat-clientfx';
+import api from '../api';
 import BizModel from './BizModel';
 
 export default class VoucherListStore extends BizModel {
@@ -26,7 +24,7 @@ export default class VoucherListStore extends BizModel {
       orgid,
       pid
     } = this.options;
-    const data = await socket.get('voucher/create', {
+    const data = await api.command('voucher/create', {
       orgid,
       pid
     });

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import UIStore from '../stores/UIStore';
+import MetaUI from '../MetaUI';
 
 // 模板视图，根据模板配置生成一个子视图界面
 export default class UIRender extends React.Component {
@@ -9,7 +9,7 @@ export default class UIRender extends React.Component {
   }
 
   render() {
-    const Component = UIStore.components.get(this.props.ui.type);
+    const Component = MetaUI.components.get(this.props.ui.type);
     if (!Component) {
       return null;
     }

@@ -3,7 +3,6 @@ import {
   runInAction,
   action,
 } from 'mobx';
-import i18n from '../i18n';
 import api from '../api';
 import feedback from '../feedback';
 import BizModel from './BizModel';
@@ -28,11 +27,11 @@ export default class Voucher extends BizModel {
     if (await this.voucher.validate()) {
       let hideLoading;
       if (showLoading) {
-        hideLoading = feedback.loading(loadingText || i18n.t('保存单据中...'));
+        hideLoading = feedback.loading(loadingText || api.i18n.t('保存单据中...'));
       }
       if (!data.code) {
         if (!hideError) {
-          feedback.message(i18n.t('单据编号不能为空，保存失败!'), 1, 'error');
+          feedback.message(api.i18n.t('单据编号不能为空，保存失败!'), 1, 'error');
         }
         return;
       }
@@ -40,13 +39,13 @@ export default class Voucher extends BizModel {
       await runInAction(async () => {
         if (!result || result.errno > 0) {
           if (!hideError) {
-            feedback.message((result && result.errmsg) || i18n.t('保存失败!'), 1, 'error');
+            feedback.message((result && result.errmsg) || api.i18n.t('保存失败!'), 1, 'error');
           }
           return false;
         }
         this.options.code = data.code;
         if (showTip) {
-          feedback.message(i18n.t('单据保存成功!'), 3, 'success');
+          feedback.message(api.i18n.t('单据保存成功!'), 3, 'success');
         }
         if (this.voucher.state === 'NEW') {
           api.portal.replace(`/${this.options.orgid}/${this.options.pid}/index/${this.options.code}`);

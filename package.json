@@ -11,8 +11,7 @@
     "test_d": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha",
     "dev": "babel src --out-dir ../metaui-web/node_modules/@saas-plat/metaui/dist --source-maps",
     "dev_m": "babel src --out-dir ../metaui-mobile/node_modules/@saas-plat/metaui/dist --source-maps",
-    "dev_t": "babel src --out-dir ../metaui-touch/node_modules/@saas-plat/metaui/dist --source-maps",
-    "dev_s": "babel src --out-dir ../saas-plat-metasrv/node_modules/@saas-plat/metaui/dist --source-maps"
+    "dev_t": "babel src --out-dir ../metaui-touch/node_modules/@saas-plat/metaui/dist --source-maps"
   },
   "repository": {
     "type": "git",

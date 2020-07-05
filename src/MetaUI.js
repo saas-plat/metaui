@@ -8,7 +8,16 @@ import _set from 'lodash/set';
 import _get from 'lodash/get';
 import _forOwn from 'lodash/forOwn';
 import _mapValues from 'lodash/mapValues';
-import UISchema from './UISchema';
+import _isArray from 'lodash/isArray';
+import i18n from './i18n';
+
+class UINode {
+  constructor(Model, bind, props) {
+    this.model = Model;
+    this.bind = bind;
+    this.props = props;
+  }
+}
 
 export default class MetaUI {
 
@@ -122,21 +131,21 @@ export default class MetaUI {
     this.ui = view;
   }
 
-  createModel(store, schema, reducer) {
+  createModel(store, uimodel, reducer) {
     let vm;
     // 这里不用考虑数组和对象情况，reducer里面处理啦
-    const props = _mapValues(schema.props, reducer);
+    const props = _mapValues(uimodel.props, reducer);
     // 这里要循环创建模型
-    if (!schema.bind) {
-      const Model = schema.model;
+    if (!uimodel.bind) {
+      const Model = uimodel.model;
       vm = new Model(store, {
         ...props
       });
     } else {
       // bind的字段需要从vm中查找
-      vm = store.getViewModel(schema.bind);
+      vm = store.getViewModel(uimodel.bind);
       if (!vm) {
-        throw new Error(`"${schema.bind}" view model not found!`);
+        throw new Error(`"${uimodel.bind}" view model not found!`);
       }
       _forOwn({
         ...props
@@ -148,7 +157,7 @@ export default class MetaUI {
   }
 
   build(node) {
-    if (node instanceof UISchema) {
+    if (node instanceof UINode) {
       console.log('create %s...', node.model.name);
       return this.createModel(this, node, it => this.build(it));
     } else if (Array.isArray(node)) {
@@ -158,27 +167,50 @@ export default class MetaUI {
     }
   }
 
-  static createSchema(config) {
-    // 把配置信息解析成一棵构造树
-    const schema = UISchema.createSchema(config);
-    if (!schema) {
-      console.error('not support ui type', config.type);
+  static loadModel({
+    type,
+    bind,
+    props,
+    items
+  }) {
+    if (!type) {
+      throw new Error(i18n.t('组件类型未知'));
     }
-    return schema;
+    // 把配置信息解析成一棵构造树
+    const Model = MetaUI.models.get(type);
+    if (!Model) {
+      throw new Error(i18n.t('"{{type}}"组件不存在', {
+        type
+      }));
+    }
+
+    props = _mapValues({
+      ...props,
+      items
+    }, v => {
+      if (_isArray(v)) {
+        return v.map((v) => {
+          v.type ? MetaUI.loadModel(v) : v
+        });
+      } else if (v) {
+        return v.type ? MetaUI.loadModel(v) : v;
+      } else {
+        return v;
+      }
+    });
+
+    return new UINode(Model, bind, props);
   }
 
-  static create(schema, vm = {}) {
-    // UI的schema和VM的schema是不一样的
-    // UISchema是模型的实例，UI是根据模型的实例渲染的UI组件
-    if (!(schema instanceof UISchema)) {
-      schema = schema ? MetaUI.createSchema(schema) : null;
-      if (!schema) {
-        console.error('not support ui schema', schema);
-        return null;
-      }
+  static create(ui, vm = {}) {
+    if (!ui) {
+      throw new Error(i18n.t('界面未定义'));
     }
+    // UI的model和VM的uimodel是不一样的
+    // View是模型的实例，UI是根据模型的实例渲染的UI组件
+    const uimodel = MetaUI.loadModel(ui);
     const store = new MetaUI(vm);
-    const uiModel = store.build(schema);
+    const uiModel = store.build(uimodel);
     runInAction(() => {
       store.ui = uiModel;
     });
@@ -186,5 +218,3 @@ export default class MetaUI {
   }
 
 }
-
-UISchema.findModel = (...args) => MetaUI.models.get(...args);

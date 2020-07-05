@@ -6,6 +6,8 @@ const {
   expect
 } = require('chai');
 
+const {View} from '@saas-plat/metaschema';
+
 import {MetaUI} from '../src';
 import ContainerModel from '../src/models/ContainerModel';
 import SimpleModel from '../src/models/SimpleModel';
@@ -39,7 +41,7 @@ describe('UI模板', () => {
 
   it('从Schema中加载视图模板', () => {
     const store = new MetaUI();
-    const s = MetaUI.createSchema({
+    const s = View({
       type: 'view',
       items: [{
         type: 'navbar',
@@ -103,7 +105,7 @@ describe('UI模板', () => {
       }))
     }
     store.setModel(vm);
-    const v = store.build(MetaUI.createSchema(s))
+    const v = store.build(MetaUI.create (s))
     //console.log(v.items[0])
     // navbar
     expect(v.items[0]).to.be.a.instanceof(ContainerModel);
@@ -168,7 +170,7 @@ describe('UI模板', () => {
   })
 
   it('UI模型读取和修改ViewModel', () => {
-    const s = MetaUI.createSchema({
+    const s = View({
       type: 'view',
       items: [{
         type: 'list',
@@ -207,7 +209,7 @@ describe('UI模板', () => {
    // console.log(Object.keys(vm.item1))
     store.setModel(vm);
    // console.log(Object.keys(vm.item1))
-    const ui = store.build(s);
+    const ui = store.build(MetaUI.create(s));
 
     const uiitem1 = ui.items[0].items[0];
     expect(uiitem1.value).to.be.equal(1000)

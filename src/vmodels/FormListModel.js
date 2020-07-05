@@ -7,7 +7,7 @@ import {
 import api from '../api';
 import BizModel from './BizModel';
 
-export default class VoucherListStore extends BizModel {
+export default class FormListModel extends BizModel {
 
   @computed get vouchers (){
     return this.viewModel.vouchers;

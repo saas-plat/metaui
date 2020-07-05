@@ -1,4 +1,4 @@
-vmodels // UI组件的基类
+// UI组件的基类
 export UIComponent from './components/UIComponent';
 // 组件容器
 export UIContainer from './components/UIContainer';

@@ -7,7 +7,7 @@ import api from '../api';
 import feedback from '../feedback';
 import BizModel from './BizModel';
 
-export default class Voucher extends BizModel {
+export default class FormModel extends BizModel {
 
   @action async load(query, variables, mapping) {
     const data = await api.query(query, {

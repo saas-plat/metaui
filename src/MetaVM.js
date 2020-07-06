@@ -9,8 +9,7 @@ import {
   createProxy,
   readonly
 } from './utils';
-import EventModel from './EventModel';
-import RuleSet from './RuleSet';
+import EventModel from './EventModel'; 
 import {
   t
 } from './i18n';

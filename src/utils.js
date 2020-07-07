@@ -1,7 +1,8 @@
 import schema from 'async-validator';
 import Expression from '@saas-plat/expression';
-import _omitBy from 'lodash/omitBy';
-import _isUndefined from 'lodash/isUndefined';
+import omitBy from 'lodash/omitBy';
+import isArray from 'lodash/isArray';
+import isUndefined from 'lodash/isUndefined';
 import {
   observable,
   runInAction,
@@ -14,6 +15,7 @@ import SimpleModel from './models/SimpleModel';
 import ListModel from './models/ListModel';
 import TableModel from './models/TableModel';
 import FilterModel from './models/FilterModel';
+const debug = require('debug')('saas-plat:utils');
 
 addTypeCreator('SimpleModel', (it, defineObj, {
   store
@@ -24,12 +26,12 @@ addTypeCreator('ListModel', (it, defineObj, {
   store
 }) => {
   defineObj[it.key] = new ListModel(store, createObject({}, it.fields));
-}) ;
+});
 addTypeCreator('TableModel', (it, defineObj, {
   store
 }) => {
   defineObj[it.key] = new TableModel(store, createObject({}, it.fields));
-}) ;
+});
 addTypeCreator('FilterModel', (it, defineObj, {
   store
 }) => {
@@ -73,7 +75,7 @@ addTypeCreator('expression', (it, defineObj) => {
   });
 });
 
-export const createValidator = (...fields) => {
+exports.createValidator = (...fields) => {
   // https://github.com/yiminghe/async-validator
   var descriptor = fields.reduce((obj, {
     dataIndex = 'value',
@@ -89,7 +91,7 @@ export const createValidator = (...fields) => {
     defaultField, //  数组元素类型
     fields,
     transform,
-    //validator,
+    validator,
     ...other // enum
   }) => {
     //     Type
@@ -149,9 +151,35 @@ export const createValidator = (...fields) => {
         valueType = type;
       }
     }
+    let asyncValidator;
+    if (typeof validator === 'function') {
+      asyncValidator = function (...args) {
+        debug('execute validator...', validator);
+        return validator.call(this, ...args, {})
+      };
+    } else if (typeof validator === 'string') {
+      let fn;
+      if (isArray(validator)) {
+        if (validator.every(it => it.indexOf('return ') === -1)) {
+          fn = validator.map((it, i) => i === validator.length - 1 ? 'return ' + it : it).join('\n');
+        } else {
+          fn = validator.join('\n');
+        }
+      } else {
+        if (validator.indexOf('return ') === -1) {
+          fn = 'return ' + validator;
+        } else {
+          fn = validator;
+        }
+      }
+      asyncValidator = function (...args) {
+        debug('execute validator...', fn);
+        return new Function('rule, value, source, options, scope',fn).call(this, ...args, {});
+      }
+    }
     return {
       ...obj,
-      [dataIndex]: _omitBy({
+      [dataIndex]: omitBy({
         type: valueType,
         required,
         len,
@@ -166,10 +194,8 @@ export const createValidator = (...fields) => {
         transform(value) {
           return mapobj(value, transform);
         },
-        // validator(rule, value, callback) {
-        //   callback(validator === false ? new Error(t('校验失败')) : undefined)
-        // }
-      }, _isUndefined)
+        asyncValidator
+      }, isUndefined)
     }
   }, {})
   //console.log(descriptor)
@@ -263,7 +289,6 @@ exports.createProxy = (data, target, fields, name) => {
   });
   return proxy;
 }
-
 
 const none = exports.none = () => {}
 

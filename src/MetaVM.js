@@ -2,17 +2,16 @@ import {
   autorun,
   action,
   toJS
-} from "mobx";
-import Schema from 'async-validator';
+} from "mobx"; 
 import feedback from './feedback';
 import {
+  createValidator,
   createProxy,
   readonly
 } from './utils';
 import EventModel from './EventModel';
-import {
-  t
-} from './i18n';
+const debug = require('debug')('saas-plat:MetaVM');
+import i18n from './i18n';
 
 // 单据的容器级别的视图模型
 // 和metaui的组件级别视图模型不是一个级别
@@ -45,21 +44,21 @@ export default class MetaVM {
   static createModel(name, schema, opts = {}) {
     const BaseType = MetaVM.getType(schema.type);
     if (!BaseType) {
-      throw new Error(t('{{type}}视图模型类型未定义', schema));
+      throw new Error(i18n.t('{{type}}视图模型类型未定义', schema));
     }
     schema.createMapping(name);
     const init = schema.createObject();
-    const validator = new Schema(schema.fields);
+    const validator = createValidator(schema.fields);
     const SpecificModel = class extends BaseType {
       constructor() {
         super(init, schema);
         // 创建一个代理, 赋值和获取值都根据schema控制
         const proxy = createProxy(init, this, schema.fields, name);
         // 数据改变规则
-        this.dispose = autorun(() => {
-          console.log('execute data rule...');
-          this.onAction();
-          console.log('execute data complated');
+        this.dispose = autorun(async () => {
+          debug('execute data change...');
+          await this.onAction();
+          debug('execute data complated');
         });
         return proxy;
       }

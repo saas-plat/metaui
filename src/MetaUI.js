@@ -4,12 +4,13 @@ import {
   runInAction
 } from "mobx";
 import Expression from '@saas-plat/expression';
-import _set from 'lodash/set';
-import _get from 'lodash/get';
-import _forOwn from 'lodash/forOwn';
-import _mapValues from 'lodash/mapValues';
-import _isArray from 'lodash/isArray';
+import set from 'lodash/set';
+import get from 'lodash/get';
+import forOwn from 'lodash/forOwn';
+import mapValues from 'lodash/mapValues';
+import isArray from 'lodash/isArray';
 import i18n from './i18n';
+const debug = require('debug')('saas-plat:MetaUI');
 
 class UINode {
   constructor(Model, bind, props) {
@@ -84,19 +85,19 @@ export default class MetaUI {
   }
 
   @action setViewModel(path, value) {
-    console.log('set view model', path);
+    debug('set view model', path);
     if (this.setValuable) {
       return this.model.setValue(path, value);
     }
-    _set(this.model, path, value);
+    set(this.model, path, value);
   }
 
   @action getViewModel(path) {
-    console.log('get view model', path);
+    debug('get view model', path);
     if (this.getValuable) {
       return this.model.getValue(path);
     }
-    return _get(this.model, path);
+    return get(this.model, path);
   }
 
   static parseExpr(txt) {
@@ -134,7 +135,7 @@ export default class MetaUI {
   createModel(store, uimodel, reducer) {
     let vm;
     // 这里不用考虑数组和对象情况，reducer里面处理啦
-    const props = _mapValues(uimodel.props, reducer);
+    const props = mapValues(uimodel.props, reducer);
     // 这里要循环创建模型
     if (!uimodel.bind) {
       const Model = uimodel.model;
@@ -147,7 +148,7 @@ export default class MetaUI {
       if (!vm) {
         throw new Error(`"${uimodel.bind}" view model not found!`);
       }
-      _forOwn({
+      forOwn({
         ...props
       }, (val, key) => {
         vm[key] = val;
@@ -158,7 +159,7 @@ export default class MetaUI {
 
   build(node) {
     if (node instanceof UINode) {
-      console.log('create %s...', node.model.name);
+      debug('create %s...', node.model.name);
       return this.createModel(this, node, it => this.build(it));
     } else if (Array.isArray(node)) {
       return node.map(it => this.build(it));
@@ -183,8 +184,8 @@ export default class MetaUI {
       }));
     }
 
-    props = _mapValues(props, v => {
-      if (_isArray(v)) {
+    props = mapValues(props, v => {
+      if (isArray(v)) {
         return v.map((v) => v.type ? MetaUI.loadModel(v) : v);
       } else if (v) {
         return v.type ? MetaUI.loadModel(v) : v;

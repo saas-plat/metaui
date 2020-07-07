@@ -3,9 +3,9 @@ import {
   reaction,
   observable
 } from "mobx";
-const {
+import {
   expect
-} = require('chai');
+} from 'chai';
 
 import MetaUI from '../src/MetaUI';
 import Model from '../src/models/Model';

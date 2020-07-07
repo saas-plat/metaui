@@ -4,7 +4,9 @@ import {
   runInAction,
   action,
 } from 'mobx';
-import api from '../api';
+import {
+  command
+} from '@saas-plat/metaapi';
 import BizModel from './BizModel';
 
 export default class FormListModel extends BizModel {
@@ -24,7 +26,7 @@ export default class FormListModel extends BizModel {
       orgid,
       pid
     } = this.options;
-    const data = await api.command('voucher/create', {
+    const data = await command('voucher/create', {
       orgid,
       pid
     });

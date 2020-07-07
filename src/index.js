@@ -25,10 +25,6 @@ export feedback, {
 from './feedback';
 // 业务模型
 import MetaVM from './MetaVM';
-export api, {
-  registerApi
-}
-from './api';
 // register route
 import MetaUI from './MetaUI';
 import ContainerModel from './models/ContainerModel';

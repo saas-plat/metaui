@@ -1,4 +1,4 @@
-// 反馈api
+// 反馈
 const feedback = {};
 const none = () => {};
 export default feedback;

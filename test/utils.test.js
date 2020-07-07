@@ -6,6 +6,8 @@
    t
  } from '../src/utils';
 
+ require('i18next').init();
+
  describe('工具', () => {
    it('翻译', () => {
      expect(t('最大长度{{maxLength}}位', {

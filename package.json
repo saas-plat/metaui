@@ -1,7 +1,7 @@
 {
   "name": "@saas-plat/metaui",
   "version": "1.1.46",
-  "description": "ui metadata",
+  "description": "提供全端的统一UI建模和各端的独立渲染组件",
   "productName": "saas-plat",
   "main": "dist/index.js",
   "scripts": {
@@ -34,6 +34,7 @@
     "react-router-cache-route": "^1.8.3"
   },
   "peerDependencies": {
+    "@saas-plat/metaschema": ">=1.0.0",
     "mobx": ">=5.0.0",
     "mobx-react": ">=6.0.0",
     "react": ">=16.0.0",
@@ -51,17 +52,19 @@
     "@babel/preset-react": "^7.9.4",
     "@babel/register": "^7.9.0",
     "@babel/runtime": "^7.9.2",
+    "@saas-plat/metaapi": "^1.0.0",
+    "@saas-plat/metaschema": "^1.0.2",
     "babel-eslint": "^8.0.3",
     "chai": "^4.2.0",
     "cross-env": "^6.0.3",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.17.0",
+    "i18next": "^19.5.4",
     "mobx": "^5.15.0",
     "mobx-react": "^6.1.4",
     "mocha": "^7.1.1",
     "react": "^16.6.3",
     "react-i18next": "^11.3.5",
-    "i18next": "^19.5.4",
     "react-router-dom": "^5.1.2"
   }
 }

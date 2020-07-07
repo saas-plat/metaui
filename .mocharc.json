@@ -1,0 +1,9 @@
+{
+  "recursive": true,
+  "bail": true,
+  "timeout": 5000,
+  "require": "@babel/register",
+  "spec": [
+    "test/Model.test.js", "test/**/*.test.js"
+  ]
+}

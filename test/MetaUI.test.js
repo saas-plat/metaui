@@ -2,13 +2,18 @@ import {
   reaction,
   configure,
 } from "mobx";
-const {
+import {
   expect
-} = require('chai');
+} from 'chai';
 
-const {View} from '@saas-plat/metaschema';
+import {
+  View
+}
+from '@saas-plat/metaschema';
 
-import {MetaUI} from '../src';
+import {
+  MetaUI
+} from '../src';
 import ContainerModel from '../src/models/ContainerModel';
 import SimpleModel from '../src/models/SimpleModel';
 import ListModel from '../src/models/ListModel';
@@ -39,7 +44,7 @@ before(() => {
 
 describe('UI模板', () => {
 
-  it('从Schema中加载视图模板', () => {
+  it('从Schema中加载UI模板', () => {
     const store = new MetaUI();
     const s = View({
       type: 'view',
@@ -96,7 +101,7 @@ describe('UI模板', () => {
         }]
       }]
     });
-    //console.log(JSON.stringify(s,null,2));
+    console.log(JSON.stringify(s, null, 2));
     const vm = {
       item1: 1000.00,
       data: [1, 2, 3].map(v => new SimpleModel(store, {
@@ -105,8 +110,9 @@ describe('UI模板', () => {
       }))
     }
     store.setModel(vm);
-    const v = store.build(MetaUI.create (s))
+    const v = store.build(MetaUI.loadModel(s.root))
     //console.log(v.items[0])
+
     // navbar
     expect(v.items[0]).to.be.a.instanceof(ContainerModel);
     expect(v.items[0].text).to.be.equal('this is title');
@@ -206,10 +212,9 @@ describe('UI模板', () => {
         value: 1000.00
       })
     }
-   // console.log(Object.keys(vm.item1))
+    // console.log(Object.keys(vm.item1))
     store.setModel(vm);
-   // console.log(Object.keys(vm.item1))
-    const ui = store.build(MetaUI.create(s));
+    const ui = store.build(MetaUI.loadModel(s.root));
 
     const uiitem1 = ui.items[0].items[0];
     expect(uiitem1.value).to.be.equal(1000)
@@ -244,12 +249,13 @@ describe('UI模板', () => {
       'value',
       'text',
       'onChange',
+      'items',
       'newprop'
     ])
   })
 
   it('UI模型读取和修改ViewModel', () => {
-    const v = MetaUI.create({
+    const v = MetaUI.create(View({
       name: 'item2',
       type: 'refer',
       displayField: 'f1',
@@ -269,7 +275,7 @@ describe('UI模板', () => {
         mapping: '={f1:$a,f2:$b,f3:$c}',
         pageSize: 200
       }
-    }, {
+    }), {
       obj: {
         f1: 'BBBBBBBB',
         date: new Date(),

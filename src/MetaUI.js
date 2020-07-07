@@ -170,8 +170,7 @@ export default class MetaUI {
   static loadModel({
     type,
     bind,
-    props,
-    items
+    ...props
   }) {
     if (!type) {
       throw new Error(i18n.t('组件类型未知'));
@@ -184,14 +183,9 @@ export default class MetaUI {
       }));
     }
 
-    props = _mapValues({
-      ...props,
-      items
-    }, v => {
+    props = _mapValues(props, v => {
       if (_isArray(v)) {
-        return v.map((v) => {
-          v.type ? MetaUI.loadModel(v) : v
-        });
+        return v.map((v) => v.type ? MetaUI.loadModel(v) : v);
       } else if (v) {
         return v.type ? MetaUI.loadModel(v) : v;
       } else {
@@ -199,16 +193,17 @@ export default class MetaUI {
       }
     });
 
+    props.type = type;
     return new UINode(Model, bind, props);
   }
 
-  static create(ui, vm = {}) {
-    if (!ui) {
-      throw new Error(i18n.t('界面未定义'));
+  static create(template, vm = {}) {
+    if (!template) {
+      throw new Error(i18n.t('视图模板未定义'));
     }
     // UI的model和VM的uimodel是不一样的
     // View是模型的实例，UI是根据模型的实例渲染的UI组件
-    const uimodel = MetaUI.loadModel(ui);
+    const uimodel = MetaUI.loadModel(template.root);
     const store = new MetaUI(vm);
     const uiModel = store.build(uimodel);
     runInAction(() => {

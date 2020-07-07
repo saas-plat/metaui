@@ -9,7 +9,7 @@ import {
   createProxy,
   readonly
 } from './utils';
-import EventModel from './EventModel'; 
+import EventModel from './EventModel';
 import {
   t
 } from './i18n';
@@ -18,14 +18,15 @@ import {
 // 和metaui的组件级别视图模型不是一个级别
 // 主要区别就是需要根据schema创建字段的类型, 而不是submodel
 export default class MetaVM {
+
   static vmodels = new Map();
 
-  static getType(type) {
-    const Model = this.vmodels.get(type) || MetaVM;
+  static getType = (type) => {
+    const Model = MetaVM.vmodels.get(type);
     return Model;
   }
 
-  static register(Models) {
+  static register = (Models) => {
     const keys = Object.keys(Models);
     for (const name of keys) {
       if (!name) {
@@ -37,11 +38,11 @@ export default class MetaVM {
       let type = name;
       // 首字母大写
       type = type[0].toUpperCase() + type.substr(1);
-      this.vmodels.set(type, Models[name]);
+      MetaVM.vmodels.set(type, Models[name]);
     }
   }
 
-  static createType(name, schema, opts = {}) {
+  static createModel(name, schema, opts = {}) {
     const BaseType = MetaVM.getType(schema.type);
     if (!BaseType) {
       throw new Error(t('{{type}}视图模型类型未定义', schema));

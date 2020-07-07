@@ -3,14 +3,19 @@ import {
   runInAction,
   action,
 } from 'mobx';
-import api from '../api';
+import {
+  command,
+  query,
+  i18n,
+  portal
+} from '@saas-plat/metaapi';
 import feedback from '../feedback';
 import BizModel from './BizModel';
 
 export default class FormModel extends BizModel {
 
-  @action async load(query, variables, mapping) {
-    const data = await api.query(query, {
+  @action async load(qs, variables, mapping) {
+    const data = await query(qs, {
       ...variables,
       ...this.options,
     });
@@ -27,28 +32,28 @@ export default class FormModel extends BizModel {
     if (await this.voucher.validate()) {
       let hideLoading;
       if (showLoading) {
-        hideLoading = feedback.loading(loadingText || api.i18n.t('保存单据中...'));
+        hideLoading = feedback.loading(loadingText || i18n.t('保存单据中...'));
       }
       if (!data.code) {
         if (!hideError) {
-          feedback.message(api.i18n.t('单据编号不能为空，保存失败!'), 1, 'error');
+          feedback.message(i18n.t('单据编号不能为空，保存失败!'), 1, 'error');
         }
         return;
       }
-      const result = await api.command('SaveVoucher', data);
+      const result = await command('SaveVoucher', data);
       await runInAction(async () => {
         if (!result || result.errno > 0) {
           if (!hideError) {
-            feedback.message((result && result.errmsg) || api.i18n.t('保存失败!'), 1, 'error');
+            feedback.message((result && result.errmsg) || i18n.t('保存失败!'), 1, 'error');
           }
           return false;
         }
         this.options.code = data.code;
         if (showTip) {
-          feedback.message(api.i18n.t('单据保存成功!'), 3, 'success');
+          feedback.message(i18n.t('单据保存成功!'), 3, 'success');
         }
         if (this.voucher.state === 'NEW') {
-          api.portal.replace(`/${this.options.orgid}/${this.options.pid}/index/${this.options.code}`);
+          portal.replace(`/${this.options.orgid}/${this.options.pid}/index/${this.options.code}`);
         }
       });
       if (hideLoading) {

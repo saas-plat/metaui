@@ -152,30 +152,11 @@ exports.createValidator = (...fields) => {
       }
     }
     let asyncValidator;
-    if (typeof validator === 'function') {
+    if (validator) {
       asyncValidator = function (...args) {
         debug('execute validator...', validator);
         return validator.call(this, ...args, {})
       };
-    } else if (typeof validator === 'string') {
-      let fn;
-      if (isArray(validator)) {
-        if (validator.every(it => it.indexOf('return ') === -1)) {
-          fn = validator.map((it, i) => i === validator.length - 1 ? 'return ' + it : it).join('\n');
-        } else {
-          fn = validator.join('\n');
-        }
-      } else {
-        if (validator.indexOf('return ') === -1) {
-          fn = 'return ' + validator;
-        } else {
-          fn = validator;
-        }
-      }
-      asyncValidator = function (...args) {
-        debug('execute validator...', fn);
-        return new Function('rule, value, source, options, scope',fn).call(this, ...args, {});
-      }
     }
     return {
       ...obj,

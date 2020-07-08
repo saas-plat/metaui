@@ -10,25 +10,15 @@
 2. 事件表达式，行为的发生都有统一事件配置对应的行为
 3. UI行为，简单的模型状态操作，数据级别的操作由视图模型提供，业务级别的操作由业务模型提供
 
-模型类型
+## 模型类型
 
-ActionModel
 ContainerModel
-
-ButtonModel
-InputModel
-EditTableModel
-EditColumnModel
-EditCellModel
-FormModel
-FormItemModel
-RuleModel
-
 FilterModel
 TableModel
-ColumnModel
-CellModel
-ChartModel
+ListModel
+ReferModel
+ReportModel
+TreeModel
 
 ## ViewModel
 

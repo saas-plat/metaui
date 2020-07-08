@@ -1,2 +1,2 @@
-const i18next = require('i18next');
-exports.t = i18next.getFixedT(null, 'metarule');
+import i18next from 'i18next';
+export const t = i18next.getFixedT(null, 'metaui');

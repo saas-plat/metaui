@@ -1,7 +1,6 @@
 import schema from 'async-validator';
 import Expression from '@saas-plat/expression';
 import omitBy from 'lodash/omitBy';
-import isArray from 'lodash/isArray';
 import isUndefined from 'lodash/isUndefined';
 import {
   observable,
@@ -10,7 +9,7 @@ import {
 import {
   addTypeCreator,
   createObject
-} from '@saas-plat/metaschema/lib/Schema';
+} from '@saas-plat/metaschema/dist/Schema';
 import SimpleModel from './models/SimpleModel';
 import ListModel from './models/ListModel';
 import TableModel from './models/TableModel';

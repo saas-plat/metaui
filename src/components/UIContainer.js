@@ -8,7 +8,7 @@ import {
 }
 from '../utils';
 import { I18nextProvider } from 'react-i18next';
-import i18n from '../i18n';
+import i18n from 'i18next';
 
 // 组件容器，渲染子组件提供统一的上下文环境
 export default class UIContainer extends React.Component {

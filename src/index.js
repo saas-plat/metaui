@@ -34,3 +34,4 @@ MetaUI.register({
 })
 import vmodels from './vmodels';
 MetaVM.register(vmodels);
+export i18n from './i18n';

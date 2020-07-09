@@ -174,12 +174,12 @@ export default class MetaUI {
     ...props
   }) {
     if (!type) {
-      throw new Error(i18n.t('组件类型未知'));
+      throw new Error(i18n.t('组件无效'));
     }
     // 把配置信息解析成一棵构造树
     const Model = MetaUI.models.get(type);
     if (!Model) {
-      throw new Error(i18n.t('"{{type}}"组件不存在', {
+      throw new Error(i18n.t('"{{type}}"组件未知', {
         type
       }));
     }

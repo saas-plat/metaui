@@ -2,7 +2,7 @@ import {
   autorun,
   action,
   toJS
-} from "mobx"; 
+} from "mobx";
 import feedback from './feedback';
 import {
   createValidator,
@@ -51,7 +51,7 @@ export default class MetaVM {
     const validator = createValidator(schema.fields);
     const SpecificModel = class extends BaseType {
       constructor() {
-        super(init, schema);
+        super();
         // 创建一个代理, 赋值和获取值都根据schema控制
         const proxy = createProxy(init, this, schema.fields, name);
         // 数据改变规则
@@ -128,14 +128,14 @@ export default class MetaVM {
       toJS() {
         return toJS(this);
       }
+
+      static create() {
+        return new SpecificModel();
+      }
     }
 
     readonly(SpecificModel, 'name', name);
     return SpecificModel;
-  }
-
-  static create(Type) {
-    return new Type();
   }
 
 }

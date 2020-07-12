@@ -102,7 +102,7 @@ describe('UI模板', () => {
         }]
       }]
     });
-    console.log(JSON.stringify(s, null, 2));
+    //console.log(JSON.stringify(s, null, 2));
     const vm = {
       item1: 1000.00,
       data: [1, 2, 3].map(v => new SimpleModel(store, {

@@ -9,8 +9,7 @@ import {
   createProxy,
   readonly
 } from './utils';
-import EventModel from './EventModel';
-import Expression from '@saas-plat/expression';
+import EventModel from './EventModel'; 
 const debug = require('debug')('saas-plat:MetaVM');
 import i18n from './i18n';
 
@@ -40,10 +39,6 @@ export default class MetaVM {
       type = type[0].toUpperCase() + type.substr(1);
       MetaVM.vmodels.set(type, Models[name]);
     }
-  }
-
-  static parseExpr(txt) {
-    return new Expression(txt);
   }
 
   execExpr(expr) {

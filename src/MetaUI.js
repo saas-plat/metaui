@@ -83,6 +83,10 @@ export default class MetaUI {
     }
   }
 
+  execExpr(expr) {
+    return expr.exec(this.model);
+  }
+
   @action setViewModel(path, value) {
     debug('set view model', path);
     if (this.setValuable) {

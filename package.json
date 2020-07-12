@@ -1,13 +1,13 @@
 {
   "name": "@saas-plat/metaui",
-  "version": "1.1.50",
+  "version": "1.1.51",
   "description": "提供全端的统一UI建模和各端的独立渲染组件",
   "productName": "saas-plat",
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && babel src --out-dir dist --source-maps",
     "test": "cross-env NODE_ENV=test mocha",
-    "watch": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha --watch",
+    "test_w": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha --watch",
     "test_d": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha",
     "dev": "babel src --out-dir ../metaui-web/node_modules/@saas-plat/metaui/dist --source-maps",
     "dev_m": "babel src --out-dir ../metaui-mobile/node_modules/@saas-plat/metaui/dist --source-maps",

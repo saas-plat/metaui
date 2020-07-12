@@ -7,9 +7,12 @@ import {
   runInAction,
 } from 'mobx';
 import {
+  utils
+} from '@saas-plat/metaschema';
+const {
   addTypeCreator,
   createObject
-} from '@saas-plat/metaschema/dist/Schema';
+} = utils;
 import SimpleModel from './models/SimpleModel';
 import ListModel from './models/ListModel';
 import TableModel from './models/TableModel';
@@ -19,28 +22,28 @@ const debug = require('debug')('saas-plat:utils');
 addTypeCreator('SimpleModel', (it, defineObj, {
   store
 }) => {
-  debug('create SimpleModel...')
+  debug('create type SimpleModel...')
   defineObj[it.key] = new SimpleModel(store, createObject({}, it.fields));
   return true;
 });
 addTypeCreator('ListModel', (it, defineObj, {
   store
 }) => {
-  debug('create ListModel...')
+  debug('create type ListModel...')
   defineObj[it.key] = new ListModel(store, createObject({}, it.fields));
   return true;
 });
 addTypeCreator('TableModel', (it, defineObj, {
   store
 }) => {
-  debug('create TableModel...')
+  debug('create type TableModel...')
   defineObj[it.key] = new TableModel(store, createObject({}, it.fields));
   return true;
 });
 addTypeCreator('FilterModel', (it, defineObj, {
   store
 }) => {
-  debug('create FilterModel...')
+  debug('create type FilterModel...')
   defineObj[it.key] = new FilterModel(store, createObject({}, it.fields));
   return true;
 });

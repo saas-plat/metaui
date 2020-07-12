@@ -15,7 +15,6 @@ import _mapValues from 'lodash/mapValues';
 import _isSymbol from 'lodash/isSymbol';
 import _set from 'lodash/set';
 import _get from 'lodash/get';
-import MetaVM from '../MetaVM';
 
 // 计算属性会导致proxy的ownKeys没有返回报错
 // proxy 约束：结果列表必须包含目标对象的所有不可配置（non-configurable ）、自有（own）属性的key.
@@ -49,7 +48,7 @@ export default class Model {
     } else if (_isArray(defval)) {
       return defval;
     } else {
-      return MetaVM.parseExpr(defval);
+      return new Expression(defval);
     }
   }
 
@@ -74,7 +73,7 @@ export default class Model {
     } else if (_isArray(value)) {
       return value;
     } else {
-      return MetaVM.parseExpr(value);
+      return new Expression(value);
     }
   }
 

@@ -132,16 +132,40 @@ describe('VM模型', () => {
     //  console.log(JSON.stringify(Partner,null,2))
     const PartnerVM = MetaVM.createModel(Partner.name, Partner.schema);
     const partner = PartnerVM.create();
-    // console.log(JSON.stringify(partner))
+    //console.log(JSON.stringify(partner))
     expect(JSON.parse(JSON.stringify(partner))).to.be.eql({
-      "id": {},
-      "code": {},
-      "name": {},
-      "cusCreLine": {},
-      "pertnerCategoryId": {},
-      "pertnerAreaId": {},
-      "pertnerLevelId": {},
-      "pertnerIndustryId": {}
+      "id": {
+        "key": "vm30",
+        "name": "vm30"
+      },
+      "code": {
+        "key": "vm31",
+        "name": "vm31"
+      },
+      "name": {
+        "key": "vm32",
+        "name": "vm32"
+      },
+      "cusCreLine": {
+        "key": "vm33",
+        "name": "vm33"
+      },
+      "pertnerCategoryId": {
+        "key": "vm34",
+        "name": "vm34"
+      },
+      "pertnerAreaId": {
+        "key": "vm35",
+        "name": "vm35"
+      },
+      "pertnerLevelId": {
+        "key": "vm36",
+        "name": "vm36"
+      },
+      "pertnerIndustryId": {
+        "key": "vm37",
+        "name": "vm37"
+      }
     });
   })
 
@@ -371,6 +395,7 @@ describe('VM模型', () => {
             "type": "object"
           }
         }],
+        "key": "ViewModel1",
         "actions": [],
         "conflicts": [],
         "mappings": {},

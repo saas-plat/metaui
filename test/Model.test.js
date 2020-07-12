@@ -7,7 +7,7 @@ import {
   expect
 } from 'chai';
 
-import MetaUI from '../src/MetaUI';
+// import MetaVM from '../src/MetaVM';
 import Model from '../src/models/Model';
 import SimpleModel from '../src/models/SimpleModel';
 import TableModel from '../src/models/TableModel';
@@ -18,8 +18,14 @@ configure({
 
 describe('基础模型', () => {
 
+  const store = {
+    execExpr(expr) {
+      return expr.exec(this);
+    }
+  }
+
   it('模型支持动态属性', () => {
-    const store = new MetaUI();
+    // const store = new MetaVM();
     const model = new Model(store, {
       name: 'n001',
       type: 'view',
@@ -54,7 +60,7 @@ describe('基础模型', () => {
   })
 
   it('Model的ownkeys问题', () => {
-    const store = new MetaUI();
+    // const store = new MetaVM();
     const model = new SimpleModel(store, {
       key: 'a',
       title: 'Root',
@@ -80,7 +86,7 @@ describe('基础模型', () => {
   })
 
   it('Model支持序列化JSON', () => {
-    const store = new MetaUI();
+    // const store = new MetaVM();
     const gvm = {
       item1: 1000.00,
       data: [1, 2, 3].map(v => new SimpleModel(store, {
@@ -114,7 +120,7 @@ describe('基础模型', () => {
   })
 
   it('SubModel可以合并赋值', () => {
-    const store = new MetaUI();
+    // const store = new MetaVM();
     const model = new SimpleModel(store, {
       sub: {
         a: 1,
@@ -140,7 +146,7 @@ describe('基础模型', () => {
   })
 
   it('模型计算属性调用this也是proxy', () => {
-    const store = new MetaUI();
+    // const store = new MetaVM();
     const model = new TableModel(store, {
       dataSource: []
     })
@@ -153,7 +159,7 @@ describe('基础模型', () => {
   })
 
   it('支持校验规则', async () => {
-    const store = new MetaUI({
+    const store = {
       table: [{
         name: 'aaa',
         code: '0001',
@@ -166,8 +172,11 @@ describe('基础模型', () => {
         name: 'ccc',
         code: '0003',
         age: 111
-      }]
-    });
+      }],
+      execExpr(expr) {
+        return expr.exec(this);
+      }
+    };
 
     const simple = new SimpleModel(store, {
       value: 'xxxxxxxx',

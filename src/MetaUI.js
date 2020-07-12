@@ -3,7 +3,6 @@ import {
   observable,
   runInAction
 } from "mobx";
-import Expression from '@saas-plat/expression';
 import set from 'lodash/set';
 import get from 'lodash/get';
 import forOwn from 'lodash/forOwn';
@@ -98,14 +97,6 @@ export default class MetaUI {
       return this.model.getValue(path);
     }
     return get(this.model, path);
-  }
-
-  static parseExpr(txt) {
-    return new Expression(txt);
-  }
-
-  execExpr(expr) {
-    return expr.exec(this.model);
   }
 
   map(obj, mapping) {

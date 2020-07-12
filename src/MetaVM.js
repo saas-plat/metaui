@@ -10,6 +10,7 @@ import {
   readonly
 } from './utils';
 import EventModel from './EventModel';
+import Expression from '@saas-plat/expression';
 const debug = require('debug')('saas-plat:MetaVM');
 import i18n from './i18n';
 
@@ -41,17 +42,27 @@ export default class MetaVM {
     }
   }
 
+  static parseExpr(txt) {
+    return new Expression(txt);
+  }
+
+  execExpr(expr) {
+    return expr.exec(this);
+  }
+
   static createModel(name, schema, opts = {}) {
     const BaseType = MetaVM.getType(schema.type);
     if (!BaseType) {
       throw new Error(i18n.t('{{type}}视图模型类型未定义', schema));
     }
     schema.createMapping(name);
-    const init = schema.createObject();
     const validator = createValidator(schema.fields);
     const SpecificModel = class extends BaseType {
       constructor() {
         super();
+        const init = schema.createObject({
+          store: this
+        });
         // 创建一个代理, 赋值和获取值都根据schema控制
         const proxy = createProxy(init, this, schema.fields, name);
         // 数据改变规则
@@ -107,7 +118,9 @@ export default class MetaVM {
       }
 
       @action restore(data) {
-        this.merge(data || init);
+        this.merge(data || schema.createObject({
+          store: this
+        }));
       }
 
       @action new() {

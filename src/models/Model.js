@@ -13,7 +13,9 @@ import _forOwn from 'lodash/forOwn';
 import _isArray from 'lodash/isArray';
 import _mapValues from 'lodash/mapValues';
 import _isSymbol from 'lodash/isSymbol';
-import MetaUI from '../MetaUI';
+import _set from 'lodash/set';
+import _get from 'lodash/get';
+import MetaVM from '../MetaVM';
 
 // 计算属性会导致proxy的ownKeys没有返回报错
 // proxy 约束：结果列表必须包含目标对象的所有不可配置（non-configurable ）、自有（own）属性的key.
@@ -47,7 +49,7 @@ export default class Model {
     } else if (_isArray(defval)) {
       return defval;
     } else {
-      return MetaUI.parseExpr(defval);
+      return MetaVM.parseExpr(defval);
     }
   }
 
@@ -72,7 +74,7 @@ export default class Model {
     } else if (_isArray(value)) {
       return value;
     } else {
-      return MetaUI.parseExpr(value);
+      return MetaVM.parseExpr(value);
     }
   }
 
@@ -134,7 +136,7 @@ export default class Model {
           const upkey = key.substr(0, 1).toUpperCase() + key.substr(1);
           const getkey = 'get' + upkey;
           if (map.has(getkey)) {
-            return store.getViewModel(map.get(getkey));
+            return _get(store, map.get(getkey));
           }
           // map不需要提前创建就可以保证观察
           // if (!map.has(key)) {
@@ -153,7 +155,7 @@ export default class Model {
           const upkey = key.substr(0, 1).toUpperCase() + key.substr(1);
           const setkey = 'set' + upkey;
           if (map.has(setkey)) {
-            store.setViewModel(map.get(setkey), value);
+            _set(store, map.get(setkey), value);
             return true;
           }
           if (map.has(key)) {
@@ -176,7 +178,7 @@ export default class Model {
           }
         } else {
           // if (key in target) {
-            target[key] = value;
+          target[key] = value;
           // } else {
           //   return false;
           // }
@@ -190,7 +192,7 @@ export default class Model {
       // target[key] = props[key]
       Object.defineProperty(target, key, {
         configrable: true,
-        enumerable : true,
+        enumerable: true,
         get: function () {
           return proxy[key];
         },

@@ -33,6 +33,7 @@ before(() => {
     view: [NoneComponent, ContainerModel],
     list: [NoneComponent, ContainerModel],
     navbar: [NoneComponent, ContainerModel],
+    toolbar: [NoneComponent, ContainerModel],
     //  input
     input: [NoneComponent, SimpleModel],
     decimal: [NoneComponent, SimpleModel],

@@ -1,5 +1,4 @@
 import {
-  toJS,
   computed,
   action,
 } from 'mobx';
@@ -10,10 +9,7 @@ import {
 
 // 一维模型
 export default class SimpleModel extends Model {
-
-  constructor(store, props) {
-    super(store, props);
-  }
+ 
 
   @computed get createValidator() {
     return createValidator(this);

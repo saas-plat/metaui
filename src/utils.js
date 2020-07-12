@@ -19,22 +19,30 @@ const debug = require('debug')('saas-plat:utils');
 addTypeCreator('SimpleModel', (it, defineObj, {
   store
 }) => {
+  debug('create SimpleModel...')
   defineObj[it.key] = new SimpleModel(store, createObject({}, it.fields));
+  return true;
 });
 addTypeCreator('ListModel', (it, defineObj, {
   store
 }) => {
+  debug('create ListModel...')
   defineObj[it.key] = new ListModel(store, createObject({}, it.fields));
+  return true;
 });
 addTypeCreator('TableModel', (it, defineObj, {
   store
 }) => {
+  debug('create TableModel...')
   defineObj[it.key] = new TableModel(store, createObject({}, it.fields));
+  return true;
 });
 addTypeCreator('FilterModel', (it, defineObj, {
   store
 }) => {
+  debug('create FilterModel...')
   defineObj[it.key] = new FilterModel(store, createObject({}, it.fields));
+  return true;
 });
 addTypeCreator('reference', (it, defineObj, {
   cutRef = false,
@@ -59,6 +67,7 @@ addTypeCreator('reference', (it, defineObj, {
     // },subDecs)
     defineObj[it.key] = observable.ref(props)
   }
+  return true;
 });
 addTypeCreator('expression', (it, defineObj) => {
   let texpr = new Expression(it.expr);
@@ -72,6 +81,7 @@ addTypeCreator('expression', (it, defineObj) => {
       texpr = new Expression(expr);
     }
   });
+  return true;
 });
 
 exports.createValidator = (...fields) => {

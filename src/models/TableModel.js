@@ -11,6 +11,10 @@ import {
 } from '../utils';
 //const CODE_LENGTH = 7;
 
+class RowModel{
+	
+}
+
 // 三维表模型
 export default class TableModel extends Model {
 

@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "incremental": false,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "dist",
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "removeComments": false,
+    "noImplicitAny": false,
+    "jsx": "react",
+    "outDir": "dist",
+    "lib": ["DOM", "ScriptHost", "ESNext"],
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"]
+    },
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true, 
+    "isolatedModules": false
+  },
+  "include": ["src"]
+}

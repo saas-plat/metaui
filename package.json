@@ -1,11 +1,11 @@
 {
   "name": "@saas-plat/metaui",
-  "version": "1.1.51",
-  "description": "提供全端的统一UI建模和各端的独立渲染组件",
+  "version": "2.0.0",
+  "description": "模型驱动开发框架，通过建模+扩展代替自由编码的快速开发方式",
   "productName": "saas-plat",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && babel src --out-dir dist --source-maps",
+    "build": "rm -rf ./dist && babel src --out-dir dist --source-maps --extensions .ts",
     "test": "cross-env NODE_ENV=test mocha",
     "test_w": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha --watch",
     "test_d": "cross-env NODE_ENV=test DEBUG=saas-plat*,-not_this mocha",
@@ -24,48 +24,28 @@
   "license": "MPL-2.0",
   "dependencies": {
     "@saas-plat/expression": "^1.0.3",
-    "async-validator": "^3.3.0",
-    "automapper": "^1.0.0",
-    "core-decorators": "^0.20.0",
-    "debug": "^4.1.1",
-    "en-inflectors": "^1.0.12",
-    "jxon": "^2.0.0-beta.5",
-    "lodash": "^4.17.19",
-    "prop-types": "^15.6.2",
-    "react-router-cache-route": "^1.9.0"
+    "lodash": "^4.17.21",
+    "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "@saas-plat/metaschema": ">=1.0.0",
-    "mobx": ">=5.0.0",
-    "mobx-react": ">=6.0.0",
-    "react": ">=16.0.0",
-    "react-i18next": ">=11.0.0",
-    "i18next": ">=19.0.0"
+    "mobx": ">=5",
+    "axios": ">=0.21"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.10.4",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-decorators": "^7.10.4",
-    "@babel/plugin-proposal-export-default-from": "^7.10.4",
-    "@babel/plugin-transform-runtime": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/preset-react": "^7.10.4",
     "@babel/register": "^7.10.4",
     "@babel/runtime": "^7.10.4",
-    "@saas-plat/metaapi": "^1.0.1",
-    "@saas-plat/metaschema": "^1.0.10",
-    "babel-eslint": "^10.1.0",
+    "@babel/plugin-proposal-decorators": "^7.10.4",
+    "@babel/preset-typescript": "^7.13.0",
+    "@types/node": "^13.7.1",
+    "axios": "^0.21.1",
     "chai": "^4.2.0",
     "cross-env": "^6.0.3",
-    "eslint": "^6.8.0",
-    "eslint-plugin-react": "^7.20.3",
-    "i18next": "^19.6.0",
     "mobx": "^5.15.0",
-    "mobx-react": "^6.1.4",
     "mocha": "^7.2.0",
-    "react": "^16.6.3",
-    "react-i18next": "^11.7.0",
-    "react-router-dom": "^5.2.0"
+    "prettier": "2.0.4",
+    "typescript": "3.8.2"
   }
 }

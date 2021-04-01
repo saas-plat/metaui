@@ -1,8 +1,3 @@
- const {
-   expect
- } = require('chai');
+import { expect } from 'chai';
 
-
- require('i18next').init();
-
-  
+require('i18next').init();

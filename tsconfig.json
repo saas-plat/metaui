@@ -2,7 +2,7 @@
   "compilerOptions": {
     "incremental": false,
     "target": "ESNext",
-    "module": "ESNext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "allowJs": true,
     "sourceMap": true,

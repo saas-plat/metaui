@@ -39,14 +39,14 @@ export interface Provider {
     replace: (option: IRouteOption, forceLeave: boolean) => void;
   };
 
- 
+
 }
 
 let impl: Provider;
 
 // 需要注册技术平台基础能力，api、history、indexdb对象给框架
 export function registerProvider(provider) {
-  impl = provider;
+  impl = { ...impl, ...provider };
 }
 
 export const api = {
@@ -101,4 +101,3 @@ export const history = {
   },
 };
 
- 

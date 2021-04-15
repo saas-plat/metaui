@@ -2,9 +2,11 @@ import { DataModel, DeadLockError, SetOptions } from './BaseModel';
 import { ContainerModel } from './ContainerModel';
 import { createModel } from './util';
 import _merge from 'lodash/merge';
-import { observable, computed, action, runInAction } from 'mobx';
+import _isEqual from 'lodash/isEqual';
+import _get from 'lodash/get';
+import { observable, computed, action, runInAction, autorun } from 'mobx';
 
-export class RowNode extends ContainerModel {}
+export class RowNode extends ContainerModel { }
 
 export enum RowState {
   New,
@@ -49,8 +51,12 @@ export class RowData {
     if (this._state === RowState.Delete) {
       throw new Error('row deleted!');
     }
-    this._data = data;
+    const changed = !_isEqual(this._data, data);
+    if (changed) {
+      this._data = data;
+    }
     this._state = RowState.Edit;
+    return changed;
   }
 
   @action update(data) {
@@ -58,7 +64,9 @@ export class RowData {
       throw new Error('row deleted!');
     }
     _merge(this._data, data);
+    const changed = !_isEqual(this._data, data);
     this._state = RowState.Edit;
+    return changed;
   }
 
   @action clear() {
@@ -106,6 +114,19 @@ export class GridModel extends DataModel {
     return this.get('columns');
   }
 
+  getColumn(name: string) {
+    return this.columns.find(it => it.name === name);
+  }
+
+  findRowIndex(value, colName = 'uuid') {
+    const data = this.data;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i][colName] === value) {
+        return i;
+      }
+    }
+  }
+
   constructor(data) {
     data = {
       columns: [],
@@ -120,9 +141,9 @@ export class GridModel extends DataModel {
     this.initRowStates();
   }
 
-  private initColumn(column) {}
+  private initColumn(column) { }
 
-  private initRowStates() {}
+  private initRowStates() { }
 
   async setData(value, options?: SetOptions) {
     const data = (value && value.map((row) => (row instanceof RowData ? row : new RowData(row)))) || [];
@@ -182,16 +203,18 @@ export class GridModel extends DataModel {
   }
 
   getRow(index: number) {
-    return this.dataSource.length > index && this.dataSource[index].data;
+    return this.dataSource.length > index && index >= 0 && this.dataSource[index].data;
   }
 
-  async setRow(index: number, rowData = {}, merge = true) {
+  async setRow(index: number, rowData = {}, merge = true, options?) {
     let row = this.dataSource.length > index && index >= 0 && this.dataSource[index];
     const oldValue = row && row.data;
     let value;
     if (!merge || !row) {
       if (row) {
-        row.replace(rowData);
+        if (!row.replace(rowData)) {
+          return;
+        }
         this.dataSource.splice(index, 1, row);
       } else {
         row = new RowData(rowData);
@@ -203,13 +226,15 @@ export class GridModel extends DataModel {
       }
       value = row.data;
     } else {
-      row.update(rowData);
+      if (!row.update(rowData)) {
+        return;
+      }
       // 按照行触发一次mobx的改变行为
       this.dataSource.splice(index, 1, row);
       value = row.data;
     }
     try {
-      await this.fire('rowChanged', { oldValue, value, index, state: row.state, checked: row.checked });
+      await this.fire('rowChanged', { oldValue, value, index, state: row.state, checked: row.checked, ...options });
     } catch (err) {
       // 事件循环终止
       if (!(err instanceof DeadLockError)) {
@@ -223,8 +248,8 @@ export class GridModel extends DataModel {
   }
 
   // 获取当前正在编辑的行
-  getEditRow(): ContainerModel {
-    let editRow = this.get('editRow');
+  get editRow(): ContainerModel {
+    let editRow: ContainerModel = this.cache['editRow'];
     if (!editRow) {
       editRow = new ContainerModel(
         this.columns.reduce(
@@ -235,12 +260,47 @@ export class GridModel extends DataModel {
           {}
         )
       );
-      this.set('editRow', editRow);
+      this.cache['editRow'] = editRow;
     }
     return editRow;
   }
 
-  startEdit(index: number) {}
+  get editRowIndex() {
+    return this.get('editRowIndex');
+  }
 
-  stopEdit() {}
+  private async updateEditData(index) {
+    const rowData = this.getRow(index);
+    await this.editRow.setData(this.columns.reduce(
+      (data, column) => ({
+        ...data,
+        [column.name]: _get(rowData, column.boField),
+      }),
+      {}
+    ));
+  }
+
+  private editDisposer;
+
+  async startEdit(index: number) {
+    if (this.editRowIndex === index) {
+      return;
+    }
+    await this.set('editRowIndex', index);
+    this.editDisposer = autorun(async () => {
+      await this.updateEditData(index);
+    });
+  }
+
+  async stopEdit() {
+    if (this.editRowIndex === null) {
+      return;
+    }
+    if (this.editDisposer) {
+      this.editDisposer();
+      this.editDisposer = null;
+    }
+    await this.setRow(this.get('editRowIndex'), this.editRow.data);
+    await this.set('editRowIndex', null);
+  }
 }

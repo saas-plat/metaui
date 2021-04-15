@@ -1,4 +1,4 @@
-import { observable, computed, action, toJS } from 'mobx';
+import { observable, computed, action, toJS, when } from 'mobx';
 import { Expression } from '../expr';
 
 enum ValidateResult {
@@ -30,7 +30,7 @@ let snapshoot;
 const eventStock: EventItem[] = [];
 
 // 死循环异常
-export class DeadLockError extends Error {}
+export class DeadLockError extends Error { }
 
 export class DataModel {
   @observable protected props = observable.map<string, any>({});
@@ -38,7 +38,7 @@ export class DataModel {
   protected dataProps = new Set<string>();
 
   private events: {
-    [key: string]: Array<{ handle: Function; scope: any }>;
+    [key: string]: Array<{ handle: Function; bindVM: Function, scope: any }>;
   } = {};
 
   protected cache = {};
@@ -70,7 +70,7 @@ export class DataModel {
       this.dataProps.add(key);
     }
     const oldValue = this.props.get(key);
-    if (this.get('type') === 'enum' && value && oldValue?value.id === oldValue.id:oldValue === value) {
+    if (this.get('type') === 'enum' && value && oldValue ? value.id === oldValue.id : oldValue === value) {
       return;
     }
     if (!this.isExpr(value) && key + 'Expr' in this.cache) {
@@ -148,6 +148,10 @@ export class DataModel {
     return this.props.get('validateMsg');
   }
 
+  async setValidateMsg(msgs) {
+    await this.set('validateMsg', msgs);
+  }
+
   set name(name) {
     this.cache['name'] = name;
   }
@@ -162,6 +166,13 @@ export class DataModel {
 
   async setVisible(visible) {
     await this.set('visible', visible);
+  }
+
+  // 等待关闭隐藏
+  whenVisible(visible): Promise<void> {
+    return new Promise((resolve, reject) => {
+      when(() => this.visible === visible, resolve)
+    })
   }
 
   async setDisabled(disabled) {
@@ -225,7 +236,8 @@ export class DataModel {
     await this.set('originalValue', this.value);
   }
 
-  constructor(data?) {
+  constructor({ name, ...data }) {
+    this.name = name;
     this.props.merge({
       visible: data ? data.hidden !== true : true,
       disabled: false,
@@ -275,6 +287,7 @@ export class DataModel {
     }
     handlers.push({
       handle: callback,
+      bindVM: callback.bind(this.parent || this),
       scope,
     });
   }
@@ -436,10 +449,10 @@ export class DataModel {
   async execute(name, params): Promise<Boolean> {
     let result = true;
     const handlers = this.events[name] || [];
-    for (const { handle, scope } of handlers) {
+    for (const { bindVM: handle, scope } of handlers) {
       try {
         console.log(name + ' execute...', params);
-        result = (await handle(params, scope)) !== false;
+        result = (await handle({ ...scope, ...params }, this)) !== false;
       } catch (e) {
         result = false;
         console.error('execute[' + name + '] exception: ' + e.stack);

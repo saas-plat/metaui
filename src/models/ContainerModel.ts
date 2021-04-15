@@ -107,7 +107,7 @@ export class ContainerModel extends DataModel {
     super({ pageStack: [], ...data });
   }
 
-  collectData(all = false) {
+  collectData(all = true) {
     return all ? this.getAllData() : this.getDirtyData();
   }
 
@@ -271,7 +271,7 @@ export class ContainerModel extends DataModel {
     if (!cancel) this.execute('afterValidate', invalidFields);
     if (Object.keys(invalidFields).length && !cancel) {
       this.execute('invalidFieldsChange', invalidFields);
-      await this.set('validateMsg', invalidFields);
+      await this.setValidateMsg(invalidFields);
       return false;
     } else {
       return true;

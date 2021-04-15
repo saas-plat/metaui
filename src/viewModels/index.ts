@@ -1,6 +1,11 @@
 import { ContainerModel } from "../models";
 
-export const viewModels: { [key: string]: typeof ContainerModel } = {};
+export class ViewModel extends ContainerModel{
+
+}
+
+export const viewModels: { [key: string]: typeof ViewModel } = {};
+
 
 export function createViewModel() {
 
